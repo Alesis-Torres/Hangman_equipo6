@@ -1,0 +1,34 @@
+# Visual Studio config
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Logs
+*.log
+
+# Images of users stored on server
+Resources/Images/Users/*
+
+# IDE and system files
+*.swp
+*.bak
+*.tmp
+*.scc
+*.vssscc
+
+# Publish folder
+publish/

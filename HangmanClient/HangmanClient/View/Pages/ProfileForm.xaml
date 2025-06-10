@@ -1,0 +1,36 @@
+﻿<Page x:Class="HangmanClient.View.Pages.ProfileForm"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ProfileForm">
+    <Grid Margin="20">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+            <TextBlock Text="Username:"/>
+            <TextBox x:Name="UsernameTextBox" Margin="0,5" TextChanged="UsernameTextBox_TextChanged"/>
+            <Label x:Name="UsernameStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+
+            <TextBlock Text="Nickname:"/>
+            <TextBox x:Name="NicknameTextBox" Margin="0,5" TextChanged="NicknameTextBox_TextChanged"/>
+            <Label x:Name="NicknameStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+
+            <TextBlock Text="Password:"/>
+            <PasswordBox x:Name="PasswordBox" Margin="0,5" MaxLength="20" PreviewTextInput="PasswordBox_PreviewTextInput"/>
+            <TextBlock Text="Email:"/>
+            <TextBox x:Name="EmailTextBox" Margin="0,5" TextChanged="EmailTextBox_TextChanged"/>
+            <Label x:Name="EmailFormatStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+
+            <TextBlock Text="Birthdate:"/>
+            <DatePicker x:Name="BirthdatePicker" Margin="0,5"/>
+
+            <TextBlock Text="Phone Number:"/>
+            <TextBox x:Name="PhoneNumberTextBox" Margin="0,5" TextChanged="PhoneNumberTextBox_TextChanged" MaxLength="15" />
+            <Label x:Name="PhoneStatusLabel" Foreground="Red" Visibility="Collapsed" Content="" />
+
+            <TextBlock Text="Profile Image:"/>
+            <Image x:Name="ProfileImage" Height="100" Margin="0,5"/>
+            <Button Content="Upload Image" Click="UploadImageButton_Click" Margin="0,5"/>
+
+            <Button Content="Guardar" Click="SaveButton_Click" Margin="0,10,0,0"/>
+            <Button Content="Cancelar" Click="CancelButton_Click" Margin="0,5,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

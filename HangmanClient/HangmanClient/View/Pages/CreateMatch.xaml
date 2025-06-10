@@ -1,0 +1,16 @@
+﻿<Page x:Class="HangmanClient.View.Pages.CreateMatch"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="CreateMatch">
+
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Salas disponibles" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ListBox x:Name="SalasListBox" Height="200" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Unirse a la Sala" Width="150" Margin="5" Click="UnirseButton_Click"/>
+                <Button Content="Crear Sala" Width="150" Margin="5" Click="CrearSalaButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
