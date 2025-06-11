@@ -38,9 +38,20 @@ namespace HangmanClient.View.Pages
 
         private void SetText()
         {
-            NotificationTitle.Content = _notificationContent.NotificationTitle;
-            NotificationMessage.Text = _notificationContent.NotificationMessage;
-            AcceptButtonText.Content = _notificationContent.AcceptButtonText;
+            string notificationType = _notificationContent.NotificationType.ToString();
+
+            if (notificationType.Equals("Win", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationTitle.Content = Literals.You_Win;
+                NotificationMessage.Text = Literals.YouGuessedTheWordCorrectly;
+                AcceptButtonText.Content = "100 " + Literals.Points;
+            }
+            else if (notificationType.Equals("Lose", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationTitle.Content = Literals.YouLose;
+                NotificationMessage.Text = Literals.YouDidntGuessTheWord;
+                AcceptButtonText.Content = "90 " + Literals.Points;
+            }
         }
 
         private void SetBackground()
