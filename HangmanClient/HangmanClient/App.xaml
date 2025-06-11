@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:HangmanClient"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <FontFamily x:Key="RubikBubbles">
+            pack://application:,,,/Resources/Fonts/#Rubik Bubbles
+        </FontFamily>
     </Application.Resources>
 </Application>
