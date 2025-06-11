@@ -26,12 +26,12 @@ namespace HangmanClient.View.Pages
         public Login()
         {
             InitializeComponent();
-            // Establecer el idioma predeterminado al cargar la página
         }
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
+            // preparar notificacion
             var notification = new NotificationContent();
 
             try
@@ -45,7 +45,7 @@ namespace HangmanClient.View.Pages
                     SessionManager.Instance.HangmanService = hangmanService;
                     SessionManager.Instance.GameService = new GameServiceReference.GameServiceClient();
 
-                    
+                    // Mostrar notificacion de exito
                     notification.NotificationTitle = Literals.SuccesfulLogin;
                     notification.NotificationMessage = Literals.Welcome;
                     notification.AcceptButtonText = Literals.Accept;
@@ -58,6 +58,7 @@ namespace HangmanClient.View.Pages
                 }
                 else
                 {
+                    // Mostrar notificacion de credenciales
                     notification.NotificationTitle = Literals.IncorrectCredentials;
                     notification.NotificationMessage = Literals.IncorrectCredentials;
                     notification.AcceptButtonText = Literals.Accept;
@@ -69,6 +70,7 @@ namespace HangmanClient.View.Pages
             }
             catch (Exception ex)
             {
+                // Mostrar notificacion de error de conexion
                 notification.NotificationTitle = Literals.Offline;
                 notification.NotificationMessage = Literals.ConnectionErrorDescription;
                 notification.AcceptButtonText = Literals.Accept;
@@ -83,6 +85,7 @@ namespace HangmanClient.View.Pages
             NavigationService.Navigate(new ProfileForm());
         }
 
+        // Acciones para cambiar idioma
         private void SpanishButton_Click(object sender, RoutedEventArgs e)
         {
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-MX");
