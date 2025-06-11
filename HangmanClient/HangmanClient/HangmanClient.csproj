@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="View\Images\arrow_button.png" />
     <None Remove="View\Images\confirmation_background.png" />
     <None Remove="View\Images\confirmation_icon.png" />
     <None Remove="View\Images\game_title.png" />
@@ -19,6 +20,10 @@
     <None Remove="View\Images\win_background.png" />
     <None Remove="View\Images\wood_button.png" />
     <None Remove="View\Images\wood_textbox.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="View\Images\arrow_button.png" />
   </ItemGroup>
 
   <ItemGroup>

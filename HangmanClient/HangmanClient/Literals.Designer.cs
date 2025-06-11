@@ -115,6 +115,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Username, name, and password may only contain letters and numbers.
+        /// </summary>
+        public static string CharacterFields {
+            get {
+                return ResourceManager.GetString("CharacterFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
         public static string Confirm {
@@ -214,6 +223,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One or more fields exceed the permitted length..
+        /// </summary>
+        public static string FieldsTooLong {
+            get {
+                return ResourceManager.GetString("FieldsTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The game was canceled by one of the players..
         /// </summary>
         public static string GamceCancelled {
@@ -264,6 +282,15 @@ namespace HangmanClient {
         public static string InvalidCodeEntered {
             get {
                 return ResourceManager.GetString("InvalidCodeEntered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Fields.
+        /// </summary>
+        public static string InvalidFields {
+            get {
+                return ResourceManager.GetString("InvalidFields", resourceCulture);
             }
         }
         
@@ -340,6 +367,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email doesn&apos;t have a valid format..
+        /// </summary>
+        public static string NotVaildEmail {
+            get {
+                return ResourceManager.GetString("NotVaildEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Offline.
         /// </summary>
         public static string Offline {
@@ -363,6 +399,15 @@ namespace HangmanClient {
         public static string PhoneNumber {
             get {
                 return ResourceManager.GetString("PhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number may only contain up to 10 digits..
+        /// </summary>
+        public static string PhoneNumberLength {
+            get {
+                return ResourceManager.GetString("PhoneNumberLength", resourceCulture);
             }
         }
         

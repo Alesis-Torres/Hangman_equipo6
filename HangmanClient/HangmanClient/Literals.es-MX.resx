@@ -279,4 +279,19 @@
   <data name="Language" xml:space="preserve">
     <value>Idioma</value>
   </data>
+  <data name="InvalidFields" xml:space="preserve">
+    <value>Los campos no son válidos</value>
+  </data>
+  <data name="FieldsTooLong" xml:space="preserve">
+    <value>Uno o más campos exceden la longitud permitida.</value>
+  </data>
+  <data name="CharacterFields" xml:space="preserve">
+    <value>Usuario, nombre y contraseña solo pueden contener letras y números</value>
+  </data>
+  <data name="PhoneNumberLength" xml:space="preserve">
+    <value>El número de teléfono debe contener solo números (hasta 10 dígitos).</value>
+  </data>
+  <data name="NotVaildEmail" xml:space="preserve">
+    <value>El email no tiene un formato válido.</value>
+  </data>
 </root>

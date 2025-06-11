@@ -22,16 +22,8 @@ namespace Hangman_Client.View.Pages
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            // Cerrar la notificación y manejar que se hace despues de cerrar
-            var notificationType = _notificationContent.NotificationType.ToString();
-            if (notificationType.Equals("Error"))
-            {
-                // logica de error
-            }
-            else if (notificationType.Equals("Confirmation"))
-            {
-                // la lógica de confirmación
-            }
+            Window parentWindow = Window.GetWindow(this);
+            parentWindow?.Close();
         }
 
         private void SetText()
@@ -43,7 +35,7 @@ namespace Hangman_Client.View.Pages
 
         private void SetBackground()
         {
-            string backgroundResourceKey = _notificationContent.NotificationType switch
+            string backgroundResourceKey = _notificationContent.Type switch
             {
                 NotificationType.Error => "notification_background",
                 NotificationType.Confirmation => "confirmation_background",
@@ -58,7 +50,7 @@ namespace Hangman_Client.View.Pages
                 MainGrid.Background = Brushes.White;
             }
 
-            string iconResourceKey = _notificationContent.NotificationType switch
+            string iconResourceKey = _notificationContent.Type switch
             {
                 NotificationType.Error => "notification_icon",
                 NotificationType.Confirmation => "confirmation_icon",

@@ -130,7 +130,6 @@
                         </ControlTemplate>
                     </PasswordBox.Template>
                 </PasswordBox>
-
             </StackPanel>
 
             <Button Click="RegisterButton_Click" Height="39" Width="600" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" Cursor="Hand">
