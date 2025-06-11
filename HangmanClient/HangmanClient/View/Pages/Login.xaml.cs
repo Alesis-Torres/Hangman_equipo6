@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,7 @@ namespace HangmanClient.View.Pages
         public Login()
         {
             InitializeComponent();
+            // Establecer el idioma predeterminado al cargar la página
         }
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -58,6 +60,18 @@ namespace HangmanClient.View.Pages
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new ProfileForm());
+        }
+
+        private void SpanishButton_Click(object sender, RoutedEventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-MX");
+            NavigationService.Navigate(new Login());
+        }
+
+        private void EnglishButton_Click(object sender, RoutedEventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+            NavigationService.Navigate(new Login());
         }
     }
 }
