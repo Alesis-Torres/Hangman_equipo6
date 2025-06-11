@@ -1,4 +1,5 @@
 ﻿using HangmanClient.Model.Singleton;
+using HangmanClient.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace HangmanClient.View.Pages
         {
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
+            var notification = new NotificationContent();
 
             try
             {
@@ -43,18 +45,37 @@ namespace HangmanClient.View.Pages
                     SessionManager.Instance.HangmanService = hangmanService;
                     SessionManager.Instance.GameService = new GameServiceReference.GameServiceClient();
 
-                    MessageBox.Show("¡Login exitoso!");
+                    
+                    notification.NotificationTitle = Literals.SuccesfulLogin;
+                    notification.NotificationMessage = Literals.Welcome;
+                    notification.AcceptButtonText = Literals.Accept;
+                    notification.Type = NotificationType.Confirmation;
+
+                    var window = new NotificationWindow(notification);
+                    window.ShowDialog();
 
                     NavigationService.Navigate(new CreateMatch());
                 }
                 else
                 {
-                    MessageBox.Show("Usuario o contraseña incorrectos.");
+                    notification.NotificationTitle = Literals.IncorrectCredentials;
+                    notification.NotificationMessage = Literals.IncorrectCredentials;
+                    notification.AcceptButtonText = Literals.Accept;
+                    notification.Type = NotificationType.Error;
+
+                    var window = new NotificationWindow(notification);
+                    window.ShowDialog();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al iniciar sesión: {ex.Message}");
+                notification.NotificationTitle = Literals.Offline;
+                notification.NotificationMessage = Literals.ConnectionErrorDescription;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Error;
+
+                var window = new NotificationWindow(notification);
+                window.ShowDialog();
             }
         }
         private void RegisterButton_Click(object sender, RoutedEventArgs e)

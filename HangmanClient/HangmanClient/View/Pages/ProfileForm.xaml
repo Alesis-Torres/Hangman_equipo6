@@ -350,7 +350,7 @@
             </StackPanel>
         </Grid>
         <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="CancelButton" Padding="30,0,30,0" Height="55" Click="SaveButton_Click" Margin="0,0,10,10">
+            <Button x:Name="CancelButton" Padding="30,0,30,0" Height="55" Click="CancelButton_Click" Margin="0,0,10,10">
                 <Button.Background>
                     <ImageBrush ImageSource="/View/Images/wood_button.png"/>
                 </Button.Background>

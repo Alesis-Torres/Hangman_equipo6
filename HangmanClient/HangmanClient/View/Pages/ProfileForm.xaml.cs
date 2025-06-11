@@ -84,7 +84,6 @@ namespace HangmanClient.View.Pages
                     };
                     var window = new NotificationWindow(successContent);
                     window.ShowDialog();
-                    NavigationService.GoBack();
 
                     NavigationService.GoBack();
                 }
@@ -277,7 +276,7 @@ namespace HangmanClient.View.Pages
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-
+            NavigationService.GoBack();
         }
     }
 }
