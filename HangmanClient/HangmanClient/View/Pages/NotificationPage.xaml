@@ -5,10 +5,80 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hangman_Client.View.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="596" d:DesignWidth="856"
       Title="NotificationPage">
 
-    <Grid>
-        
+    <Page.Resources>
+        <ImageBrush x:Key="notification_background" ImageSource="/View/Images/notification_background.png"/>
+        <ImageBrush x:Key="confirmation_background" ImageSource="/View/Images/confirmation_background.png"/>
+        <ImageBrush x:Key="default_background" ImageSource="/View/Images/notification_background.png"/>
+        <ImageBrush x:Key="notification_icon" ImageSource="/View/Images/exclamation_icon.png"/>
+        <ImageBrush x:Key="confirmation_icon" ImageSource="/View/Images/confirmation_icon.png"/>
+    </Page.Resources>
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <StackPanel x:Name="Icon" Width="207" Height="200">
+            </StackPanel>
+            <Label x:Name="NotificationTitle" 
+                   Content="[¡Notificación!]" 
+                   HorizontalAlignment="Center" 
+                   FontFamily="{StaticResource RubikBubbles}" 
+                   FontSize="48"
+                   Foreground="#FFFBD4"
+                   >
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                        Direction="0"
+                        ShadowDepth="5"
+                        Opacity="1"
+                        BlurRadius="0"/>
+                </Label.Effect>
+            </Label>
+
+            <TextBlock x:Name="NotificationMessage" 
+                    Margin="0,20,0,0"
+                    Text="[Mensaje de notificacion]" 
+                    HorizontalAlignment="Center" 
+                    FontFamily="{StaticResource RubikBubbles}" 
+                    FontSize="30"
+                    TextWrapping="WrapWithOverflow"
+                    Foreground="#FFFBD4"
+                    >
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                        Direction="0"
+                        ShadowDepth="5"
+                        Opacity="1"
+                        BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
+            <Button x:Name="AcceptButton" Width="243" Height="66" Click="AcceptButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                </Button.Background>
+                <Label x:Name="AcceptButtonText"
+                       Content="[Aceptar]" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center" 
+                       FontFamily="{StaticResource RubikBubbles}" 
+                       Foreground="#FFFBD4" 
+                       FontSize="30">
+                    <Label.Effect>
+                        <DropShadowEffect Color="Black"
+                             Direction="0"
+                             ShadowDepth="5"
+                             Opacity="1"
+                             BlurRadius="0"/>
+                    </Label.Effect>
+                </Label>
+            </Button>
+        </StackPanel>
     </Grid>
 </Page>

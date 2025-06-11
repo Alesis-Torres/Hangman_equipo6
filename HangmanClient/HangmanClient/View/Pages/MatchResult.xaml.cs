@@ -3,16 +3,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Hangman_Client.View.Pages
+namespace HangmanClient.View.Pages
 {
     /// <summary>
-    /// Interaction logic for NotificationPage.xaml
+    /// Interaction logic for MatchResult.xaml
     /// </summary>
-    public partial class NotificationPage : Page
+    public partial class MatchResult : Page
     {
         private readonly NotificationContent _notificationContent;
-
-        public NotificationPage(NotificationContent notificationContent)
+        public MatchResult(NotificationContent notificationContent)
         {
             InitializeComponent();
             _notificationContent = notificationContent;
@@ -22,15 +21,18 @@ namespace Hangman_Client.View.Pages
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            // Cerrar la notificación y manejar que se hace despues de cerrar
-            var notificationType = _notificationContent.NotificationType.ToString();
-            if (notificationType.Equals("Error"))
+            // Cerrar la notificacion y manejar que se hace despues de cerrar
+            string gameResult = _notificationContent.NotificationType.ToString();
+
+            if (gameResult.Equals("Win", StringComparison.OrdinalIgnoreCase))
             {
-                // logica de error
+                // Logica por ganar el juego sumar 100 puntos, etc
+
             }
-            else if (notificationType.Equals("Confirmation"))
+            else if (gameResult.Equals("Lose", StringComparison.OrdinalIgnoreCase))
             {
-                // la lógica de confirmación
+                // Logica por perder el juego sumar menos puntos, etc
+
             }
         }
 
@@ -45,28 +47,13 @@ namespace Hangman_Client.View.Pages
         {
             string backgroundResourceKey = _notificationContent.NotificationType switch
             {
-                NotificationType.Error => "notification_background",
-                NotificationType.Confirmation => "confirmation_background",
+                NotificationType.Win => "win_background",
+                NotificationType.Lose => "lose_background",
                 _ => "default_background"
             };
             try
             {
                 MainGrid.Background = (Brush)FindResource(backgroundResourceKey);
-            }
-            catch (ResourceReferenceKeyNotFoundException)
-            {
-                MainGrid.Background = Brushes.White;
-            }
-
-            string iconResourceKey = _notificationContent.NotificationType switch
-            {
-                NotificationType.Error => "notification_icon",
-                NotificationType.Confirmation => "confirmation_icon",
-                _ => "notification_icon"
-            };
-            try
-            {
-                Icon.Background = (Brush)FindResource(iconResourceKey);
             }
             catch (ResourceReferenceKeyNotFoundException)
             {
