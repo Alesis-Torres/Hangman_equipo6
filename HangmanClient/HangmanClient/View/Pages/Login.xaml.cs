@@ -30,31 +30,42 @@ namespace HangmanClient.View.Pages
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
 
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Por favor ingrese el nombre de usuario y la contraseña.");
+                return;
+            }
+
             try
             {
                 var hangmanService = new HangmanServiceReference.HangmanServiceClient();
-                var user = hangmanService.Login(username, password);
+                var loginResponse = hangmanService.Login(username, password);
 
-                if (user != null)
-                {
-                    SessionManager.Instance.CurrentPlayer = user; 
-                    SessionManager.Instance.HangmanService = hangmanService;
-                    SessionManager.Instance.GameService = new GameServiceReference.GameServiceClient();
-
-                    MessageBox.Show("¡Login exitoso!");
-
-                    NavigationService.Navigate(new CreateMatch());
-                }
-                else
+                if (loginResponse == null)
                 {
                     MessageBox.Show("Usuario o contraseña incorrectos.");
+                    return;
                 }
+
+                if (loginResponse.SessionDuplicate)
+                {
+                    MessageBox.Show("Este usuario ya tiene una sesión activa en otro dispositivo. Cierre la otra sesión e intente nuevamente.");
+                    return;
+                }
+
+                // Almacena el usuario en SessionManager
+                SessionManager.Instance.CurrentPlayer = loginResponse;
+                MessageBox.Show("¡Bienvenido " + loginResponse.Nickname + "!");
+
+                // Navega a la pantalla de selección de sala
+                NavigationService.Navigate(new CreateMatch());
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al iniciar sesión: {ex.Message}");
             }
         }
+
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new ProfileForm());

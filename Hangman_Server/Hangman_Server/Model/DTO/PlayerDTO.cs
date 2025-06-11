@@ -34,5 +34,7 @@ namespace Hangman_Server.Model
         public int Score { get; set; }
         [DataMember]
         public byte[] ImgBytes { get; set; }
+        [DataMember]
+        public bool SessionDuplicate { get; set; }
     }
 }

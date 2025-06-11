@@ -9,7 +9,82 @@
 
 namespace GameServiceReference
 {
+    using System.Runtime.Serialization;
     
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="WordDTO", Namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model.DTO")]
+    public partial class WordDTO : object
+    {
+        
+        private byte[] ImageBytesField;
+        
+        private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] ImageBytes
+        {
+            get
+            {
+                return this.ImageBytesField;
+            }
+            set
+            {
+                this.ImageBytesField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name
+        {
+            get
+            {
+                return this.NameField;
+            }
+            set
+            {
+                this.NameField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="CategoryDTO", Namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model.DTO")]
+    public partial class CategoryDTO : object
+    {
+        
+        private byte[] ImageBytesField;
+        
+        private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] ImageBytes
+        {
+            get
+            {
+                return this.ImageBytesField;
+            }
+            set
+            {
+                this.ImageBytesField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name
+        {
+            get
+            {
+                return this.NameField;
+            }
+            set
+            {
+                this.NameField = value;
+            }
+        }
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="GameServiceReference.IGameService")]
@@ -23,16 +98,16 @@ namespace GameServiceReference
         System.Threading.Tasks.Task<string> RechazarLetraAsync(int salaId, string letra);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/CrearSala", ReplyAction="http://tempuri.org/IGameService/CrearSalaResponse")]
-        string CrearSala(string nombreJugador);
+        string CrearSala(string nombreJugador, int idCliente);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/CrearSala", ReplyAction="http://tempuri.org/IGameService/CrearSalaResponse")]
-        System.Threading.Tasks.Task<string> CrearSalaAsync(string nombreJugador);
+        System.Threading.Tasks.Task<string> CrearSalaAsync(string nombreJugador, int idCliente);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/UnirseSala", ReplyAction="http://tempuri.org/IGameService/UnirseSalaResponse")]
-        string UnirseSala(int salaId, string nombreJugador);
+        string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/UnirseSala", ReplyAction="http://tempuri.org/IGameService/UnirseSalaResponse")]
-        System.Threading.Tasks.Task<string> UnirseSalaAsync(int salaId, string nombreJugador);
+        System.Threading.Tasks.Task<string> UnirseSalaAsync(int salaId, string nombreJugador, int idPlayerGuesser);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/Salir", ReplyAction="http://tempuri.org/IGameService/SalirResponse")]
         void Salir(int salaId, string nombreJugador);
@@ -99,6 +174,48 @@ namespace GameServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSala", ReplyAction="http://tempuri.org/IGameService/ObtenerJugadoresEnSalaResponse")]
         System.Threading.Tasks.Task<int> ObtenerJugadoresEnSalaAsync(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse")]
+        void RegistrarPartidaFinalizada(int idPlayerChallenger, bool palabraAdivinada);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse")]
+        System.Threading.Tasks.Task RegistrarPartidaFinalizadaAsync(int idPlayerChallenger, bool palabraAdivinada);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
+        void RegistrarPartidaInconclusa(int idPlayerChallenger, int idDisconnected);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
+        System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int idPlayerChallenger, int idDisconnected);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerIdGuesser", ReplyAction="http://tempuri.org/IGameService/ObtenerIdGuesserResponse")]
+        int ObtenerIdGuesser(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerIdGuesser", ReplyAction="http://tempuri.org/IGameService/ObtenerIdGuesserResponse")]
+        System.Threading.Tasks.Task<int> ObtenerIdGuesserAsync(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerIdWord", ReplyAction="http://tempuri.org/IGameService/ObtenerIdWordResponse")]
+        int ObtenerIdWord(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerIdWord", ReplyAction="http://tempuri.org/IGameService/ObtenerIdWordResponse")]
+        System.Threading.Tasks.Task<int> ObtenerIdWordAsync(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerJugadoresEnPartida", ReplyAction="http://tempuri.org/IGameService/ObtenerJugadoresEnPartidaResponse")]
+        string[] ObtenerJugadoresEnPartida(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerJugadoresEnPartida", ReplyAction="http://tempuri.org/IGameService/ObtenerJugadoresEnPartidaResponse")]
+        System.Threading.Tasks.Task<string[]> ObtenerJugadoresEnPartidaAsync(int salaId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoria", ReplyAction="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoriaResponse")]
+        GameServiceReference.WordDTO[] ObtenerPalabrasPorCategoria(string categoria, int idLenguaje);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoria", ReplyAction="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoriaResponse")]
+        System.Threading.Tasks.Task<GameServiceReference.WordDTO[]> ObtenerPalabrasPorCategoriaAsync(string categoria, int idLenguaje);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerCategorias", ReplyAction="http://tempuri.org/IGameService/ObtenerCategoriasResponse")]
+        GameServiceReference.CategoryDTO[] ObtenerCategorias(int idLenguaje);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerCategorias", ReplyAction="http://tempuri.org/IGameService/ObtenerCategoriasResponse")]
+        System.Threading.Tasks.Task<GameServiceReference.CategoryDTO[]> ObtenerCategoriasAsync(int idLenguaje);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
@@ -161,24 +278,24 @@ namespace GameServiceReference
             return base.Channel.RechazarLetraAsync(salaId, letra);
         }
         
-        public string CrearSala(string nombreJugador)
+        public string CrearSala(string nombreJugador, int idCliente)
         {
-            return base.Channel.CrearSala(nombreJugador);
+            return base.Channel.CrearSala(nombreJugador, idCliente);
         }
         
-        public System.Threading.Tasks.Task<string> CrearSalaAsync(string nombreJugador)
+        public System.Threading.Tasks.Task<string> CrearSalaAsync(string nombreJugador, int idCliente)
         {
-            return base.Channel.CrearSalaAsync(nombreJugador);
+            return base.Channel.CrearSalaAsync(nombreJugador, idCliente);
         }
         
-        public string UnirseSala(int salaId, string nombreJugador)
+        public string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser)
         {
-            return base.Channel.UnirseSala(salaId, nombreJugador);
+            return base.Channel.UnirseSala(salaId, nombreJugador, idPlayerGuesser);
         }
         
-        public System.Threading.Tasks.Task<string> UnirseSalaAsync(int salaId, string nombreJugador)
+        public System.Threading.Tasks.Task<string> UnirseSalaAsync(int salaId, string nombreJugador, int idPlayerGuesser)
         {
-            return base.Channel.UnirseSalaAsync(salaId, nombreJugador);
+            return base.Channel.UnirseSalaAsync(salaId, nombreJugador, idPlayerGuesser);
         }
         
         public void Salir(int salaId, string nombreJugador)
@@ -289,6 +406,76 @@ namespace GameServiceReference
         public System.Threading.Tasks.Task<int> ObtenerJugadoresEnSalaAsync(int salaId)
         {
             return base.Channel.ObtenerJugadoresEnSalaAsync(salaId);
+        }
+        
+        public void RegistrarPartidaFinalizada(int idPlayerChallenger, bool palabraAdivinada)
+        {
+            base.Channel.RegistrarPartidaFinalizada(idPlayerChallenger, palabraAdivinada);
+        }
+        
+        public System.Threading.Tasks.Task RegistrarPartidaFinalizadaAsync(int idPlayerChallenger, bool palabraAdivinada)
+        {
+            return base.Channel.RegistrarPartidaFinalizadaAsync(idPlayerChallenger, palabraAdivinada);
+        }
+        
+        public void RegistrarPartidaInconclusa(int idPlayerChallenger, int idDisconnected)
+        {
+            base.Channel.RegistrarPartidaInconclusa(idPlayerChallenger, idDisconnected);
+        }
+        
+        public System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int idPlayerChallenger, int idDisconnected)
+        {
+            return base.Channel.RegistrarPartidaInconclusaAsync(idPlayerChallenger, idDisconnected);
+        }
+        
+        public int ObtenerIdGuesser(int salaId)
+        {
+            return base.Channel.ObtenerIdGuesser(salaId);
+        }
+        
+        public System.Threading.Tasks.Task<int> ObtenerIdGuesserAsync(int salaId)
+        {
+            return base.Channel.ObtenerIdGuesserAsync(salaId);
+        }
+        
+        public int ObtenerIdWord(int salaId)
+        {
+            return base.Channel.ObtenerIdWord(salaId);
+        }
+        
+        public System.Threading.Tasks.Task<int> ObtenerIdWordAsync(int salaId)
+        {
+            return base.Channel.ObtenerIdWordAsync(salaId);
+        }
+        
+        public string[] ObtenerJugadoresEnPartida(int salaId)
+        {
+            return base.Channel.ObtenerJugadoresEnPartida(salaId);
+        }
+        
+        public System.Threading.Tasks.Task<string[]> ObtenerJugadoresEnPartidaAsync(int salaId)
+        {
+            return base.Channel.ObtenerJugadoresEnPartidaAsync(salaId);
+        }
+        
+        public GameServiceReference.WordDTO[] ObtenerPalabrasPorCategoria(string categoria, int idLenguaje)
+        {
+            return base.Channel.ObtenerPalabrasPorCategoria(categoria, idLenguaje);
+        }
+        
+        public System.Threading.Tasks.Task<GameServiceReference.WordDTO[]> ObtenerPalabrasPorCategoriaAsync(string categoria, int idLenguaje)
+        {
+            return base.Channel.ObtenerPalabrasPorCategoriaAsync(categoria, idLenguaje);
+        }
+        
+        public GameServiceReference.CategoryDTO[] ObtenerCategorias(int idLenguaje)
+        {
+            return base.Channel.ObtenerCategorias(idLenguaje);
+        }
+        
+        public System.Threading.Tasks.Task<GameServiceReference.CategoryDTO[]> ObtenerCategoriasAsync(int idLenguaje)
+        {
+            return base.Channel.ObtenerCategoriasAsync(idLenguaje);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

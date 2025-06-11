@@ -1,4 +1,5 @@
 ﻿using Hangman_Server.Model;
+using Hangman_Server.Model.Singleton;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,17 +19,39 @@ namespace Hangman_Server
                 var user = db.player.FirstOrDefault(u => u.username == username && u.password == password);
                 if (user != null)
                 {
+                    Guid sessionId;
+                    bool isNewSession = SessionManager.ValidateAndRegisterSession(username, out sessionId);
+
+                    if (!isNewSession)
+                    {
+                        // Devuelve una respuesta especial para indicar sesión duplicada
+                        return new PlayerDTO
+                        {
+                            Username = username,
+                            Nickname = user.nickname,
+                            IdPlayer = user.id_player,
+                            Password = user.password,
+                            Email = user.email,
+                            Birthdate = user.birthdate,
+                            PhoneNumber = user.phonenumber?.ToString(),
+                            ImgRoute = user.img_route,
+                            Score = (int)user.score,
+                            SessionDuplicate = true // NUEVO CAMPO
+                        };
+                    }
+
                     return new PlayerDTO
                     {
-                        IdPlayer = user.id_player,
                         Username = user.username,
                         Nickname = user.nickname,
+                        IdPlayer = user.id_player,
                         Password = user.password,
                         Email = user.email,
                         Birthdate = user.birthdate,
-                        PhoneNumber = user.phonenumber.HasValue ? user.phonenumber.ToString() : null,
+                        PhoneNumber = user.phonenumber?.ToString(),
                         ImgRoute = user.img_route,
-                        Score = (int)user.score
+                        Score = (int)user.score,
+                        SessionDuplicate = false // NUEVO CAMPO
                     };
                 }
                 return null;
@@ -183,6 +206,16 @@ namespace Hangman_Server
             {
                 return db.player.Any(u => u.nickname == nickname);
             }
+        }
+        public void Logout(string username)
+        {
+            SessionManager.RemoveSession(username);
+        }
+        public class SessionInfo
+        {
+            public string Username { get; set; }
+            public DateTime LoginTime { get; set; }
+            public Guid SessionId { get; set; }
         }
     }
 }

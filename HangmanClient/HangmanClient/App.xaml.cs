@@ -35,8 +35,11 @@ namespace HangmanClient
                 {
                     var binding = new BasicHttpBinding();
                     var endpoint = new EndpointAddress(ServiceUrl);
+                    binding.ReaderQuotas.MaxArrayLength = 5242880;
+                    binding.ReaderQuotas.MaxBytesPerRead = 5242880;
+                    binding.ReaderQuotas.MaxDepth = 32;
                     GameServiceClient = new GameServiceClient(binding, endpoint);
-
+                    
                     string resultado = GameServiceClient.ProbarConexion();
                     Console.WriteLine($"Conexión exitosa: {resultado}");
 
