@@ -312,4 +312,10 @@
   <data name="GuesserView" xml:space="preserve">
     <value>Guesser</value>
   </data>
+  <data name="ConfirmLetter" xml:space="preserve">
+    <value>Confirm Letter</value>
+  </data>
+  <data name="DeclineLetter" xml:space="preserve">
+    <value>Decline Letter</value>
+  </data>
 </root>

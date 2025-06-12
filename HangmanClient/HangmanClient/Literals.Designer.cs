@@ -160,6 +160,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Letter.
+        /// </summary>
+        public static string ConfirmLetter {
+            get {
+                return ResourceManager.GetString("ConfirmLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection error. Please check your internet connection and try again later..
         /// </summary>
         public static string ConnectionErrorDescription {
@@ -174,6 +183,15 @@ namespace HangmanClient {
         public static string DateBirth {
             get {
                 return ResourceManager.GetString("DateBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline Letter.
+        /// </summary>
+        public static string DeclineLetter {
+            get {
+                return ResourceManager.GetString("DeclineLetter", resourceCulture);
             }
         }
         
