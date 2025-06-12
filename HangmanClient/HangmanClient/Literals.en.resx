@@ -297,4 +297,19 @@
   <data name="AvailableRooms" xml:space="preserve">
     <value>Available waiting rooms</value>
   </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="ChallengerView" xml:space="preserve">
+    <value>Challenger</value>
+  </data>
+  <data name="ProposedLetter" xml:space="preserve">
+    <value>Proposed letter:</value>
+  </data>
+  <data name="PlayersInMatch" xml:space="preserve">
+    <value>Players in the match:</value>
+  </data>
+  <data name="GuesserView" xml:space="preserve">
+    <value>Guesser</value>
+  </data>
 </root>

@@ -297,4 +297,19 @@
   <data name="AvailableRooms" xml:space="preserve">
     <value>Salas disponbles</value>
   </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="ChallengerView" xml:space="preserve">
+    <value>Retador</value>
+  </data>
+  <data name="ProposedLetter" xml:space="preserve">
+    <value>Letra propuesta:</value>
+  </data>
+  <data name="PlayersInMatch" xml:space="preserve">
+    <value>Jugadores en la partida:</value>
+  </data>
+  <data name="GuesserView" xml:space="preserve">
+    <value>Adivinador</value>
+  </data>
 </root>

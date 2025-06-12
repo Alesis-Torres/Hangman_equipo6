@@ -115,6 +115,24 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        public static string Categories {
+            get {
+                return ResourceManager.GetString("Categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Challenger.
+        /// </summary>
+        public static string ChallengerView {
+            get {
+                return ResourceManager.GetString("ChallengerView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changes Saved Succesfully.
         /// </summary>
         public static string ChangesSavedSuccesfully {
@@ -255,6 +273,15 @@ namespace HangmanClient {
         public static string GameCode {
             get {
                 return ResourceManager.GetString("GameCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guesser.
+        /// </summary>
+        public static string GuesserView {
+            get {
+                return ResourceManager.GetString("GuesserView", resourceCulture);
             }
         }
         
@@ -421,11 +448,29 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Players in the match:.
+        /// </summary>
+        public static string PlayersInMatch {
+            get {
+                return ResourceManager.GetString("PlayersInMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Points.
         /// </summary>
         public static string Points {
             get {
                 return ResourceManager.GetString("Points", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proposed letter:.
+        /// </summary>
+        public static string ProposedLetter {
+            get {
+                return ResourceManager.GetString("ProposedLetter", resourceCulture);
             }
         }
         
