@@ -88,6 +88,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available waiting rooms.
+        /// </summary>
+        public static string AvailableRooms {
+            get {
+                return ResourceManager.GetString("AvailableRooms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -102,6 +111,24 @@ namespace HangmanClient {
         public static string CancelMatch {
             get {
                 return ResourceManager.GetString("CancelMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        public static string Categories {
+            get {
+                return ResourceManager.GetString("Categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Challenger.
+        /// </summary>
+        public static string ChallengerView {
+            get {
+                return ResourceManager.GetString("ChallengerView", resourceCulture);
             }
         }
         
@@ -133,6 +160,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Letter.
+        /// </summary>
+        public static string ConfirmLetter {
+            get {
+                return ResourceManager.GetString("ConfirmLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection error. Please check your internet connection and try again later..
         /// </summary>
         public static string ConnectionErrorDescription {
@@ -147,6 +183,15 @@ namespace HangmanClient {
         public static string DateBirth {
             get {
                 return ResourceManager.GetString("DateBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline Letter.
+        /// </summary>
+        public static string DeclineLetter {
+            get {
+                return ResourceManager.GetString("DeclineLetter", resourceCulture);
             }
         }
         
@@ -246,6 +291,15 @@ namespace HangmanClient {
         public static string GameCode {
             get {
                 return ResourceManager.GetString("GameCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guesser.
+        /// </summary>
+        public static string GuesserView {
+            get {
+                return ResourceManager.GetString("GuesserView", resourceCulture);
             }
         }
         
@@ -412,11 +466,29 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Players in the match:.
+        /// </summary>
+        public static string PlayersInMatch {
+            get {
+                return ResourceManager.GetString("PlayersInMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Points.
         /// </summary>
         public static string Points {
             get {
                 return ResourceManager.GetString("Points", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proposed letter:.
+        /// </summary>
+        public static string ProposedLetter {
+            get {
+                return ResourceManager.GetString("ProposedLetter", resourceCulture);
             }
         }
         

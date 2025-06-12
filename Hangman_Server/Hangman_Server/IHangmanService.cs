@@ -27,7 +27,8 @@ namespace Hangman_Server
 
         [OperationContract]
         bool NicknameExiste(string nickname);
-
+        [OperationContract]
+        void Logout(string username);
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HangmanClient.Model.Singleton;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,5 +25,11 @@ namespace HangmanClient.View.Pages
         {
             InitializeComponent();
         }
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            SessionManager.Instance.Logout();
+            NavigationService.Navigate(new Login());
+        }
+
     }
 }

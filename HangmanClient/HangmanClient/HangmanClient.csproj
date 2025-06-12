@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="View\Images\arrow_button.png" />
+    <None Remove="View\Images\categories_background.png" />
     <None Remove="View\Images\confirmation_background.png" />
     <None Remove="View\Images\confirmation_icon.png" />
     <None Remove="View\Images\game_title.png" />
@@ -39,6 +40,7 @@
   <ItemGroup>
     <Resource Include="Resources\Fonts\RubikBubbles-Regular.ttf">
     </Resource>
+    <Resource Include="View\Images\categories_background.png" />
     <Resource Include="View\Images\confirmation_background.png" />
     <Resource Include="View\Images\confirmation_icon.png" />
     <Resource Include="View\Images\exclamation_icon.png">

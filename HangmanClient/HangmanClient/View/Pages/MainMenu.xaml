@@ -9,6 +9,6 @@
       Title="MainMenu">
 
     <Grid>
-        
+        <Button x:Name="Logout" Click="LogoutButton_Click"></Button>
     </Grid>
 </Page>

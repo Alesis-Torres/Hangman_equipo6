@@ -294,4 +294,28 @@
   <data name="NotVaildEmail" xml:space="preserve">
     <value>The email doesn't have a valid format.</value>
   </data>
+  <data name="AvailableRooms" xml:space="preserve">
+    <value>Available waiting rooms</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="ChallengerView" xml:space="preserve">
+    <value>Challenger</value>
+  </data>
+  <data name="ProposedLetter" xml:space="preserve">
+    <value>Proposed letter:</value>
+  </data>
+  <data name="PlayersInMatch" xml:space="preserve">
+    <value>Players in the match:</value>
+  </data>
+  <data name="GuesserView" xml:space="preserve">
+    <value>Guesser</value>
+  </data>
+  <data name="ConfirmLetter" xml:space="preserve">
+    <value>Confirm Letter</value>
+  </data>
+  <data name="DeclineLetter" xml:space="preserve">
+    <value>Decline Letter</value>
+  </data>
 </root>

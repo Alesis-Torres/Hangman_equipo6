@@ -232,7 +232,7 @@
     <value>Inténtelo de nuevo o hágalo más tarde.</value>
   </data>
   <data name="ConnectionErrorDescription" xml:space="preserve">
-    <value>Error de conexion, compruebe su conexion a internet e Inténtelo de nuevo o hágalo más tarde.</value>
+    <value>Error de conexión, compruebe su conexión a internet e Inténtelo de nuevo o hágalo más tarde.</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Bienvenido(a), ¿Estás listo para empezar una partida divertida?</value>
@@ -293,5 +293,29 @@
   </data>
   <data name="NotVaildEmail" xml:space="preserve">
     <value>El email no tiene un formato válido.</value>
+  </data>
+  <data name="AvailableRooms" xml:space="preserve">
+    <value>Salas disponbles</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="ChallengerView" xml:space="preserve">
+    <value>Retador</value>
+  </data>
+  <data name="ProposedLetter" xml:space="preserve">
+    <value>Letra propuesta:</value>
+  </data>
+  <data name="PlayersInMatch" xml:space="preserve">
+    <value>Jugadores en la partida:</value>
+  </data>
+  <data name="GuesserView" xml:space="preserve">
+    <value>Adivinador</value>
+  </data>
+  <data name="ConfirmLetter" xml:space="preserve">
+    <value>Confirmar Letra</value>
+  </data>
+  <data name="DeclineLetter" xml:space="preserve">
+    <value>Rechazar Letra</value>
   </data>
 </root>

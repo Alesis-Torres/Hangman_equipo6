@@ -70,6 +70,7 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="GameService.svc" />
@@ -84,6 +85,7 @@
       <DependentUpon>Hangman_DB.edmx</DependentUpon>
       <LastGenOutput>Hangman_DB.cs</LastGenOutput>
     </Content>
+    <Content Include="Resources\Images\placeholder_img.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -98,8 +100,11 @@
     <Compile Include="Model\category.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\DTO\CategoryDTO.cs" />
+    <Compile Include="Model\DTO\GameMatchDTO .cs" />
     <Compile Include="Model\DTO\PlayerDTO.cs" />
     <Compile Include="Model\DTO\PlayerStatsDTO.cs" />
+    <Compile Include="Model\DTO\WordDTO.cs" />
     <Compile Include="Model\gamematch.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>
@@ -127,6 +132,7 @@
     <Compile Include="Model\player.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\Singleton\SessionManager.cs" />
     <Compile Include="Model\word.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>
