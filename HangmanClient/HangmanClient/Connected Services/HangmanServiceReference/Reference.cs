@@ -36,6 +36,8 @@ namespace HangmanServiceReference
         
         private int ScoreField;
         
+        private bool SessionDuplicateField;
+        
         private string UsernameField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
@@ -152,6 +154,19 @@ namespace HangmanServiceReference
             set
             {
                 this.ScoreField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool SessionDuplicate
+        {
+            get
+            {
+                return this.SessionDuplicateField;
+            }
+            set
+            {
+                this.SessionDuplicateField = value;
             }
         }
         
@@ -273,6 +288,12 @@ namespace HangmanServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/NicknameExiste", ReplyAction="http://tempuri.org/IHangmanService/NicknameExisteResponse")]
         System.Threading.Tasks.Task<bool> NicknameExisteAsync(string nickname);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
+        void Logout(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
+        System.Threading.Tasks.Task LogoutAsync(string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
@@ -403,6 +424,16 @@ namespace HangmanServiceReference
         public System.Threading.Tasks.Task<bool> NicknameExisteAsync(string nickname)
         {
             return base.Channel.NicknameExisteAsync(nickname);
+        }
+        
+        public void Logout(string username)
+        {
+            base.Channel.Logout(username);
+        }
+        
+        public System.Threading.Tasks.Task LogoutAsync(string username)
+        {
+            return base.Channel.LogoutAsync(username);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

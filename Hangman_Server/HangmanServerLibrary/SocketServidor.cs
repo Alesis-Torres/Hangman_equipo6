@@ -25,7 +25,9 @@ namespace Hangman_Server
         private int contadorSalas = 0;
         private static int ultimaSalaId = 0;
         private static Dictionary<int, bool> partidaTerminadaPorSala = new Dictionary<int, bool>();
-
+        public static Dictionary<string, ClienteInfo> ClientesConectados = new Dictionary<string, ClienteInfo>();
+        private static Dictionary<int, JugadorSala> guesserPorSala = new Dictionary<int, JugadorSala>();
+        private static Dictionary<int, JugadorSala> challengerPorSala = new Dictionary<int, JugadorSala>();
         public static SocketServidor ObtenerInstancia()
         {
             lock (_lockerInstancia)
@@ -67,7 +69,7 @@ namespace Hangman_Server
             {
                 if (!intentosFallidosPorSala.ContainsKey(salaId))
                 {
-                    return -1; 
+                    return -1;
                 }
                 int intentosFallidos = intentosFallidosPorSala[salaId];
                 return Math.Max(0, 5 - intentosFallidos);
@@ -166,8 +168,8 @@ namespace Hangman_Server
             if (!estado.Contains('_'))
             {
                 Console.WriteLine($"¡El guesser adivinó la palabra '{palabra}'!");
+
                 partidaTerminadaPorSala[salaId] = true;
-                LimpiarSala(salaId);
                 return true;
             }
 
@@ -175,7 +177,7 @@ namespace Hangman_Server
             {
                 Console.WriteLine($"¡El guesser perdió! La palabra era '{palabra}'.");
                 partidaTerminadaPorSala[salaId] = true;
-                LimpiarSala(salaId);
+                
                 return true;
             }
 
@@ -188,14 +190,22 @@ namespace Hangman_Server
                 return partidaTerminadaPorSala.ContainsKey(salaId) && partidaTerminadaPorSala[salaId];
             }
         }
-        private void LimpiarSala(int salaId)
+        public void LimpiarSalaDespuesDeRegistrar(int salaId)
         {
-            palabrasPorSala.Remove(salaId);
-            estadoPalabraPorSala.Remove(salaId);
-            letrasAdivinadasPorSala.Remove(salaId);
-            intentosFallidosPorSala.Remove(salaId);
-            letraPropuestaPorSala.Remove(salaId);
-            salas.Remove(salaId);
+            lock (locker)
+            {
+                if (salas.ContainsKey(salaId))
+                {
+                    salas.Remove(salaId);
+                    palabrasPorSala.Remove(salaId);
+                    estadoPalabraPorSala.Remove(salaId);
+                    letrasAdivinadasPorSala.Remove(salaId);
+                    intentosFallidosPorSala.Remove(salaId);
+                    challengerPorSala.Remove(salaId);
+                    guesserPorSala.Remove(salaId);
+                    Console.WriteLine($"✅ Sala {salaId} limpiada después del registro.");
+                }
+            }
         }
 
         public string RechazarLetra(int salaId, string letra)
@@ -276,7 +286,7 @@ namespace Hangman_Server
             }
         }
 
-        public int CrearSala(string nombreJugador)
+        public int CrearSala(string nombreJugador, int idCliente)
         {
             lock (locker)
             {
@@ -288,12 +298,17 @@ namespace Hangman_Server
                     Nombre = nombreJugador,
                     Rol = "challenger"
                 });
+                challengerPorSala[nuevaSalaId] = new JugadorSala
+                {
+                    IdPlayer = idCliente,
+                    Nickname = nombreJugador
+                };
 
                 Console.WriteLine($"Sala {nuevaSalaId} creada por {nombreJugador}.");
                 return nuevaSalaId;
             }
         }
-        public string UnirseSala(int salaId, string nombreJugador)
+        public string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser)
         {
             lock (locker)
             {
@@ -315,6 +330,16 @@ namespace Hangman_Server
                     Nombre = nombreJugador,
                     Rol = rol
                 });
+                if (rol == "guesser")
+                {
+
+                    guesserPorSala[salaId] = new JugadorSala
+                    {
+                        IdPlayer = idPlayerGuesser ,
+                        Nickname = nombreJugador
+                    };
+                }
+
 
                 Console.WriteLine($"Jugador {nombreJugador} unido a sala {salaId} como {rol}.");
                 return $"ROLE:{rol}";
@@ -409,7 +434,45 @@ namespace Hangman_Server
                 int bytesLeidos = socketCliente.Receive(buffer);
                 string mensaje = Encoding.UTF8.GetString(buffer, 0, bytesLeidos).Trim();
 
-                if (mensaje == "GET_SALAS")
+                // Mensaje esperado: LOGIN|username
+                if (mensaje.StartsWith("LOGIN|"))
+                {
+                    string username = mensaje.Split('|')[1].Trim();
+
+                    lock (ClientesConectados)
+                    {
+                        if (ClientesConectados.ContainsKey(username))
+                        {
+                            EnviarMensajeDeExpulsion(ClientesConectados[username].Socket);
+                            ClientesConectados.Remove(username);
+                        }
+
+                        ClientesConectados[username] = new ClienteInfo
+                        {
+                            Socket = socketCliente,
+                            Nombre = username,
+                            Nickname = username // Inicializa con username por defecto
+                        };
+                    }
+                }
+                else if (mensaje.StartsWith("NICKNAME|"))
+                {
+                    string[] partes = mensaje.Split('|');
+                    if (partes.Length > 1)
+                    {
+                        string username = partes[1].Trim();
+                        string nickname = partes[2].Trim();
+
+                        lock (ClientesConectados)
+                        {
+                            if (ClientesConectados.ContainsKey(username))
+                            {
+                                ClientesConectados[username].Nickname = nickname;
+                            }
+                        }
+                    }
+                }
+                else if (mensaje == "GET_SALAS")
                 {
                     string respuesta = ObtenerSalas();
                     socketCliente.Send(Encoding.UTF8.GetBytes(respuesta));
@@ -472,7 +535,19 @@ namespace Hangman_Server
 
             return sb.ToString();
         }
-
+        private void EnviarMensajeDeExpulsion(Socket socket)
+        {
+            try
+            {
+                string mensaje = "EXPULSION|Tu sesión ha sido cerrada por otro inicio de sesión.";
+                byte[] buffer = Encoding.UTF8.GetBytes(mensaje);
+                socket.Send(buffer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al expulsar al cliente: {ex.Message}");
+            }
+        }
         public void AtenderClienteEnSala(int salaId, Socket socketCliente, string rol)
         {
             try
@@ -563,26 +638,129 @@ namespace Hangman_Server
                     if (salas.ContainsKey(salaId))
                     {
                         salas[salaId].RemoveAll(c => c.Socket == socketCliente);
-                        if (salas[salaId].Count == 0)
-                        {
-                            salas.Remove(salaId);
-                            palabrasPorSala.Remove(salaId);
-                            estadoPalabraPorSala.Remove(salaId);
-                            letrasAdivinadasPorSala.Remove(salaId);
-                            intentosFallidosPorSala.Remove(salaId);
-                        }
+ 
+                        Console.WriteLine($"[Server] Jugador desconectado de la sala {salaId}. Jugadores restantes: {salas[salaId].Count}");
                     }
                 }
+            }
                 socketCliente?.Close();
             }
-        }
-    }
+        
+        public List<string> ObtenerJugadoresEnSalaConNombres(int salaId)
+        {
+            lock (locker)
+            {
+                if (salas.ContainsKey(salaId))
+                {
+                    return salas[salaId]
+                        .Select(c => string.IsNullOrWhiteSpace(c.Nickname) ? c.Nombre : c.Nickname)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+                }
+            }
 
-    public class ClienteInfo
-    {
-        public Socket Socket { get; set; }
-        public string Identificador { get; set; }
-        public string Nombre { get; set; }
-        public string Rol { get; set; }
+            return new List<string>();
+        }
+
+        public int ObtenerSalaIdPorChallenger(int idPlayerChallenger)
+        {
+            lock (locker)
+            {
+                Console.WriteLine($"🔍 Buscando sala para challenger con idPlayer: {idPlayerChallenger}");
+                foreach (var kvp in challengerPorSala)
+                {
+                    Console.WriteLine($"➡️ SalaId: {kvp.Key}, idPlayer en diccionario: {kvp.Value.IdPlayer}, Nickname: {kvp.Value.Nickname}");
+                    if (kvp.Value.IdPlayer == idPlayerChallenger)
+                    {
+                        Console.WriteLine($"✅ Sala encontrada: {kvp.Key}");
+                        return kvp.Key;
+                    }
+                }
+                Console.WriteLine($"⚠️ No se encontró sala para challenger con idPlayer: {idPlayerChallenger}");
+            }
+            return 0;
+        }
+
+        public string ObtenerPalabraPorSala(int salaId)
+        {
+            lock (locker)
+            {
+                if (palabrasPorSala.ContainsKey(salaId))
+                {
+                    return palabrasPorSala[salaId];
+                }
+            }
+            return string.Empty;
+        }
+
+        public string ObtenerGuesserPorSala(int salaId)
+        {
+            lock (locker)
+            {
+                if (salas.ContainsKey(salaId))
+                {
+                    var guesser = salas[salaId]
+                        .FirstOrDefault(c => c.Rol.Equals("guesser", StringComparison.OrdinalIgnoreCase));
+
+                    return guesser?.Nombre ?? string.Empty;
+                }
+            }
+            return string.Empty;
+        }
+        public int ObtenerGuesserIdPorSala(int salaId)
+        {
+            lock (locker)
+            {
+                return guesserPorSala.ContainsKey(salaId) ? guesserPorSala[salaId].IdPlayer : 0;
+            }
+        }
+
+        public string ObtenerGuesserNicknamePorSala(int salaId)
+        {
+            lock (locker)
+            {
+                return guesserPorSala.ContainsKey(salaId) ? guesserPorSala[salaId].Nickname : string.Empty;
+            }
+        }
+
+        public int ObtenerChallengerIdPorSala(int salaId)
+        {
+            lock (locker)
+            {
+                return challengerPorSala.ContainsKey(salaId) ? challengerPorSala[salaId].IdPlayer : 0;
+            }
+        }
+
+        public string ObtenerChallengerNicknamePorSala(int salaId)
+        {
+            lock (locker)
+            {
+                return challengerPorSala.ContainsKey(salaId) ? challengerPorSala[salaId].Nickname : string.Empty;
+            }
+        }
+        public bool PalabraAdivinada(int salaId)
+        {
+            lock (locker)
+            {
+                if (estadoPalabraPorSala.ContainsKey(salaId))
+                {
+                    return !estadoPalabraPorSala[salaId].Contains('_');
+                }
+                return false;
+            }
+        }
+        public class ClienteInfo
+        {
+            public Socket Socket { get; set; }
+            public string Identificador { get; set; }
+            public string Nombre { get; set; }
+            public string Rol { get; set; }
+            public string Nickname { get; set; }
+        }
+        public class JugadorSala
+        {
+            public int IdPlayer { get; set; }
+            public string Nickname { get; set; }
+        }
     }
 }

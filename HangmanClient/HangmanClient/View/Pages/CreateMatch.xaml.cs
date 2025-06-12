@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.ServiceModel;
-using System.Timers;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using GameServiceReference;
+using HangmanClient.Model.Singleton;
 using Timer = System.Timers.Timer;
 
 namespace HangmanClient.View.Pages
@@ -13,6 +15,7 @@ namespace HangmanClient.View.Pages
     {
         private readonly Timer actualizacionSalasTimer;
         private readonly GameServiceClient gameService;
+        private Socket socketCliente;
 
         public CreateMatch()
         {
@@ -27,7 +30,50 @@ namespace HangmanClient.View.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            ConectarSocket();
             ActualizarSalas();
+        }
+
+        private void ConectarSocket()
+        {
+            try
+            {
+                socketCliente = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socketCliente.Connect("127.0.0.1", 64520);
+
+                string mensajeLogin = $"LOGIN|{SessionManager.Instance.CurrentPlayer.Username}";
+                socketCliente.Send(Encoding.UTF8.GetBytes(mensajeLogin));
+                string mensajeNickname = $"NICKNAME|{SessionManager.Instance.CurrentPlayer.Username}|{SessionManager.Instance.CurrentPlayer.Nickname}";
+                socketCliente.Send(Encoding.UTF8.GetBytes(mensajeNickname));
+                Task.Run(() => EscucharServidor());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al conectar con el servidor de juego: {ex.Message}");
+            }
+        }
+
+        private void EscucharServidor()
+        {
+            try
+            {
+                byte[] buffer = new byte[1024];
+                while (socketCliente.Connected)
+                {
+                    int bytesRecibidos = socketCliente.Receive(buffer);
+                    string mensaje = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
+
+                    if (mensaje.StartsWith("EXPULSION|"))
+                    {
+                        SessionManager.Instance.HandleExpulsion();
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en EscucharServidor: {ex.Message}");
+            }
         }
 
         private void ActualizarSalas()
@@ -58,8 +104,9 @@ namespace HangmanClient.View.Pages
                     string[] partes = salaSeleccionada.Split(':');
                     string salaIdStr = partes[0].Replace("Sala", "").Trim();
 
-                    string nombreJugador = $"Jugador_{Guid.NewGuid()}";
-                    string respuesta = gameService.UnirseSala(int.Parse(salaIdStr), nombreJugador);
+                    string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
+                    int idPlayerGuesser = SessionManager.Instance.CurrentPlayer.IdPlayer;
+                    string respuesta = gameService.UnirseSala(int.Parse(salaIdStr), nombreJugador, idPlayerGuesser);
 
                     string rol = "guesser";
                     if (respuesta.StartsWith("ROLE:"))
@@ -84,8 +131,8 @@ namespace HangmanClient.View.Pages
         {
             try
             {
-                string nombreJugador = $"Jugador_{Guid.NewGuid()}";
-                string respuesta = gameService.CrearSala(nombreJugador);
+                string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
+                string respuesta = gameService.CrearSala(nombreJugador, SessionManager.Instance.CurrentPlayer.IdPlayer);
 
                 string salaId = "";
                 string rol = "challenger";

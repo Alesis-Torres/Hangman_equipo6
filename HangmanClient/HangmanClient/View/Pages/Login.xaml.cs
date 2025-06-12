@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,42 +30,61 @@ namespace HangmanClient.View.Pages
         {
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
-            // preparar notificacion
             var notification = new NotificationContent();
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                // Mostrar notificacion de campos vacios
+                notification.NotificationTitle = Literals.EmptyFields;
+                notification.NotificationMessage = Literals.EmptyFieldsDescription;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Error;
+                var incorrectCredentialsWindow = new NotificationWindow(notification);
+                incorrectCredentialsWindow.ShowDialog();
+                
+                return;
+            }
 
             try
             {
                 var hangmanService = new HangmanServiceReference.HangmanServiceClient();
-                var user = hangmanService.Login(username, password);
+                var loginResponse = hangmanService.Login(username, password);
 
-                if (user != null)
+
+                if (loginResponse == null)
                 {
-                    SessionManager.Instance.CurrentPlayer = user; 
-                    SessionManager.Instance.HangmanService = hangmanService;
-                    SessionManager.Instance.GameService = new GameServiceReference.GameServiceClient();
 
-                    // Mostrar notificacion de exito
-                    notification.NotificationTitle = Literals.SuccesfulLogin;
-                    notification.NotificationMessage = Literals.Welcome;
-                    notification.AcceptButtonText = Literals.Accept;
-                    notification.Type = NotificationType.Confirmation;
-
-                    var window = new NotificationWindow(notification);
-                    window.ShowDialog();
-
-                    NavigationService.Navigate(new CreateMatch());
-                }
-                else
-                {
                     // Mostrar notificacion de credenciales
                     notification.NotificationTitle = Literals.IncorrectCredentials;
-                    notification.NotificationMessage = Literals.IncorrectCredentials;
+                    notification.NotificationMessage = Literals.IncorrectCredentialsDescription;
                     notification.AcceptButtonText = Literals.Accept;
                     notification.Type = NotificationType.Error;
+                    var incorrectCredentialsWindow = new NotificationWindow(notification);
+                    incorrectCredentialsWindow.ShowDialog();
 
-                    var window = new NotificationWindow(notification);
-                    window.ShowDialog();
+                    return;
                 }
+
+                if (loginResponse.SessionDuplicate)
+                {
+                    // Mostar noti perso con nuevos internacion
+                    MessageBox.Show("Este usuario ya tiene una sesión activa en otro dispositivo. Cierre la otra sesión e intente nuevamente.");
+                    return;
+                }
+
+                // Almacena el usuario en SessionManager
+                SessionManager.Instance.CurrentPlayer = loginResponse;
+
+                // Mostrar notificacion de exito
+                notification.NotificationTitle = Literals.SuccesfulLogin;
+                notification.NotificationMessage = Literals.Welcome;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Confirmation;
+                var successWindow = new NotificationWindow(notification);
+                successWindow.ShowDialog();
+
+                // Navega a la pantalla de selección de sala
+                NavigationService.Navigate(new CreateMatch());
             }
             catch (Exception ex)
             {
@@ -75,11 +93,11 @@ namespace HangmanClient.View.Pages
                 notification.NotificationMessage = Literals.ConnectionErrorDescription;
                 notification.AcceptButtonText = Literals.Accept;
                 notification.Type = NotificationType.Error;
-
-                var window = new NotificationWindow(notification);
-                window.ShowDialog();
+                var erroWindow = new NotificationWindow(notification);
+                erroWindow.ShowDialog();
             }
         }
+        
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new ProfileForm());
