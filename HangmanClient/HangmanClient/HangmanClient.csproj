@@ -17,6 +17,8 @@
     <None Remove="View\Images\login_background.png" />
     <None Remove="View\Images\lose_background.png" />
     <None Remove="View\Images\match_background_spanish.png" />
+    <None Remove="View\Images\menu_icon.png" />
+    <None Remove="View\Images\rooms_table.png" />
     <None Remove="View\Images\statistics_table.png" />
     <None Remove="View\Images\town_background.png" />
     <None Remove="View\Images\win_background.png" />
@@ -49,8 +51,10 @@
     <Resource Include="View\Images\login_background.png" />
     <Resource Include="View\Images\lose_background.png" />
     <Resource Include="View\Images\match_background_spanish.png" />
+    <Resource Include="View\Images\menu_icon.png" />
     <Resource Include="View\Images\notification_background.png">
     </Resource>
+    <Resource Include="View\Images\rooms_table.png" />
     <Resource Include="View\Images\statistics_table.png" />
     <Resource Include="View\Images\town_background.png" />
     <Resource Include="View\Images\win_background.png" />
