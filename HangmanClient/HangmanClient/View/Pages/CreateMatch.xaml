@@ -18,16 +18,88 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-            <Button x:Name="SpanishButton" Height="80" Width="170" Click="ReturnButton_Click">
+            <Button Name="MenuButton" Height="57" Width="57" Click="MenuButton_Click" Margin="10,10,0,0">
                 <Button.Background>
-                    <ImageBrush ImageSource="/View/Images/arrow_button.png"/>
+                    <ImageBrush ImageSource="/View/Images/menu_icon.png"/>
                 </Button.Background>
             </Button>
+            <Popup x:Name="PopUp"
+                AllowsTransparency="True"
+                PopupAnimation="Fade"
+                PlacementTarget="{Binding MenuButton}" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center"
+                StaysOpen="False">
+                <Border Padding="15">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
+                    </Border.Background>
+                    <StackPanel Margin="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button x:Name="EditProfileButton" Padding="20,0,20,0" Height="40" Click="EditProfileButton_Click" Margin="0,0,10,10">
+                            <Button.Background>
+                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                            </Button.Background>
+                            <Label Content="{x:Static res:Literals.EditProfile}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   FontFamily="{StaticResource RubikBubbles}" 
+                                   Foreground="#FFFBD4" 
+                                   FontSize="20">
+                                <Label.Effect>
+                                    <DropShadowEffect Color="Black"
+                                                      Direction="0"
+                                                      ShadowDepth="2"
+                                                      Opacity="1"
+                                                      BlurRadius="0"/>
+                                </Label.Effect>
+                            </Label>
+                        </Button>
+                        <Button x:Name="ViewScoreButton" Padding="20,0,20,0" Height="40" Click="ViewScoreButton_Click" Margin="0,0,10,10">
+                            <Button.Background>
+                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                            </Button.Background>
+                            <Label Content="{x:Static res:Literals.ViewScore}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   FontFamily="{StaticResource RubikBubbles}" 
+                                   Foreground="#FFFBD4" 
+                                   FontSize="20">
+                                <Label.Effect>
+                                    <DropShadowEffect Color="Black"
+                                                      Direction="0"
+                                                      ShadowDepth="2"
+                                                      Opacity="1"
+                                                      BlurRadius="0"/>
+                                </Label.Effect>
+                            </Label>
+                        </Button>
+                        <Button x:Name="ExitButton" Padding="20,0,20,0" Height="40" Click="ExitButton_Click" Margin="0,0,10,0">
+                            <Button.Background>
+                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                            </Button.Background>
+                            <Label Content="{x:Static res:Literals.Exit}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   FontFamily="{StaticResource RubikBubbles}" 
+                                   Foreground="#FFFBD4" 
+                                   FontSize="20">
+                                <Label.Effect>
+                                    <DropShadowEffect Color="Black"
+                                                      Direction="0"
+                                                      ShadowDepth="2"
+                                                      Opacity="1"
+                                                      BlurRadius="0"/>
+                                </Label.Effect>
+                            </Label>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Popup>
             <TextBlock Text="{x:Static res:Literals.AvailableGames}"
                FontSize="50" 
                FontFamily="{StaticResource RubikBubbles}"
                VerticalAlignment="Center"
-               Margin="40,0,0,0"
+               Margin="70,0,0,0"
                Foreground="#FFFBD4">
                 <TextBlock.Effect>
                     <DropShadowEffect Color="Black"

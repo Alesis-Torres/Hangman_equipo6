@@ -163,9 +163,34 @@ namespace HangmanClient.View.Pages
             }
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            var isPopupOpen = PopUp.IsOpen;
+            
+            if (!isPopupOpen)
+            {
+                PopUp.IsOpen = true;
+                PopUp.StaysOpen = false;
+            }
+            else
+            {
+                PopUp.IsOpen = false;
+            }
+        }
+
+        private void EditProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Navegar a formulario de edición de perfil
+        }
+
+        private void ViewScoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Navegar a pagina de estadisticas
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Cerrar sesión y regresar a la página de inicio
         }
     }
 }
