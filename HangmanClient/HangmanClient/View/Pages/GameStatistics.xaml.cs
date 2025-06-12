@@ -1,0 +1,51 @@
+﻿using HangmanClient.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace HangmanClient.View.Pages
+{
+    /// <summary>
+    /// Interaction logic for GameStadistics.xaml
+    /// </summary>
+    public partial class GameStatistics : Page
+    {
+        public GameStatistics()
+        {
+            InitializeComponent();
+        }
+        private void SetGamesPlayed()
+        {
+            var notification = new NotificationContent();
+            try
+            {
+                // Llamar las partidas jugadas de la base de datos
+            } catch (Exception ex)
+            {
+                notification.NotificationTitle = Literals.Offline;
+                notification.NotificationMessage = Literals.ConnectionErrorDescription;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Error;
+
+                var window = new NotificationWindow(notification);
+                window.ShowDialog();
+            }
+        }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
+        }
+    }
+}
