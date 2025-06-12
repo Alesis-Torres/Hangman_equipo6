@@ -22,7 +22,7 @@ namespace HangmanClient.View.Pages
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             // Cerrar la notificacion y manejar que se hace despues de cerrar
-            string gameResult = _notificationContent.NotificationType.ToString();
+            string gameResult = _notificationContent.Type.ToString();
 
             if (gameResult.Equals("Win", StringComparison.OrdinalIgnoreCase))
             {
@@ -38,14 +38,25 @@ namespace HangmanClient.View.Pages
 
         private void SetText()
         {
-            NotificationTitle.Content = _notificationContent.NotificationTitle;
-            NotificationMessage.Text = _notificationContent.NotificationMessage;
-            AcceptButtonText.Content = _notificationContent.AcceptButtonText;
+            string notificationType = _notificationContent.Type.ToString();
+
+            if (notificationType.Equals("Win", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationTitle.Content = Literals.You_Win;
+                NotificationMessage.Text = Literals.YouGuessedTheWordCorrectly;
+                AcceptButtonText.Content = "100 " + Literals.Points;
+            }
+            else if (notificationType.Equals("Lose", StringComparison.OrdinalIgnoreCase))
+            {
+                NotificationTitle.Content = Literals.YouLose;
+                NotificationMessage.Text = Literals.YouDidntGuessTheWord;
+                AcceptButtonText.Content = "90 " + Literals.Points;
+            }
         }
 
         private void SetBackground()
         {
-            string backgroundResourceKey = _notificationContent.NotificationType switch
+            string backgroundResourceKey = _notificationContent.Type switch
             {
                 NotificationType.Win => "win_background",
                 NotificationType.Lose => "lose_background",
