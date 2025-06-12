@@ -151,10 +151,6 @@
                           BlurRadius="0"/>
                     </DatePicker.Effect>
                 </DatePicker>
-
-
-
-                <!--<DatePicker x:Name="BirthdatePicker" Margin="0,5" Height="70" Width="420"/>-->
             </StackPanel>
             <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static res:Literals.Password}"

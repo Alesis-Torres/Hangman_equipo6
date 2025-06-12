@@ -5,10 +5,122 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hangman_Client.View.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      xmlns:res="clr-namespace:HangmanClient"
+      d:DesignHeight="600" d:DesignWidth="1020"
       Title="JoinByCode">
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/View/Images/town_background.png"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="{x:Static res:Literals.WaitingRoom}"
+                   FontSize="50" 
+                   FontFamily="{StaticResource RubikBubbles}"
+                   HorizontalAlignment="Center"
+                   Foreground="#FFFBD4">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="0"
+                                  ShadowDepth="5"
+                                  Opacity="1"
+                                  BlurRadius="0"/>
+            </TextBlock.Effect>
+        </TextBlock>
         
+        
+        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="{x:Static res:Literals.GameCode}"
+                       FontSize="40" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,40,0,0"
+                       Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                  Direction="0"
+                  ShadowDepth="5"
+                  Opacity="1"
+                  BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBox x:Name="CodeTextBox"
+                     Height="90"
+                     Width="700"
+                     Padding="30,0,20,0"
+                     FontFamily="{StaticResource RubikBubbles}"
+                     FontSize="30"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     MaxLength="7"
+                     VerticalContentAlignment="Center"
+                     HorizontalContentAlignment="Center">
+                <TextBox.Template>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Image Source="/View/Images/wood_textbox.png" Stretch="Fill"/>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"
+                                          Focusable="false">
+                                <ScrollViewer.Effect>
+                                    <DropShadowEffect Color="Black"
+                                                      Direction="0"
+                                                      ShadowDepth="5"
+                                                      Opacity="1"
+                                                      BlurRadius="0"/>
+                                </ScrollViewer.Effect>
+                            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </TextBox.Template>
+                <TextBox.Foreground>
+                    <SolidColorBrush Color="#FFFBD4"/>
+                </TextBox.Foreground>
+            </TextBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="EnterRoomButton" Padding="30,0,30,0" Height="60" Click="EnterMatchButton_Click" Margin="0,0,10,10">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="EnterRoomButtonText" Content="{x:Static res:Literals.JoinRoom}" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource RubikBubbles}" 
+                           Foreground="#FFFBD4" 
+                           FontSize="30">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="0"
+                                              ShadowDepth="5"
+                                              Opacity="1"
+                                              BlurRadius="0"/>
+                        </Label.Effect>
+                    </Label>
+                </Button>
+                <Button x:Name="CancelButton" Padding="30,0,30,0" Height="60" Click="CancelButton_Click" Margin="0,0,10,10">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="CancelButtonText" Content="{x:Static res:Literals.Cancel}" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource RubikBubbles}" 
+                           Foreground="#FFFBD4" 
+                           FontSize="30">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="0"
+                                              ShadowDepth="5"
+                                              Opacity="1"
+                                              BlurRadius="0"/>
+                        </Label.Effect>
+                    </Label>
+                </Button>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Page>

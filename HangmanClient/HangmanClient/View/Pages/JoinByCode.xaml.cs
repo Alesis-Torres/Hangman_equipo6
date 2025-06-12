@@ -24,5 +24,16 @@ namespace HangmanClient.View.Pages
         {
             InitializeComponent();
         }
+
+        private void EnterMatchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var code = CodeTextBox.Text.Trim();
+            // Manejar logica para entrar a la partida con el codigo
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
+        }
     }
 }
