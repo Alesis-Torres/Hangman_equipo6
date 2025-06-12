@@ -294,4 +294,7 @@
   <data name="NotVaildEmail" xml:space="preserve">
     <value>The email doesn't have a valid format.</value>
   </data>
+  <data name="AvailableRooms" xml:space="preserve">
+    <value>Available waiting rooms</value>
+  </data>
 </root>

@@ -1,15 +1,113 @@
 ﻿<Page x:Class="HangmanClient.View.Pages.CreateMatch"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hangman_Client.View.Pages"
+      mc:Ignorable="d" 
+      xmlns:res="clr-namespace:HangmanClient"
+      d:DesignHeight="600" d:DesignWidth="1020"
       Title="CreateMatch">
 
-    <Grid Margin="20">
-        <StackPanel>
-            <TextBlock Text="Salas disponibles" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ListBox x:Name="SalasListBox" Height="200" Margin="0,0,0,10"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Unirse a la Sala" Width="150" Margin="5" Click="UnirseButton_Click"/>
-                <Button Content="Crear Sala" Width="150" Margin="5" Click="CrearSalaButton_Click"/>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/View/Images/town_background.png"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button x:Name="SpanishButton" Height="80" Width="170" Click="ReturnButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/View/Images/arrow_button.png"/>
+                </Button.Background>
+            </Button>
+            <TextBlock Text="{x:Static res:Literals.AvailableGames}"
+               FontSize="50" 
+               FontFamily="{StaticResource RubikBubbles}"
+               VerticalAlignment="Center"
+               Margin="40,0,0,0"
+               Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                  Direction="0"
+                  ShadowDepth="5"
+                  Opacity="1"
+                  BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ListBox x:Name="SalasListBox" Height="410" Width="760" Margin="0,0,0,10" Padding="20">
+                <ListBox.Background>
+                    <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
+                </ListBox.Background>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   FontSize="20"
+                                   FontFamily="{StaticResource RubikBubbles}"
+                                   Foreground="#FFFBD4"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="5">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black"
+                                                  Direction="0"
+                                                  ShadowDepth="5"
+                                                  Opacity="1"
+                                                  BlurRadius="0"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Items>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Sala 1 - Esperando jugadores</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Sala 2 - En partida</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Sala 3 - Llena</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Sala 4 - Disponible</sys:String>
+                </ListBox.Items>
+            </ListBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="EnterRoomButton" Padding="30,0,30,0" Height="50" Click="UnirseButton_Click" Margin="0,0,10,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="EnterRoomButtonText" Content="{x:Static res:Literals.JoinRoom}" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource RubikBubbles}" 
+                           Foreground="#FFFBD4" 
+                           FontSize="20">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="0"
+                                              ShadowDepth="5"
+                                              Opacity="1"
+                                              BlurRadius="0"/>
+                        </Label.Effect>
+                    </Label>
+                </Button>
+                <Button x:Name="CancelButton" Padding="30,0,30,0" Height="50" Click="CrearSalaButton_Click" Margin="0,0,10,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="CancelButtonText" Content="{x:Static res:Literals.NewGame}" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           FontFamily="{StaticResource RubikBubbles}" 
+                           Foreground="#FFFBD4" 
+                           FontSize="20">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="0"
+                                              ShadowDepth="5"
+                                              Opacity="1"
+                                              BlurRadius="0"/>
+                        </Label.Effect>
+                    </Label>
+                </Button>
             </StackPanel>
         </StackPanel>
     </Grid>

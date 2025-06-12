@@ -115,5 +115,10 @@ namespace HangmanClient.View.Pages
                 MessageBox.Show("Error al crear sala: " + ex.Message);
             }
         }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
+        }
     }
 }

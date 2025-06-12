@@ -88,6 +88,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available waiting rooms.
+        /// </summary>
+        public static string AvailableRooms {
+            get {
+                return ResourceManager.GetString("AvailableRooms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
