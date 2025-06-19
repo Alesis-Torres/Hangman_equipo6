@@ -330,4 +330,7 @@
   <data name="UserAlreadyLoggedDesc" xml:space="preserve">
     <value>Este usuario ya tiene una sesión activa en otro dispositivo</value>
   </data>
+  <data name="JoinByCode" xml:space="preserve">
+    <value>Unirse por código</value>
+  </data>
 </root>

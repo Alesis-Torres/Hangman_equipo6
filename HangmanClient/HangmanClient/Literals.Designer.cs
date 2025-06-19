@@ -376,6 +376,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Join by code.
+        /// </summary>
+        public static string JoinByCode {
+            get {
+                return ResourceManager.GetString("JoinByCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Join Room.
         /// </summary>
         public static string JoinRoom {
