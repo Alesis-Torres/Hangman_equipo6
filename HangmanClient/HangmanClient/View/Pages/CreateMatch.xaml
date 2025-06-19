@@ -181,26 +181,7 @@
                     <Button.Background>
                         <ImageBrush ImageSource="/View/Images/wood_button.png"/>
                     </Button.Background>
-                    <Label x:Name="JoinByCodeButtonText" Content="=unirse por codigo=" 
-                           VerticalAlignment="Center" 
-                           HorizontalAlignment="Center" 
-                           FontFamily="{StaticResource RubikBubbles}" 
-                           Foreground="#FFFBD4" 
-                           FontSize="20">
-                        <Label.Effect>
-                            <DropShadowEffect Color="Black"
-                                              Direction="0"
-                                              ShadowDepth="5"
-                                              Opacity="1"
-                                              BlurRadius="0"/>
-                        </Label.Effect>
-                    </Label>
-                </Button>
-                <Button Padding="30,0,30,0" Height="50" Click="VerEstadisticasButton_Click" Margin="0,0,10,0">
-                    <Button.Background>
-                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                    </Button.Background>
-                    <Label x:Name="ViewStatisticsButtonText" Content="=ver estadisticas=" 
+                    <Label x:Name="JoinByCodeButtonText" Content="{x:Static res:Literals.JoinByCode}" 
                            VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
                            FontFamily="{StaticResource RubikBubbles}" 

@@ -330,4 +330,7 @@
   <data name="UserAlreadyLoggedDesc" xml:space="preserve">
     <value>This is already active in another device</value>
   </data>
+  <data name="JoinByCode" xml:space="preserve">
+    <value>Join by code</value>
+  </data>
 </root>

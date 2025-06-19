@@ -263,12 +263,12 @@ namespace HangmanClient.View.Pages
 
         private void EditProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            // Navegar a formulario de edición de perfil
+            NavigationService.Navigate(new ProfileForm(true));
         }
 
         private void ViewScoreButton_Click(object sender, RoutedEventArgs e)
         {
-            // Navegar a pagina de estadisticas
+            NavigationService.Navigate(new GameStatistics());
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
