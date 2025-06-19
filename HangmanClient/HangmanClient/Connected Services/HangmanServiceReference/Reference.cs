@@ -289,11 +289,17 @@ namespace HangmanServiceReference
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/NicknameExiste", ReplyAction="http://tempuri.org/IHangmanService/NicknameExisteResponse")]
         System.Threading.Tasks.Task<bool> NicknameExisteAsync(string nickname);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
-        void Logout(string username);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
+        string[] ObtenerHistorialPartidas(int playerId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
-        System.Threading.Tasks.Task LogoutAsync(string username);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
+        System.Threading.Tasks.Task<string[]> ObtenerHistorialPartidasAsync(int playerId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerIdPorUsername", ReplyAction="http://tempuri.org/IHangmanService/ObtenerIdPorUsernameResponse")]
+        int ObtenerIdPorUsername(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerIdPorUsername", ReplyAction="http://tempuri.org/IHangmanService/ObtenerIdPorUsernameResponse")]
+        System.Threading.Tasks.Task<int> ObtenerIdPorUsernameAsync(string username);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
@@ -426,14 +432,24 @@ namespace HangmanServiceReference
             return base.Channel.NicknameExisteAsync(nickname);
         }
         
-        public void Logout(string username)
+        public string[] ObtenerHistorialPartidas(int playerId)
         {
-            base.Channel.Logout(username);
+            return base.Channel.ObtenerHistorialPartidas(playerId);
         }
         
-        public System.Threading.Tasks.Task LogoutAsync(string username)
+        public System.Threading.Tasks.Task<string[]> ObtenerHistorialPartidasAsync(int playerId)
         {
-            return base.Channel.LogoutAsync(username);
+            return base.Channel.ObtenerHistorialPartidasAsync(playerId);
+        }
+        
+        public int ObtenerIdPorUsername(string username)
+        {
+            return base.Channel.ObtenerIdPorUsername(username);
+        }
+        
+        public System.Threading.Tasks.Task<int> ObtenerIdPorUsernameAsync(string username)
+        {
+            return base.Channel.ObtenerIdPorUsernameAsync(username);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
