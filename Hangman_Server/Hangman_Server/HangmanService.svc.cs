@@ -143,10 +143,20 @@ namespace Hangman_Server
             {
                 var existingUser = db.player.FirstOrDefault(u => u.id_player == player.IdPlayer);
                 if (existingUser == null)
+                    return false;
+
+                bool nicknameDuplicado = db.player.Any(u => u.nickname == player.Nickname && u.id_player != player.IdPlayer);
+                bool emailDuplicado = db.player.Any(u => u.email == player.Email && u.id_player != player.IdPlayer);
+                bool telefonoDuplicado = !string.IsNullOrWhiteSpace(player.PhoneNumber)
+                    && db.player.Any(u => u.phonenumber.ToString() == player.PhoneNumber && u.id_player != player.IdPlayer);
+
+                if ((existingUser.nickname != player.Nickname && nicknameDuplicado) ||
+                    (existingUser.email != player.Email && emailDuplicado) ||
+                    (existingUser.phonenumber?.ToString() != player.PhoneNumber && telefonoDuplicado))
                 {
+                    Console.WriteLine("Error: Nickname, correo o teléfono ya en uso por otro usuario.");
                     return false;
                 }
-
                 existingUser.nickname = player.Nickname;
                 existingUser.password = player.Password;
                 existingUser.email = player.Email;

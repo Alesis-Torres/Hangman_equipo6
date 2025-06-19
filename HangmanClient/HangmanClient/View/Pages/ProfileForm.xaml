@@ -140,6 +140,7 @@
                             <Setter Property="FontFamily" Value="{StaticResource RubikBubbles}"/>
                             <Setter Property="FontSize" Value="30"/>
                             <Setter Property="Padding" Value="0"/>
+                            <Setter Property="IsReadOnly" Value="True"/>
                         </Style>
                     </DatePicker.Resources>
 
