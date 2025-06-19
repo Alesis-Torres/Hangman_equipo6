@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows;
 using HangmanServerLibrary.GameServiceReference;
 using HangmanServerLibrary.Model;
+using System.Windows.Threading;
 
 
 namespace Hangman_Server
@@ -26,6 +27,7 @@ namespace Hangman_Server
         private static readonly Random random = new Random();
         private TcpListener servidor;
         private bool enEjecucion = false;
+
 
         public static SocketServidor ObtenerInstancia()
         {
@@ -257,7 +259,7 @@ namespace Hangman_Server
         private string ConfirmarLetra(SalaJuego sala, string letra)
         {
 ;
-
+            sala.TurnoActual = "GUESSER";
             if (sala.Palabra.IndexOf(letra, StringComparison.OrdinalIgnoreCase) < 0)
             {
                 sala.IntentosFallidos++;
@@ -278,7 +280,7 @@ namespace Hangman_Server
             sala.EstadoPalabra = new string(estado);
             sala.AccionResultado = "ACEPTADA";
             sala.LetraPropuesta = letra;
-            sala.TurnoActual = "GUESSER";
+
             return "ACEPTADA";
         }
 
@@ -432,23 +434,39 @@ namespace Hangman_Server
                     switch (comando)
                     {
                         case "LOGIN":
-                            if (partes.Length >= 3 &&
-                                int.TryParse(partes[1], out int idLogin))
+                            if (partes.Length >= 3)
                             {
+                                string idStr = partes[1].Trim();
                                 string nickname = partes[2].Trim();
+
+                                if (!int.TryParse(idStr, out int idJugador))
+                                {
+                                    socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|ID_INVÁLIDO\n"));
+                                    break;
+                                }
+
                                 lock (locker)
                                 {
-                                    JugadoresConectados[idLogin] = new JugadorConectado
+                                    if (JugadoresConectados.ContainsKey(idJugador))
                                     {
-                                        IdPlayer = idLogin,
-                                        Nombre = nickname,
+                                        socketCliente.Send(Encoding.UTF8.GetBytes("DUPLICADO\n"));
+                                        break; 
+                                    }
+
+                                    JugadoresConectados[idJugador] = new JugadorConectado
+                                    {
+                                        IdPlayer = idJugador,
                                         Nickname = nickname,
                                         Socket = socketCliente,
                                         UltimoPing = DateTime.UtcNow
                                     };
+
+                                    socketCliente.Send(Encoding.UTF8.GetBytes("LOGIN_OK\n"));
                                 }
-                                idJugadorActual = idLogin;
-                                Console.WriteLine($"[LOGIN] Jugador registrado: {nickname} (ID: {idLogin})");
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|FORMATO_LOGIN\n"));
                             }
                             break;
 
@@ -468,12 +486,27 @@ namespace Hangman_Server
                             break;
 
                         case "CREAR_SALA":
-                            CrearSala(partes, socketCliente);
+                            if (partes.Length >= 4 && int.TryParse(partes[1], out int idJugadorCrear) && int.TryParse(partes[3], out int idioma))
+                            {
+                                string nickname = partes[2];
+                                CrearSala(idJugadorCrear, nickname, idioma, socketCliente);
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|Datos inválidos al crear sala\n"));
+                            }
                             break;
 
                         case "OBTENER_SALAS":
-                            string resultado = ObtenerSalas();
-                            socketCliente.Send(Encoding.UTF8.GetBytes("SALAS|" + resultado));
+                            if (partes.Length >= 2 && int.TryParse(partes[1], out int idiomaSalas))
+                            {
+                                string resultado = ObtenerSalas(idiomaSalas);
+                                socketCliente.Send(Encoding.UTF8.GetBytes("SALAS|" + resultado));
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("SALAS|Parámetro de idioma inválido.\n"));
+                            }
                             break;
 
                         case "MONITOR":
@@ -565,52 +598,97 @@ namespace Hangman_Server
             }
         }
 
-        private string ObtenerSalas()
+        private string ObtenerSalas(int idioma)
         {
-           
             lock (locker)
             {
-                
-
                 var sb = new StringBuilder();
+
                 foreach (var sala in salasActivas.Values)
                 {
-                    sb.AppendLine($"ID:{sala.Id} - Código:{sala.CodigoUnico} - Estado:{sala.Estado}");
+                    string estadoTraducido = sala.Estado;
+
+                    if (idioma == 1)
+                    {
+                        switch (sala.Estado)
+                        {
+                            case "INICIADA":
+                                estadoTraducido = "En juego";
+                                break;
+                            case "EN_ESPERA":
+                                estadoTraducido = "Esperando jugador";
+                                break;
+                            case "TERMINADA":
+                                estadoTraducido = "Finalizada";
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (sala.Estado)
+                        {
+                            case "INICIADA":
+                                estadoTraducido = "In Game";
+                                break;
+                            case "EN_ESPERA":
+                                estadoTraducido = "Waiting for player";
+                                break;
+                            case "TERMINADA":
+                                estadoTraducido = "Finished";
+                                break;
+                        }
+                    }
+                    if(idioma == 1)
+                    {
+                        sb.AppendLine($"ID:{sala.Id} - Código:{sala.CodigoUnico} - Idioma:{idioma} - Estado:{estadoTraducido}");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"ID:{sala.Id} - Code:{sala.CodigoUnico} - Language:{idioma} - Status:{estadoTraducido}");
+                    }
+                    
                 }
 
                 return sb.ToString();
             }
         }
-
-        private void CrearSala(string[] partes, Socket socket)
+        private int GenerarIdSala()
         {
-            if (partes.Length >= 3)
+            int nuevaSalaId = 1;
+            while (salasActivas.ContainsKey(nuevaSalaId))
             {
-                string nickname = partes[2].Trim();
-                int idPlayer = int.Parse(partes[1]);
-                lock (locker)
+                nuevaSalaId++;
+            }
+            return nuevaSalaId;
+        }
+        
+        private void CrearSala(int idJugador, string nickname, int idioma, Socket socketCliente)
+        {
+            lock (locker)
+            {
+                var sala = new SalaJuego
                 {
-                    int nuevaSalaId = 1;
-                    while (salasActivas.ContainsKey(nuevaSalaId))
-                    {
-                        nuevaSalaId++;
-                    }
+                    Id = GenerarIdSala(),
+                    CodigoUnico = GenerarCodigoUnico(),
+                    Estado = "EN_ESPERA",
+                    idChallenger = idJugador,
+                    idGuesser = 0,
+                    Idioma = idioma
+                };
 
-                    var nuevaSala = new SalaJuego
-                    {
-                        Id = nuevaSalaId,
-                        CodigoUnico = GenerarCodigoUnico(),
-                        Palabra = "",
-                        EstadoPalabra = "",
-                        LetraPropuesta = "",
-                        IntentosFallidos = 0,
-                        Terminada = false,
-                        idChallenger = idPlayer
-                    };
-                    nuevaSala.Clientes.Add(JugadoresConectados[idPlayer]);
-                    salasActivas[nuevaSalaId] = nuevaSala;
-                    socket.Send(Encoding.UTF8.GetBytes($"SALA_CREADA|{nuevaSalaId}\n"));
-                }
+                sala.Clientes.Add(new JugadorConectado
+                {
+                    IdPlayer = idJugador,
+                    Nickname = nickname,
+                    Nombre = nickname,
+                    RolActual = "challenger",
+                    Socket = socketCliente,
+                    UltimoPing = DateTime.UtcNow
+                });
+
+                salasActivas[sala.Id] = sala;
+
+                socketCliente.Send(Encoding.UTF8.GetBytes($"SALA_CREADA|{sala.Id}\n"));
             }
         }
 
@@ -860,7 +938,7 @@ namespace Hangman_Server
 
             string jugadoresConcat = string.Join(",", sala.Clientes.Select(c => c.Nickname));
             string estado = sala.EstadoPalabra ?? new string('_', sala.Palabra?.Length ?? 5);
-            int intentos = 5 - sala.IntentosFallidos;
+            int intentos = 6 - sala.IntentosFallidos;
 
             string estadoLogico;
             if (intentos <= 0 && sala.Estado == "INICIADA")
@@ -965,7 +1043,7 @@ namespace Hangman_Server
         {
             if (sala.Palabra.IndexOf(letra, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-
+                sala.TurnoActual = "GUESSER";
                 char[] estado = sala.EstadoPalabra.ToCharArray();
                 for (int i = 0; i < sala.Palabra.Length; i++)
                 {
@@ -1319,7 +1397,7 @@ namespace Hangman_Server
         public HashSet<string> LetrasAdivinadas { get; set; } = new HashSet<string>();
         public int IntentosFallidos { get; set; }
         public bool Terminada { get; set; }
-
+        public int Idioma { get; set; } 
         public int idChallenger { get; set; }
         public int idGuesser { get; set; }
         public string TurnoActual { get; set; } = "GUESSER";

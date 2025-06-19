@@ -14,6 +14,13 @@
     <None Remove="View\Images\Categories\fruits_img.png" />
     <None Remove="View\Images\Categories\instruments_img.png" />
     <None Remove="View\Images\Categories\sports_img.png" />
+    <None Remove="View\Images\GameLogic\Hang.png" />
+    <None Remove="View\Images\GameLogic\head_center.png" />
+    <None Remove="View\Images\GameLogic\left_arm.png" />
+    <None Remove="View\Images\GameLogic\left_leg.png" />
+    <None Remove="View\Images\GameLogic\right_arm.png" />
+    <None Remove="View\Images\GameLogic\right_leg.png" />
+    <None Remove="View\Images\GameLogic\torso_center.png" />
     <None Remove="View\Images\match_background_spanish.png" />
     <None Remove="View\Images\placeholder_img.png" />
     <None Remove="View\Images\Words\apple_img.png" />
@@ -169,7 +176,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="View\Images\GameLogic\" />
+    <Resource Include="View\Images\GameLogic\Hang.png" />
+    <Resource Include="View\Images\GameLogic\head_center.png" />
+    <Resource Include="View\Images\GameLogic\left_arm.png" />
+    <Resource Include="View\Images\GameLogic\left_leg.png" />
+    <Resource Include="View\Images\GameLogic\right_arm.png" />
+    <Resource Include="View\Images\GameLogic\right_leg.png" />
+    <Resource Include="View\Images\GameLogic\torso_center.png" />
   </ItemGroup>
 
 </Project>

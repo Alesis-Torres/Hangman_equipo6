@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using HangmanClient.Model.Singleton;
 using Microsoft.IdentityModel.Tokens.Saml2;
 using Timer = System.Timers.Timer;
@@ -16,6 +17,7 @@ namespace HangmanClient.View.Pages
     {
         private  Timer actualizacionSalasTimer = new Timer(3000);
         private readonly bool esLogin;
+        private int idioma = SessionManager.Instance.CurrentLanguage;
 
         public CreateMatch(bool esLogin, string mensaje)
         {
@@ -52,7 +54,7 @@ namespace HangmanClient.View.Pages
         {
             try
             {
-                string solicitud = "OBTENER_SALAS";
+                string solicitud = $"OBTENER_SALAS|{idioma}";
                 SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(solicitud));
                 byte[] buffer = new byte[2048];
                 int bytes = SessionManager.Instance.SocketCliente.Receive(buffer);
@@ -88,7 +90,7 @@ namespace HangmanClient.View.Pages
 
                 string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
                 int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
-                string mensaje = $"CREAR_SALA|{idJugador}|{nombreJugador}";
+                string mensaje = $"CREAR_SALA|{idJugador}|{nombreJugador}|{idioma}";
                 SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
                 if (SessionManager.Instance.SocketCliente.Poll(5_000_000, SelectMode.SelectRead))
                 {
@@ -126,11 +128,8 @@ namespace HangmanClient.View.Pages
             {
                 actualizacionSalasTimer?.Stop();
 
-                // Obtener el botón
-                Button boton = sender as Button;
-                if (boton == null) return;
+                if (sender is not Button boton) return;
 
-                // Obtener el contenedor ListBoxItem
                 ListBoxItem item = ItemsControl.ContainerFromElement(SalasListBox, boton) as ListBoxItem;
                 if (item == null)
                 {
@@ -139,7 +138,6 @@ namespace HangmanClient.View.Pages
                     return;
                 }
 
-                // Obtener el índice del ítem
                 int index = SalasListBox.ItemContainerGenerator.IndexFromContainer(item);
                 if (index < 0 || index >= SalasListBox.Items.Count)
                 {
@@ -148,7 +146,6 @@ namespace HangmanClient.View.Pages
                     return;
                 }
 
-                // Obtener el texto de la línea
                 string lineaSala = SalasListBox.Items[index] as string;
                 if (string.IsNullOrWhiteSpace(lineaSala))
                 {
@@ -156,17 +153,15 @@ namespace HangmanClient.View.Pages
                     actualizacionSalasTimer?.Start();
                     return;
                 }
-
-                // Extraer el código alfanumérico
                 string codigo = "";
-                int idx = lineaSala.IndexOf("Código:");
-                if (idx >= 0)
+                string[] partes = lineaSala.Split('-');
+                foreach (var parte in partes)
                 {
-                    int inicio = idx + "Código:".Length;
-                    int fin = lineaSala.IndexOf(" -", inicio);
-                    if (fin == -1) fin = lineaSala.Length;
-
-                    codigo = lineaSala.Substring(inicio, fin - inicio).Trim();
+                    if (parte.Trim().StartsWith("Código:"))
+                    {
+                        codigo = parte.Trim().Substring("Código:".Length).Trim();
+                        break;
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 6)
@@ -176,14 +171,11 @@ namespace HangmanClient.View.Pages
                     return;
                 }
 
-                // Armar y enviar mensaje
                 string nickname = SessionManager.Instance.CurrentPlayer.Nickname;
                 int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
                 string mensaje = $"UNIRSE_CODIGO|{codigo}|{nickname}|{idJugador}";
-
                 SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
 
-                // Leer respuesta
                 byte[] buffer = new byte[1024];
                 int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
                 string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
@@ -223,7 +215,7 @@ namespace HangmanClient.View.Pages
                 string codigo = input.ToUpperInvariant();
                 string nickname = SessionManager.Instance.CurrentPlayer.Nickname;
                 int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
-                string mensaje = $"UNIRSE_CODIGO|{codigo}|{nickname}|{idJugador}\n";
+                string mensaje = $"UNIRSE_CODIGO|{codigo}|{nickname}|{idJugador}";
 
                 SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
 
