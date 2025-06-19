@@ -1,0 +1,10 @@
+﻿<Window x:Class="HangmanClient.View.Pages.NotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Notification" Height="590" Width="850"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+    <Border>
+        <Frame x:Name="NotificationFrame" NavigationUIVisibility="Hidden"/>
+    </Border>
+</Window>

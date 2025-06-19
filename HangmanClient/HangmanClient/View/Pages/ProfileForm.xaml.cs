@@ -1,7 +1,9 @@
 ﻿using HangmanClient.Model.Singleton;
+using HangmanClient.Util;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,27 +44,16 @@ namespace HangmanClient.View.Pages
                 if (!string.IsNullOrWhiteSpace(currentPlayer.PhoneNumber))
                     PhoneNumberTextBox.Text = currentPlayer.PhoneNumber;
 
-                if (!string.IsNullOrWhiteSpace(currentPlayer.ImgRoute))
-                {
-                    try
-                    {
-                        var bitmap = new BitmapImage(new Uri(currentPlayer.ImgRoute));
-                        ProfileImage.Source = bitmap;
-                    }
-                    catch
-                    {
-                    }
-                }
-
                 UsernameTextBox.IsEnabled = false;
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidarCampos(out string error))
+            if (!ValidarCampos(out NotificationContent content))
             {
-                MessageBox.Show(error);
+                var window = new NotificationWindow(content);
+                window.ShowDialog();
                 return;
             }
 
@@ -85,23 +76,48 @@ namespace HangmanClient.View.Pages
 
                 if (registrado)
                 {
-                    MessageBox.Show("¡Registro exitoso!");
+                    var successContent = new NotificationContent
+                    {
+                        NotificationTitle = Literals.RegistrationSuccessful,
+                        NotificationMessage = Literals.Welcome,
+                        Type = NotificationType.Confirmation,
+                        AcceptButtonText = Literals.Accept
+                    };
+                    var window = new NotificationWindow(successContent);
+                    window.ShowDialog();
+
                     NavigationService.Navigate(new Login());
                 }
                 else
                 {
-                    MessageBox.Show("No se pudo completar el registro (duplicado o error en datos).");
+                    var errorContent = new NotificationContent
+                    {
+                        NotificationTitle = Literals.ErrorRegister,
+                        NotificationMessage = Literals.CouldntCompleteRegister,
+                        Type = NotificationType.Error,
+                        AcceptButtonText = Literals.Accept
+                    };
+                    var window = new NotificationWindow(errorContent);
+                    window.ShowDialog();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al registrar: {ex.Message}");
+                var errorContent = new NotificationContent
+                {
+                    NotificationTitle = Literals.ErrorRegister,
+                    NotificationMessage = Literals.CouldntCompleteRegister,
+                    Type = NotificationType.Error,
+                    AcceptButtonText = Literals.Accept
+                };
+                var window = new NotificationWindow(errorContent);
+                window.ShowDialog();
             }
         }
 
-        private bool ValidarCampos(out string mensajeError)
+        private bool ValidarCampos(out NotificationContent mensajeError)
         {
-            mensajeError = "";
+            mensajeError = new NotificationContent();
 
             string username = UsernameTextBox.Text.Trim();
             string nickname = NicknameTextBox.Text.Trim();
@@ -114,7 +130,10 @@ namespace HangmanClient.View.Pages
                 string.IsNullOrWhiteSpace(password) ||
                 string.IsNullOrWhiteSpace(email))
             {
-                mensajeError = "Todos los campos obligatorios deben estar completos.";
+                mensajeError.NotificationTitle = Literals.EmptyFields;
+                mensajeError.NotificationMessage = Literals.EmptyFieldsDescription;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
                 return false;
             }
 
@@ -123,54 +142,43 @@ namespace HangmanClient.View.Pages
                 password.Length > 20 ||
                 email.Length > 45)
             {
-                mensajeError = "Uno o más campos exceden la longitud permitida.";
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.FieldsTooLong;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
+                return false;
+            }
+
+            var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            if (!emailRegex.IsMatch(email))
+            {
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.NotVaildEmail;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
                 return false;
             }
 
             var regex = new Regex("^[a-zA-Z0-9]+$");
             if (!regex.IsMatch(username) || !regex.IsMatch(nickname) || !regex.IsMatch(password))
             {
-                mensajeError = "Username, Nickname y Password sólo deben contener caracteres A-Z, a-z, 0-9.";
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.CharacterFields;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
                 return false;
             }
 
             if (!string.IsNullOrWhiteSpace(phoneNumber) && !Regex.IsMatch(phoneNumber, @"^\d{0,15}$"))
             {
-                mensajeError = "El número de teléfono debe contener solo números (hasta 15 dígitos).";
-                return false;
-            }
-
-            if (profileImageBytes != null && profileImageBytes.Length > 5 * 1024 * 1024)
-            {
-                mensajeError = "La imagen excede el tamaño máximo de 5 MB.";
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.PhoneNumberLength;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
                 return false;
             }
 
             return true;
-        }
-
-        private void UploadImageButton_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp",
-                Title = "Seleccionar Imagen"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                var filePath = openFileDialog.FileName;
-                var fileInfo = new FileInfo(filePath);
-
-                if (fileInfo.Length > 5 * 1024 * 1024)
-                {
-                    MessageBox.Show("La imagen excede el tamaño máximo de 5 MB.");
-                    return;
-                }
-
-                profileImageBytes = File.ReadAllBytes(filePath);
-                ProfileImage.Source = new BitmapImage(new Uri(filePath));
-            }
         }
 
         private void PasswordBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -316,6 +324,11 @@ namespace HangmanClient.View.Pages
                 NicknameStatusLabel.Visibility = Visibility.Visible;
                 NicknameStatusLabel.Content = $"Error al validar apodo: {ex.Message}";
             }
+        }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
         }
     }
 }

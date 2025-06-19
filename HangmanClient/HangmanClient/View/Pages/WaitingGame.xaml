@@ -4,11 +4,112 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hangman_Client.View.Pages"
+      xmlns:res="clr-namespace:HangmanClient"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="601" d:DesignWidth="1018"
+
       Title="WaitingGame">
 
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <StackPanel.Background>
+            <ImageBrush ImageSource="/View/Images/town_background.png"/>
+        </StackPanel.Background>
+
+        <StackPanel>
+
+        </StackPanel>
+        <Label Content="{x:Static res:Literals.WaitingRoom}" 
+               HorizontalAlignment="Center" 
+               FontFamily="{StaticResource RubikBubbles}" 
+               FontSize="50"
+               Foreground="#FFFBD4"
+               Margin="0,30,0,0">
+            <Label.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="0"
+                                  ShadowDepth="5"
+                                  Opacity="1"
+                                  BlurRadius="0"/>
+            </Label.Effect>
+        </Label>
+
+        <Label Content="{x:Static res:Literals.WaitingRoom1}" 
+               HorizontalAlignment="Center" 
+               FontFamily="{StaticResource RubikBubbles}" 
+               FontSize="40"
+               Foreground="#FFFBD4"
+               Margin="0,30,0,0">
+            <Label.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="0"
+                                  ShadowDepth="5"
+                                  Opacity="1"
+                                  BlurRadius="0"/>
+            </Label.Effect>
+        </Label>
+
+        <Label x:Name="MatchCode" Content="[XXXXXX]" 
+               HorizontalAlignment="Center" 
+               FontFamily="{StaticResource RubikBubbles}" 
+               FontSize="40"
+               Foreground="#FFFBD4"
+               Margin="0,30,0,0">
+            <Label.Effect>
+                <DropShadowEffect Color="Black"
+                                  Direction="0"
+                                  ShadowDepth="5"
+                                  Opacity="1"
+                                  BlurRadius="0"/>
+            </Label.Effect>
+        </Label>
+        <StackPanel x:Name="PlayerJoinedMessage" HorizontalAlignment="Center" Orientation="Horizontal" Visibility="Visible">
+            <Label x:Name="NewPlayerName" Content="[Jugador]" 
+                   HorizontalAlignment="Center" 
+                   FontFamily="{StaticResource RubikBubbles}" 
+                   FontSize="40"
+                   Foreground="#FFFBD4"
+                   Margin="0,30,0,0">
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                                      Direction="0"
+                                      ShadowDepth="5"
+                                      Opacity="1"
+                                      BlurRadius="0"/>
+                </Label.Effect>
+            </Label>
+            <Label Content="{x:Static res:Literals.WaitingRoom2}" 
+                   HorizontalAlignment="Center" 
+                   FontFamily="{StaticResource RubikBubbles}" 
+                   FontSize="40"
+                   Foreground="#FFFBD4"
+                   Margin="0,30,0,0">
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                                      Direction="0"
+                                      ShadowDepth="5"
+                                      Opacity="1"
+                                      BlurRadius="0"/>
+                </Label.Effect>
+            </Label>
+        </StackPanel>
+        <Button x:Name="CancelMatchButton" Width="330" Height="66" Click="CancelMatch_Click" Margin="0,30,0,0">
+            <Button.Background>
+                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+            </Button.Background>
+            <Label x:Name="AcceptButtonText" Content="{x:Static res:Literals.CancelMatch}" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center" 
+                   FontFamily="{StaticResource RubikBubbles}" 
+                   Foreground="#FFFBD4" 
+                   FontSize="30">
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                                      Direction="0"
+                                      ShadowDepth="5"
+                                      Opacity="1"
+                                      BlurRadius="0"/>
+                </Label.Effect>
+            </Label>
+        </Button>
+    </StackPanel>
 </Page>

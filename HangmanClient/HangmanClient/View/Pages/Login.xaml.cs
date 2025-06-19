@@ -1,4 +1,5 @@
 ﻿using HangmanClient.Model.Singleton;
+using HangmanClient.Util;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,10 +19,16 @@ namespace HangmanClient.View.Pages
         {
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password;
+            var notification = new NotificationContent();
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Por favor ingrese el nombre de usuario y la contraseña.");
+                notification.NotificationTitle = Literals.EmptyFields;
+                notification.NotificationMessage = Literals.EmptyFieldsDescription;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Error;
+                var incorrectCredentialsWindow = new NotificationWindow(notification);
+                incorrectCredentialsWindow.ShowDialog();
                 return;
             }
 
@@ -32,13 +39,24 @@ namespace HangmanClient.View.Pages
 
                 if (loginResponse == null)
                 {
-                    MessageBox.Show("Usuario o contraseña incorrectos.");
+                    notification.NotificationTitle = Literals.IncorrectCredentials;
+                    notification.NotificationMessage = Literals.IncorrectCredentialsDescription;
+                    notification.AcceptButtonText = Literals.Accept;
+                    notification.Type = NotificationType.Error;
+                    var incorrectCredentialsWindow = new NotificationWindow(notification);
+                    incorrectCredentialsWindow.ShowDialog();
                     return;
                 }
 
                 if (loginResponse.SessionDuplicate)
                 {
-                    MessageBox.Show("Este usuario ya tiene una sesión activa en otro dispositivo. Cierre la otra sesión e intente nuevamente.");
+                    // Mensajes internacionalizados
+                    notification.NotificationTitle = Literals.UserAlreadyLogged;
+                    notification.NotificationMessage = Literals.UserAlreadyLoggedDesc;
+                    notification.AcceptButtonText = Literals.Accept;
+                    notification.Type = NotificationType.Error;
+                    var activeUserWindow = new NotificationWindow(notification);
+                    activeUserWindow.ShowDialog();
                     return;
                 }
 
@@ -55,22 +73,49 @@ namespace HangmanClient.View.Pages
 
                 if (respuesta == "DUPLICADO")
                 {
-                    MessageBox.Show("Este usuario ya está conectado en el servidor. Intente cerrar la sesión anterior.");
+                    notification.NotificationTitle = Literals.UserAlreadyLogged;
+                    notification.NotificationMessage = Literals.UserAlreadyLoggedDesc;
+                    notification.AcceptButtonText = Literals.Accept;
+                    notification.Type = NotificationType.Error;
+                    var activeUserWindow = new NotificationWindow(notification);
+                    activeUserWindow.ShowDialog();
                     return;
                 }
-
-                MessageBox.Show("¡Bienvenido " + loginResponse.Nickname + "!");
+                notification.NotificationTitle = Literals.SuccesfulLogin;
+                notification.NotificationMessage = Literals.Welcome;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Confirmation;
+                var successWindow = new NotificationWindow(notification);
+                successWindow.ShowDialog();
                 NavigationService.Navigate(new CreateMatch(esLogin: true, ""));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al iniciar sesión: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                notification.NotificationTitle = Literals.Offline;
+                notification.NotificationMessage = Literals.ConnectionErrorDescription;
+                notification.AcceptButtonText = Literals.Accept;
+                notification.Type = NotificationType.Error;
+                var erroWindow = new NotificationWindow(notification);
+                erroWindow.ShowDialog();
             }
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new ProfileForm());
+        }
+
+        // Acciones para cambiar idioma
+        private void SpanishButton_Click(object sender, RoutedEventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-MX");
+            NavigationService.Navigate(new Login());
+        }
+
+        private void EnglishButton_Click(object sender, RoutedEventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+            NavigationService.Navigate(new Login());
         }
     }
 }

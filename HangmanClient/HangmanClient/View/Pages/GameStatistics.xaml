@@ -1,0 +1,78 @@
+﻿<Page x:Class="HangmanClient.View.Pages.GameStatistics"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hangman_Client.View.Pages"
+      mc:Ignorable="d" 
+      xmlns:res="clr-namespace:HangmanClient"
+      d:DesignHeight="600" d:DesignWidth="1080"
+      Title="GameStadistics">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="/View/Images/town_background.png"/>
+        </Grid.Background>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button x:Name="SpanishButton" Height="80" Width="170" Click="ReturnButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="/View/Images/arrow_button.png"/>
+                </Button.Background>
+            </Button>
+            <TextBlock Text="{x:Static res:Literals.ViewScore}"
+                       FontSize="50" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       VerticalAlignment="Center"
+                       Margin="40,0,0,0"
+                       Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                      Direction="0"
+                                      ShadowDepth="5"
+                                      Opacity="1"
+                                      BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+        <Grid Grid.Row="1" Height="450" Width="870" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.Background>
+                <ImageBrush ImageSource="/View/Images/statistics_table.png"/>
+            </Grid.Background>
+            
+            <TextBlock Grid.Row="0" Text="{x:Static res:Literals.Statistics}"
+                       FontSize="30" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"
+                       Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                      Direction="0"
+                                      ShadowDepth="5"
+                                      Opacity="1"
+                                      BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20,0,40,20">
+                <WrapPanel x:Name="GamesPlayed"></WrapPanel>
+            </ScrollViewer>-->
+            <ListBox x:Name="EstadisticasListBox"
+                 Grid.Row="1"
+                 Margin="35,15,35,15"
+                 FontSize="16"
+                 BorderThickness="1"
+                 BorderBrush="Gray"
+                 />
+        </Grid>
+    </Grid>
+</Page>

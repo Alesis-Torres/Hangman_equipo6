@@ -15,7 +15,7 @@ namespace HangmanClient.View.Pages
 {
     public partial class CreateMatch : Page
     {
-        private  Timer actualizacionSalasTimer = new Timer(3000);
+        private Timer actualizacionSalasTimer = new Timer(3000);
         private readonly bool esLogin;
         private int idioma = SessionManager.Instance.CurrentLanguage;
 
@@ -244,6 +244,36 @@ namespace HangmanClient.View.Pages
         private void VerEstadisticasButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new GameStadistics());
+        }
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var isPopupOpen = PopUp.IsOpen;
+
+            if (!isPopupOpen)
+            {
+                PopUp.IsOpen = true;
+                PopUp.StaysOpen = false;
+            }
+            else
+            {
+                PopUp.IsOpen = false;
+            }
+        }
+
+        private void EditProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Navegar a formulario de edición de perfil
+        }
+
+        private void ViewScoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Navegar a pagina de estadisticas
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Cerrar sesión y regresar a la página de inicio
         }
     }
 }
