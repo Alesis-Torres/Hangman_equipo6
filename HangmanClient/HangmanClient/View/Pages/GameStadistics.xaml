@@ -1,0 +1,45 @@
+﻿<Page x:Class="HangmanClient.View.Pages.GameStadistics"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Estadísticas"
+      Background="White" Height="395" Width="563">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- List -->
+            <RowDefinition Height="Auto"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Grid.Row="0"
+                   Text="Estadísticas de tus partidas"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="20"/>
+
+        <!-- ListBox de resultados -->
+        <ListBox x:Name="EstadisticasListBox"
+                 Grid.Row="1"
+                 Margin="35,15,35,15"
+                 FontSize="16"
+                 BorderThickness="1"
+                 BorderBrush="Gray"
+                 />
+
+        <!-- Botón de volver -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="10">
+            <Button Content="Volver"
+                    Width="100"
+                    Height="30"
+                    Click="VolverButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

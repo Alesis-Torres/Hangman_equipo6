@@ -5,9 +5,9 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hangman_Server", "Hangman_Server\Hangman_Server.csproj", "{78314A7B-A764-4D80-97F3-4BD260FE19E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangmanServerConsole", "HangmanServerConsole\HangmanServerConsole.csproj", "{A4FA4254-926C-4814-8EDC-8A292BED72EA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangmanServerLibrary", "HangmanServerLibrary\HangmanServerLibrary.csproj", "{22D5CEF3-1BCB-4DC5-993D-02BBB699D3F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangmanServerConsoleV2", "HangmanServerConsoleV2\HangmanServerConsoleV2.csproj", "{DB6E6101-FA2F-4913-AA5B-87DEE851F493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{78314A7B-A764-4D80-97F3-4BD260FE19E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78314A7B-A764-4D80-97F3-4BD260FE19E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78314A7B-A764-4D80-97F3-4BD260FE19E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4FA4254-926C-4814-8EDC-8A292BED72EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4FA4254-926C-4814-8EDC-8A292BED72EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4FA4254-926C-4814-8EDC-8A292BED72EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4FA4254-926C-4814-8EDC-8A292BED72EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22D5CEF3-1BCB-4DC5-993D-02BBB699D3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22D5CEF3-1BCB-4DC5-993D-02BBB699D3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22D5CEF3-1BCB-4DC5-993D-02BBB699D3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22D5CEF3-1BCB-4DC5-993D-02BBB699D3F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6E6101-FA2F-4913-AA5B-87DEE851F493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6E6101-FA2F-4913-AA5B-87DEE851F493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6E6101-FA2F-4913-AA5B-87DEE851F493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6E6101-FA2F-4913-AA5B-87DEE851F493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

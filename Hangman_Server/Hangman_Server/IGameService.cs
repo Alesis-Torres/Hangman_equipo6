@@ -1,4 +1,5 @@
 ﻿using Hangman_Server.Model.DTO;
+using HangmanClient.Model.DTO;
 using System.Collections.Generic;
 using System.ServiceModel;
 
@@ -10,14 +11,22 @@ namespace Hangman_Server
         [OperationContract]
         string RechazarLetra(int salaId, string letra);
         [OperationContract]
-        string CrearSala(string nombreJugador, int idCliente);
-
+        int CrearSala(string nombreJugador, int idCliente);
+        [OperationContract]
+        int CrearSalaV2(string nombreJugador, int idCliente);
+        [OperationContract]
+        int ObtenerSalaIdPorCodigo(string codigo);
         [OperationContract]
         string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser);
 
         [OperationContract]
         void Salir(int salaId, string nombreJugador);
 
+        [OperationContract]
+        string ObtenerPalabraPorSala(int salaId);
+
+        [OperationContract]
+        string ObtenerCodigoDeSala(int salaId); 
         [OperationContract]
         bool EsPartidaTerminada(int salaId);
         [OperationContract]
@@ -48,10 +57,9 @@ namespace Hangman_Server
         int ObtenerJugadoresEnSala(int salaId);
 
         [OperationContract]
-        void RegistrarPartidaFinalizada(int idPlayerChallenger, bool palabraAdivinada);
-
+        int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado);
         [OperationContract]
-        void RegistrarPartidaInconclusa(int idPlayerChallenger, int idDisconnected);
+        int EstablecerPalabra(int idSala, string palabra);
 
         [OperationContract]
         int ObtenerIdGuesser(int salaId);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="c012bed2-4171-4b73-a767-fb0de81ece29" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:64520/GameService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="GameService.xsd" MetadataType="Schema" ID="c13bb1f6-88b6-48a0-8215-6708eba212dc" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?xsd=xsd0" />
+    <MetadataFile FileName="GameService.disco" MetadataType="Disco" ID="18a97c13-9a84-4f93-b174-a35e1e430e64" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?disco" />
+    <MetadataFile FileName="GameService.wsdl" MetadataType="Wsdl" ID="d84c1355-0d9d-47b0-9528-9beb62a42bd3" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?wsdl" />
+    <MetadataFile FileName="GameService1.xsd" MetadataType="Schema" ID="ad299920-09b7-403c-9534-0531f82902ec" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?xsd=xsd3" />
+    <MetadataFile FileName="GameService2.xsd" MetadataType="Schema" ID="b56ab946-393c-4ca6-8523-c77496c90df1" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?xsd=xsd2" />
+    <MetadataFile FileName="GameService3.xsd" MetadataType="Schema" ID="c2cc6d07-d9fa-4c19-a8dc-27303d098da7" SourceId="1" SourceUrl="http://localhost:64520/GameService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

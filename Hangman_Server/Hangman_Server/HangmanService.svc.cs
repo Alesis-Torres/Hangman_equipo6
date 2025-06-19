@@ -1,6 +1,6 @@
 ﻿using Hangman_Server.Model;
-using Hangman_Server.Model.Singleton;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
@@ -19,15 +19,14 @@ namespace Hangman_Server
                 var user = db.player.FirstOrDefault(u => u.username == username && u.password == password);
                 if (user != null)
                 {
-                    Guid sessionId;
-                    bool isNewSession = SessionManager.ValidateAndRegisterSession(username, out sessionId);
+                    int idUser = user.id_player;
+                    bool existeJugador = SocketServidor.VerificarUsuarioConectado(idUser);
 
-                    if (!isNewSession)
+                    if (!existeJugador)
                     {
-                        // Devuelve una respuesta especial para indicar sesión duplicada
                         return new PlayerDTO
                         {
-                            Username = username,
+                            Username = user.username,
                             Nickname = user.nickname,
                             IdPlayer = user.id_player,
                             Password = user.password,
@@ -36,25 +35,56 @@ namespace Hangman_Server
                             PhoneNumber = user.phonenumber?.ToString(),
                             ImgRoute = user.img_route,
                             Score = (int)user.score,
-                            SessionDuplicate = true // NUEVO CAMPO
+                            SessionDuplicate = false
                         };
                     }
-
-                    return new PlayerDTO
+                    else
                     {
-                        Username = user.username,
-                        Nickname = user.nickname,
-                        IdPlayer = user.id_player,
-                        Password = user.password,
-                        Email = user.email,
-                        Birthdate = user.birthdate,
-                        PhoneNumber = user.phonenumber?.ToString(),
-                        ImgRoute = user.img_route,
-                        Score = (int)user.score,
-                        SessionDuplicate = false // NUEVO CAMPO
-                    };
+                        return new PlayerDTO
+                        {
+                            Username = user.username,
+                            SessionDuplicate = true
+                        };
+                    }
                 }
                 return null;
+            }
+        }
+        public int ObtenerIdPorUsername(string username)
+        {
+            using (var db = new HangmanEntities())
+            {
+                var player = db.player.FirstOrDefault(p => p.username == username);
+                return player?.id_player ?? 0;
+            }
+        }
+        public List<string> ObtenerHistorialPartidas(int playerId)
+        {
+            using (var db = new HangmanEntities())
+            {
+                var partidas = (from g in db.gamematch
+                                join s in db.gamematch_status on g.id_gamematch equals s.id_gamematch_status
+                                join w in db.word on g.id_word equals w.id_word
+                                where g.id_player_challenger == playerId || g.id_player_guesser == playerId
+                                select new
+                                {
+                                    Palabra = w.name,
+                                    Resultado = s.name,
+                                    GanadorId = s.id_player,
+                                    YoSoy = playerId
+                                }).ToList();
+
+                var listaResultados = partidas.Select(p =>
+                {
+                    if (p.Resultado == "desconectada")
+                        return $"Inconclusa - Palabra: {p.Palabra}";
+                    else if (p.GanadorId == p.YoSoy)
+                        return $"Ganada - Palabra: {p.Palabra}";
+                    else
+                        return $"Perdida - Palabra: {p.Palabra}";
+                }).ToList();
+
+                return listaResultados;
             }
         }
 
@@ -207,12 +237,10 @@ namespace Hangman_Server
                 return db.player.Any(u => u.nickname == nickname);
             }
         }
-        public void Logout(string username)
-        {
-            SessionManager.RemoveSession(username);
-        }
+
         public class SessionInfo
         {
+            public int idPlayer { get; set; }
             public string Username { get; set; }
             public DateTime LoginTime { get; set; }
             public Guid SessionId { get; set; }

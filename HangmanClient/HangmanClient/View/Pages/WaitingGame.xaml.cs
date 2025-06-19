@@ -15,30 +15,14 @@ using System.Windows.Shapes;
 
 namespace HangmanClient.View.Pages
 {
-    /// <summary>  
-    /// Interaction logic for WaitingGame.xaml  
-    /// </summary>  
+    /// <summary>
+    /// Interaction logic for WaitingGame.xaml
+    /// </summary>
     public partial class WaitingGame : Page
     {
-        private readonly string _gameId;
-        public WaitingGame(string gameId)
+        public WaitingGame()
         {
             InitializeComponent();
-            _gameId = gameId;
-            MatchCode.Content = _gameId;
-        }
-
-
-        // Llamar función cuando se une un jugador
-        private void ShowPlayerJoinedMessage(string playerName)
-        {
-            PlayerJoinedMessage.Visibility = Visibility.Visible;
-            NewPlayerName.Content = playerName;
-        }
-
-        private void CancelMatch_Click(object sender, RoutedEventArgs e)
-        {
-            // Manejar lógica de cancelar partida
         }
     }
 }

@@ -1,180 +1,44 @@
 ﻿<Page x:Class="HangmanClient.View.Pages.CreateMatch"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Hangman_Client.View.Pages"
-      mc:Ignorable="d" 
-      xmlns:res="clr-namespace:HangmanClient"
-      d:DesignHeight="600" d:DesignWidth="1020"
-      Title="CreateMatch">
+      Unloaded="CreateMatch_Unloaded"
+      Background="White">
 
     <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="/View/Images/town_background.png"/>
-        </Grid.Background>
+        <!-- Contenedor principal dividido en contenido y botones inferiores -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-            <Button Name="MenuButton" Height="57" Width="57" Click="MenuButton_Click" Margin="10,10,0,0">
-                <Button.Background>
-                    <ImageBrush ImageSource="/View/Images/menu_icon.png"/>
-                </Button.Background>
-            </Button>
-            <Popup x:Name="PopUp"
-                AllowsTransparency="True"
-                PopupAnimation="Fade"
-                PlacementTarget="{Binding MenuButton}" 
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center"
-                StaysOpen="False">
-                <Border Padding="15">
-                    <Border.Background>
-                        <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
-                    </Border.Background>
-                    <StackPanel Margin="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Button x:Name="EditProfileButton" Padding="20,0,20,0" Height="40" Click="EditProfileButton_Click" Margin="0,0,10,10">
-                            <Button.Background>
-                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                            </Button.Background>
-                            <Label Content="{x:Static res:Literals.EditProfile}" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
-                                   FontFamily="{StaticResource RubikBubbles}" 
-                                   Foreground="#FFFBD4" 
-                                   FontSize="20">
-                                <Label.Effect>
-                                    <DropShadowEffect Color="Black"
-                                                      Direction="0"
-                                                      ShadowDepth="2"
-                                                      Opacity="1"
-                                                      BlurRadius="0"/>
-                                </Label.Effect>
-                            </Label>
-                        </Button>
-                        <Button x:Name="ViewScoreButton" Padding="20,0,20,0" Height="40" Click="ViewScoreButton_Click" Margin="0,0,10,10">
-                            <Button.Background>
-                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                            </Button.Background>
-                            <Label Content="{x:Static res:Literals.ViewScore}" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
-                                   FontFamily="{StaticResource RubikBubbles}" 
-                                   Foreground="#FFFBD4" 
-                                   FontSize="20">
-                                <Label.Effect>
-                                    <DropShadowEffect Color="Black"
-                                                      Direction="0"
-                                                      ShadowDepth="2"
-                                                      Opacity="1"
-                                                      BlurRadius="0"/>
-                                </Label.Effect>
-                            </Label>
-                        </Button>
-                        <Button x:Name="ExitButton" Padding="20,0,20,0" Height="40" Click="ExitButton_Click" Margin="0,0,10,0">
-                            <Button.Background>
-                                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                            </Button.Background>
-                            <Label Content="{x:Static res:Literals.Exit}" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
-                                   FontFamily="{StaticResource RubikBubbles}" 
-                                   Foreground="#FFFBD4" 
-                                   FontSize="20">
-                                <Label.Effect>
-                                    <DropShadowEffect Color="Black"
-                                                      Direction="0"
-                                                      ShadowDepth="2"
-                                                      Opacity="1"
-                                                      BlurRadius="0"/>
-                                </Label.Effect>
-                            </Label>
-                        </Button>
-                    </StackPanel>
-                </Border>
-            </Popup>
-            <TextBlock Text="{x:Static res:Literals.AvailableGames}"
-               FontSize="50" 
-               FontFamily="{StaticResource RubikBubbles}"
-               VerticalAlignment="Center"
-               Margin="70,0,0,0"
-               Foreground="#FFFBD4">
-                <TextBlock.Effect>
-                    <DropShadowEffect Color="Black"
-                  Direction="0"
-                  ShadowDepth="5"
-                  Opacity="1"
-                  BlurRadius="0"/>
-                </TextBlock.Effect>
-            </TextBlock>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <ListBox x:Name="SalasListBox" Height="410" Width="760" Margin="0,0,0,10" Padding="20">
-                <ListBox.Background>
-                    <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
-                </ListBox.Background>
+
+        <!-- Sección scrollable con salas -->
+        
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="SalasListBox" Margin="20" Height="228" Width="444">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}"
-                                   FontSize="20"
-                                   FontFamily="{StaticResource RubikBubbles}"
-                                   Foreground="#FFFBD4"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Margin="5">
-                            <TextBlock.Effect>
-                                <DropShadowEffect Color="Black"
-                                                  Direction="0"
-                                                  ShadowDepth="5"
-                                                  Opacity="1"
-                                                  BlurRadius="0"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5">
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center" Width="200"/>
+                            <Button Content="Unirse" Margin="10,0,0,0" Padding="5"
+                                    Tag="{Binding}" Click="UnirseDirectoButton_Click"/>
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="EnterRoomButton" Padding="30,0,30,0" Height="50" Click="UnirseButton_Click" Margin="0,0,10,0">
-                    <Button.Background>
-                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                    </Button.Background>
-                    <Label x:Name="EnterRoomButtonText" Content="{x:Static res:Literals.JoinRoom}" 
-                           VerticalAlignment="Center" 
-                           HorizontalAlignment="Center" 
-                           FontFamily="{StaticResource RubikBubbles}" 
-                           Foreground="#FFFBD4" 
-                           FontSize="20">
-                        <Label.Effect>
-                            <DropShadowEffect Color="Black"
-                                              Direction="0"
-                                              ShadowDepth="5"
-                                              Opacity="1"
-                                              BlurRadius="0"/>
-                        </Label.Effect>
-                    </Label>
-                </Button>
-                <Button x:Name="CancelButton" Padding="30,0,30,0" Height="50" Click="CrearSalaButton_Click" Margin="0,0,10,0">
-                    <Button.Background>
-                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
-                    </Button.Background>
-                    <Label x:Name="CancelButtonText" Content="{x:Static res:Literals.NewGame}" 
-                           VerticalAlignment="Center" 
-                           HorizontalAlignment="Center" 
-                           FontFamily="{StaticResource RubikBubbles}" 
-                           Foreground="#FFFBD4" 
-                           FontSize="20">
-                        <Label.Effect>
-                            <DropShadowEffect Color="Black"
-                                              Direction="0"
-                                              ShadowDepth="5"
-                                              Opacity="1"
-                                              BlurRadius="0"/>
-                        </Label.Effect>
-                    </Label>
-                </Button>
-            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Botones anclados abajo -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Crear partida"
+                    Width="120" Margin="10"
+                    Click="CrearSalaButton_Click"/>
+            
+            <Button Content="Unirse por código"
+                    Width="150" Margin="10"
+                    Click="UnirsePorCodigoButton_Click"/>
+            <Button Content="Ver estadísticas"
+                Width="140" Margin="10"
+                Click="VerEstadisticasButton_Click"/>   
         </StackPanel>
     </Grid>
 </Page>

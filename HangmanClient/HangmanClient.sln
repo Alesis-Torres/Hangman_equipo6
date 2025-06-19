@@ -20,8 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_CultureCountyOverrides = es=es-MX
-		RESX_PrefixTranslations = False
 		SolutionGuid = {B8A5A53B-7656-4A04-865D-004385958147}
 	EndGlobalSection
 EndGlobal
