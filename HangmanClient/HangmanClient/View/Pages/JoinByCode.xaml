@@ -30,8 +30,8 @@
                                   BlurRadius="0"/>
             </TextBlock.Effect>
         </TextBlock>
-        
-        
+
+
         <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="{x:Static res:Literals.GameCode}"
                        FontSize="40" 

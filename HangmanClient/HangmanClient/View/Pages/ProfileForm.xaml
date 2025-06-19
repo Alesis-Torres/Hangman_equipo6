@@ -14,11 +14,11 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <Grid.Background>
             <ImageBrush ImageSource="/View/Images/login_background.png"/>
         </Grid.Background>
-        
+
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
             <Button x:Name="SpanishButton" Height="80" Width="170" Click="ReturnButton_Click">
                 <Button.Background>
@@ -39,7 +39,7 @@
                 </TextBlock.Effect>
             </TextBlock>
         </StackPanel>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -176,7 +176,7 @@
                               VerticalContentAlignment="Center"
                               Background="Transparent"
                               BorderThickness="0"
-                              Foreground="#FFFBD4"> 
+                              Foreground="#FFFBD4">
                     <PasswordBox.Template>
                         <ControlTemplate TargetType="PasswordBox">
                             <Grid>

@@ -3,6 +3,7 @@ using HangmanClient.Util;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,16 +86,32 @@ namespace HangmanClient.View.Pages
                     var window = new NotificationWindow(successContent);
                     window.ShowDialog();
 
-                    NavigationService.GoBack();
+                    NavigationService.Navigate(new Login());
                 }
                 else
                 {
-                    MessageBox.Show("No se pudo completar el registro (duplicado o error en datos).");
+                    var errorContent = new NotificationContent
+                    {
+                        NotificationTitle = Literals.ErrorRegister,
+                        NotificationMessage = Literals.CouldntCompleteRegister,
+                        Type = NotificationType.Error,
+                        AcceptButtonText = Literals.Accept
+                    };
+                    var window = new NotificationWindow(errorContent);
+                    window.ShowDialog();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al registrar: {ex.Message}");
+                var errorContent = new NotificationContent
+                {
+                    NotificationTitle = Literals.ErrorRegister,
+                    NotificationMessage = Literals.CouldntCompleteRegister,
+                    Type = NotificationType.Error,
+                    AcceptButtonText = Literals.Accept
+                };
+                var window = new NotificationWindow(errorContent);
+                window.ShowDialog();
             }
         }
 
@@ -132,16 +149,6 @@ namespace HangmanClient.View.Pages
                 return false;
             }
 
-            var regex = new Regex("^[a-zA-Z0-9]+$");
-            if (!regex.IsMatch(username) || !regex.IsMatch(nickname) || !regex.IsMatch(password))
-            {
-                mensajeError.NotificationTitle = Literals.InvalidFields;
-                mensajeError.NotificationMessage = Literals.CharacterFields;
-                mensajeError.Type = NotificationType.Error;
-                mensajeError.AcceptButtonText = Literals.Accept;
-                return false;
-            }
-
             var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             if (!emailRegex.IsMatch(email))
             {
@@ -152,7 +159,17 @@ namespace HangmanClient.View.Pages
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(phoneNumber) && !Regex.IsMatch(phoneNumber, @"^\d{0,10}$"))
+            var regex = new Regex("^[a-zA-Z0-9]+$");
+            if (!regex.IsMatch(username) || !regex.IsMatch(nickname) || !regex.IsMatch(password))
+            {
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.CharacterFields;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(phoneNumber) && !Regex.IsMatch(phoneNumber, @"^\d{0,15}$"))
             {
                 mensajeError.NotificationTitle = Literals.InvalidFields;
                 mensajeError.NotificationMessage = Literals.PhoneNumberLength;
@@ -172,11 +189,46 @@ namespace HangmanClient.View.Pages
             }
         }
 
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            bool result=false;
+            if (SessionManager.Instance.CurrentLanguage == 1)
+            {
+                                var msgBox = new CustomMessageBox(
+                    "Cancelar registro",
+                    "Los datos ingresados se perderán permanentemente, ¿desea continuar?",
+                    "Aceptar",
+                    "Cancelar"
+                );
+                msgBox.ShowDialog();
+                result = msgBox.Resultado;
+            }
+            if(SessionManager.Instance.CurrentLanguage == 2)
+            {
+                var msgBox = new CustomMessageBox(
+                    "Cancel Registration",
+                    "Entered data will be permanently lost. Do you wish to continue?",
+                    "Yes",
+                    "Cancel"
+                );
+                msgBox.ShowDialog();
+                result = msgBox.Resultado;
+            }
+            if (result)
+            {
+                if (isEditMode)
+                {
+                    NavigationService.Navigate(new CreateMatch(false,""));
+                }
+                else
+                {
+                    NavigationService.Navigate(new Login());
+                }
+                
+            }
+            
         }
-
         private void EmailTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var email = EmailTextBox.Text.Trim();

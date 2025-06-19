@@ -8,59 +8,281 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="View\Images\arrow_button.png" />
-    <None Remove="View\Images\categories_background.png" />
-    <None Remove="View\Images\confirmation_background.png" />
-    <None Remove="View\Images\confirmation_icon.png" />
-    <None Remove="View\Images\game_title.png" />
-    <None Remove="View\Images\login_background.png" />
-    <None Remove="View\Images\lose_background.png" />
-    <None Remove="View\Images\match_background_spanish.png" />
-    <None Remove="View\Images\menu_icon.png" />
-    <None Remove="View\Images\rooms_table.png" />
-    <None Remove="View\Images\statistics_table.png" />
-    <None Remove="View\Images\town_background.png" />
-    <None Remove="View\Images\win_background.png" />
-    <None Remove="View\Images\wood_button.png" />
-    <None Remove="View\Images\wood_textbox.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="View\Images\arrow_button.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.*" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="6.0.*" />
-    <PackageReference Include="System.ServiceModel.Http" Version="6.0.*" />
-    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="6.0.*" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="6.0.*" />
-    <PackageReference Include="System.ServiceModel.Security" Version="6.0.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\Fonts\RubikBubbles-Regular.ttf">
-    </Resource>
-    <Resource Include="View\Images\categories_background.png" />
-    <Resource Include="View\Images\confirmation_background.png" />
-    <Resource Include="View\Images\confirmation_icon.png" />
-    <Resource Include="View\Images\exclamation_icon.png">
-    </Resource>
-    <Resource Include="View\Images\game_title.png" />
-    <Resource Include="View\Images\login_background.png" />
-    <Resource Include="View\Images\lose_background.png" />
-    <Resource Include="View\Images\match_background_spanish.png" />
-    <Resource Include="View\Images\menu_icon.png" />
-    <Resource Include="View\Images\notification_background.png">
-    </Resource>
-    <Resource Include="View\Images\rooms_table.png" />
-    <Resource Include="View\Images\statistics_table.png" />
-    <Resource Include="View\Images\town_background.png" />
-    <Resource Include="View\Images\win_background.png" />
-    <Resource Include="View\Images\wood_button.png" />
-    <Resource Include="View\Images\wood_textbox.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="View\Images\arrow_button.png" />
+		<None Remove="View\Images\categories_background.png" />
+		<None Remove="View\Images\confirmation_background.png" />
+		<None Remove="View\Images\confirmation_icon.png" />
+		<None Remove="View\Images\game_title.png" />
+		<None Remove="View\Images\login_background.png" />
+		<None Remove="View\Images\lose_background.png" />
+		<None Remove="View\Images\match_background_spanish.png" />
+		<None Remove="View\Images\menu_icon.png" />
+		<None Remove="View\Images\rooms_table.png" />
+		<None Remove="View\Images\statistics_table.png" />
+		<None Remove="View\Images\town_background.png" />
+		<None Remove="View\Images\win_background.png" />
+		<None Remove="View\Images\wood_button.png" />
+		<None Remove="View\Images\wood_textbox.png" />
+		
+		<None Remove="View\Images\Categories\animals_img.png" />
+		<None Remove="View\Images\Categories\colors_img.png" />
+		<None Remove="View\Images\Categories\fruits_img.png" />
+		<None Remove="View\Images\Categories\instruments_img.png" />
+		<None Remove="View\Images\Categories\sports_img.png" />
+		<None Remove="View\Images\match_background_spanish.png" />
+		<None Remove="View\Images\placeholder_img.png" />
+		<None Remove="View\Images\Words\apple_img.png" />
+		<None Remove="View\Images\Words\banana_img.png" />
+		<None Remove="View\Images\Words\baseball_img.png" />
+		<None Remove="View\Images\Words\basketball_img.png" />
+		<None Remove="View\Images\Words\black_img.png" />
+		<None Remove="View\Images\Words\blue_img.png" />
+		<None Remove="View\Images\Words\brazil_img.png" />
+		<None Remove="View\Images\Words\carrot_img.png" />
+		<None Remove="View\Images\Words\cat_img.png" />
+		<None Remove="View\Images\Words\dog_img.png" />
+		<None Remove="View\Images\Words\dolphin_img.png" />
+		<None Remove="View\Images\Words\drums_img.png" />
+		<None Remove="View\Images\Words\elephant_img.png" />
+		<None Remove="View\Images\Words\flute_img.png" />
+		<None Remove="View\Images\Words\green_img.png" />
+		<None Remove="View\Images\Words\guitar_img.png" />
+		<None Remove="View\Images\Words\italy_img.png" />
+		<None Remove="View\Images\Words\japan_img.png" />
+		<None Remove="View\Images\Words\lion_img.png" />
+		<None Remove="View\Images\Words\piano_img.png" />
+		<None Remove="View\Images\Words\red_img.png" />
+		<None Remove="View\Images\Words\route_img.png" />
+		<None Remove="View\Images\Words\soccer_img.png" />
+		<None Remove="View\Images\Words\spain_img.png" />
+		<None Remove="View\Images\Words\spinach_img.png" />
+		<None Remove="View\Images\Words\swimming_img.png" />
+		<None Remove="View\Images\Words\tennis_img.png" />
+		<None Remove="View\Images\Words\violin_img.png" />
+		<None Remove="View\Images\Words\watermelon_img.png" />
+		<None Remove="View\Images\Words\yellow_img.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Resource Include="View\Images\arrow_button.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="System.ServiceModel.Duplex" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.Federation" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.Http" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.NetNamedPipe" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.NetTcp" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.Security" Version="6.0.*" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="View\Images\Categories\animals_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Categories\colors_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Categories\fruits_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Categories\instruments_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Categories\sports_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\match_background_spanish.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\apple_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\banana_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\baseball_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\basketball_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\black_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\blue_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\brazil_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\carrot_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\cat_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\dog_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\dolphin_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\drums_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\elephant_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\flute_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\green_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\guitar_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\italy_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\japan_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\lion_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\piano_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\red_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\route_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\soccer_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\spain_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\spinach_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\swimming_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\tennis_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\violin_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\watermelon_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+		<Content Include="View\Images\Words\yellow_img.png">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Fonts\RubikBubbles-Regular.ttf">
+		</Resource>
+		<Resource Include="View\Images\categories_background.png" />
+		<Resource Include="View\Images\confirmation_background.png" />
+		<Resource Include="View\Images\confirmation_icon.png" />
+		<Resource Include="View\Images\exclamation_icon.png">
+		</Resource>
+		<Resource Include="View\Images\game_title.png" />
+		<Resource Include="View\Images\login_background.png" />
+		<Resource Include="View\Images\lose_background.png" />
+		<Resource Include="View\Images\match_background_spanish.png" />
+		<Resource Include="View\Images\menu_icon.png" />
+		<Resource Include="View\Images\notification_background.png">
+		</Resource>
+		<Resource Include="View\Images\rooms_table.png" />
+		<Resource Include="View\Images\statistics_table.png" />
+		<Resource Include="View\Images\town_background.png" />
+		<Resource Include="View\Images\win_background.png" />
+		<Resource Include="View\Images\wood_button.png" />
+		<Resource Include="View\Images\wood_textbox.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="View\Images\GameLogic\" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Update="Literals.Designer.cs">

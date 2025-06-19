@@ -63,9 +63,16 @@
                                       BlurRadius="0"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20,0,40,20">
+            <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20,0,40,20">
                 <WrapPanel x:Name="GamesPlayed"></WrapPanel>
-            </ScrollViewer>
+            </ScrollViewer>-->
+            <ListBox x:Name="EstadisticasListBox"
+                 Grid.Row="1"
+                 Margin="35,15,35,15"
+                 FontSize="16"
+                 BorderThickness="1"
+                 BorderBrush="Gray"
+                 />
         </Grid>
     </Grid>
 </Page>

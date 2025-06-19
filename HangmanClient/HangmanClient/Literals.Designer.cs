@@ -178,6 +178,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t complete register (duplicate or error in data).
+        /// </summary>
+        public static string CouldntCompleteRegister {
+            get {
+                return ResourceManager.GetString("CouldntCompleteRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Birth.
         /// </summary>
         public static string DateBirth {
@@ -255,6 +264,15 @@ namespace HangmanClient {
         public static string Enter {
             get {
                 return ResourceManager.GetString("Enter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t complete register.
+        /// </summary>
+        public static string ErrorRegister {
+            get {
+                return ResourceManager.GetString("ErrorRegister", resourceCulture);
             }
         }
         

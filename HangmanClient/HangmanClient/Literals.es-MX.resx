@@ -318,4 +318,10 @@
   <data name="DeclineLetter" xml:space="preserve">
     <value>Rechazar Letra</value>
   </data>
+  <data name="CouldntCompleteRegister" xml:space="preserve">
+    <value>No se pudo completar el registro (duplicado o erro en datos)</value>
+  </data>
+  <data name="ErrorRegister" xml:space="preserve">
+    <value>No se pudo completar el registro</value>
+  </data>
 </root>
