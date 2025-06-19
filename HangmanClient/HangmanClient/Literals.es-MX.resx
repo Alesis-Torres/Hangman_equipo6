@@ -324,4 +324,10 @@
   <data name="ErrorRegister" xml:space="preserve">
     <value>No se pudo completar el registro</value>
   </data>
+  <data name="UserAlreadyLogged" xml:space="preserve">
+    <value>Usuario activo en otro dispositivo</value>
+  </data>
+  <data name="UserAlreadyLoggedDesc" xml:space="preserve">
+    <value>Este usuario ya tiene una sesión activa en otro dispositivo</value>
+  </data>
 </root>

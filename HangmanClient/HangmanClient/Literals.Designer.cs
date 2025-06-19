@@ -574,6 +574,24 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User is active in another device.
+        /// </summary>
+        public static string UserAlreadyLogged {
+            get {
+                return ResourceManager.GetString("UserAlreadyLogged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is already active in another device.
+        /// </summary>
+        public static string UserAlreadyLoggedDesc {
+            get {
+                return ResourceManager.GetString("UserAlreadyLoggedDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ViewScore.
         /// </summary>
         public static string ViewScore {

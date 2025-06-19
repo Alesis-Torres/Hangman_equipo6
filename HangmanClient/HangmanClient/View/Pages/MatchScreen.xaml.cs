@@ -25,6 +25,7 @@ namespace HangmanClient.View.Pages
         private DispatcherTimer estadoTimer;
         private bool turnoGuesser = false;
         private HashSet<string> letrasUsadas = new HashSet<string>();
+        private DispatcherTimer inactividadTimer;
 
         private Timer escuchaTimer;
 
@@ -36,13 +37,40 @@ namespace HangmanClient.View.Pages
             this.nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
             ConfigurarInterfaz();
 
-            escuchaTimer = new Timer(2000);
+            escuchaTimer = new Timer(500);
             escuchaTimer.Elapsed += (s, e) => Dispatcher.Invoke(EscucharSocket);
             escuchaTimer.Start();
             IniciarEscuchaPartida();
+            checarBloqueo();
             this.Unloaded += MatchScreen_Unloaded;
         }
 
+        private void checarBloqueo()
+        {
+            inactividadTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            inactividadTimer.Tick += (s, e) =>
+            {
+                inactividadTimer.Stop(); 
+                try
+                {
+                    string mensaje = $"SOLICITAR_ESTADO|{salaId}\n";
+                    SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
+                    Debug.WriteLine("[Inactividad] Estado solicitado automáticamente.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("[Inactividad] Error al solicitar estado: " + ex.Message);
+                }
+            };
+        }
+        private void ReiniciarInactividad()
+        {
+            inactividadTimer?.Stop();
+            inactividadTimer?.Start();
+        }
         private void IniciarEscuchaPartida()
         {
             estadoTimer = new DispatcherTimer
@@ -218,14 +246,17 @@ namespace HangmanClient.View.Pages
                                 switch (estadoPartida?.ToUpperInvariant())
                                 {
                                     case "GANASTE":
+                                        inactividadTimer.Stop();
                                         DetenerEscucha();
                                         FinalizarPartida("GANASTE");
                                         break;
                                     case "PERDISTE":
+                                        inactividadTimer.Stop();
                                         DetenerEscucha();
                                         FinalizarPartida("PERDISTE");
                                         break;
                                     case "DESCONEXION":
+                                        inactividadTimer.Stop();
                                         DetenerEscucha();
                                         FinalizarPartida("DESCONEXION");
                                         break;
@@ -356,6 +387,7 @@ namespace HangmanClient.View.Pages
 
         private void LetraButton_Click(object sender, RoutedEventArgs e)
         {
+            ReiniciarInactividad();
             if (sender is Button btn)
             {
                 string letra = btn.Content.ToString();
@@ -394,6 +426,7 @@ namespace HangmanClient.View.Pages
 
         private void ConfirmarLetra_Click(object sender, RoutedEventArgs e)
         {
+            ReiniciarInactividad();
             try
             {
                 string letra = LetraPropuestaTextBlock.Text.Trim();
@@ -418,7 +451,7 @@ namespace HangmanClient.View.Pages
 
         private void ActualizarIntentos(int intentosRestantes)
         {
-            int intentosFallidos = 5 - intentosRestantes;
+            int intentosFallidos = 6 - intentosRestantes;
 
             // Ocultar todas las partes
             Ch_Head.Visibility = Head.Visibility = Visibility.Hidden;
@@ -462,6 +495,7 @@ namespace HangmanClient.View.Pages
 
         private void RechazarLetra_Click(object sender, RoutedEventArgs e)
         {
+            ReiniciarInactividad();
             string letra = LetraPropuestaTextBlock.Text.Trim();
             if (string.IsNullOrEmpty(letra))
             {

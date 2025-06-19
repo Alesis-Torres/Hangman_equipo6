@@ -324,4 +324,10 @@
   <data name="ErrorRegister" xml:space="preserve">
     <value>Couldn't complete register</value>
   </data>
+  <data name="UserAlreadyLogged" xml:space="preserve">
+    <value>User is active in another device</value>
+  </data>
+  <data name="UserAlreadyLoggedDesc" xml:space="preserve">
+    <value>This is already active in another device</value>
+  </data>
 </root>

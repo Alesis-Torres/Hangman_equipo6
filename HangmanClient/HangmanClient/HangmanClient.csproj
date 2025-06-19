@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<None Remove="View\Images\arrow_button.png" />
@@ -24,7 +24,7 @@
 		<None Remove="View\Images\win_background.png" />
 		<None Remove="View\Images\wood_button.png" />
 		<None Remove="View\Images\wood_textbox.png" />
-		
+
 		<None Remove="View\Images\Categories\animals_img.png" />
 		<None Remove="View\Images\Categories\colors_img.png" />
 		<None Remove="View\Images\Categories\fruits_img.png" />
@@ -63,11 +63,11 @@
 		<None Remove="View\Images\Words\watermelon_img.png" />
 		<None Remove="View\Images\Words\yellow_img.png" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Resource Include="View\Images\arrow_button.png" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="System.ServiceModel.Duplex" Version="6.0.*" />
 		<PackageReference Include="System.ServiceModel.Federation" Version="6.0.*" />
@@ -281,9 +281,15 @@
 		<Resource Include="View\Images\wood_textbox.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="View\Images\GameLogic\" />
+		<Resource Include="View\Images\GameLogic\Hang.png" />
+		<Resource Include="View\Images\GameLogic\head_center.png" />
+		<Resource Include="View\Images\GameLogic\left_arm.png" />
+		<Resource Include="View\Images\GameLogic\left_leg.png" />
+		<Resource Include="View\Images\GameLogic\right_arm.png" />
+		<Resource Include="View\Images\GameLogic\right_leg.png" />
+		<Resource Include="View\Images\GameLogic\torso_center.png" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Compile Update="Literals.Designer.cs">
 			<DesignTime>True</DesignTime>
