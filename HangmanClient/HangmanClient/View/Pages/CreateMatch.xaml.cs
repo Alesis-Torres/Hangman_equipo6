@@ -273,7 +273,38 @@ namespace HangmanClient.View.Pages
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            // Cerrar sesión y regresar a la página de inicio
+            try
+            {
+                var jugador = SessionManager.Instance.CurrentPlayer;
+
+                if (jugador != null && SessionManager.Instance.SocketCliente?.Connected == true)
+                {
+                    string mensajeLogout = $"LOGOUT|{jugador.IdPlayer}";
+                    byte[] buffer = Encoding.UTF8.GetBytes(mensajeLogout + "\n");
+                    SessionManager.Instance.SocketCliente.Send(buffer);
+                    if (SessionManager.Instance.SocketCliente.Poll(3_000_000, SelectMode.SelectRead))
+                    {
+                        byte[] respuestaBuffer = new byte[1024];
+                        int recibidos = SessionManager.Instance.SocketCliente.Receive(respuestaBuffer);
+                        string respuesta = Encoding.UTF8.GetString(respuestaBuffer, 0, recibidos).Trim();
+
+                        if (!respuesta.StartsWith("LOGOUT_OK"))
+                        {
+                            MessageBox.Show("El servidor no confirmó el cierre de sesión: " + respuesta);
+                        }
+                    }
+
+                    SessionManager.Instance.SocketCliente.Shutdown(SocketShutdown.Both);
+                    SessionManager.Instance.SocketCliente.Close();
+                }
+
+                SessionManager.Instance.CurrentPlayer = null;
+                NavigationService.Navigate(new Login());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cerrar sesión: " + ex.Message);
+            }
         }
     }
 }

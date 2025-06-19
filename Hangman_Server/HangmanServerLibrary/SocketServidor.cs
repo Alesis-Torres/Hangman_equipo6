@@ -470,6 +470,36 @@ namespace Hangman_Server
                             }
                             break;
 
+                        case "LOGOUT":
+                            if (partes.Length >= 2)
+                            {
+                                string idStr = partes[1].Trim();
+
+                                if (!int.TryParse(idStr, out int idJugador))
+                                {
+                                    socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|ID_INVÁLIDO\n"));
+                                    break;
+                                }
+
+                                lock (locker)
+                                {
+                                    if (JugadoresConectados.ContainsKey(idJugador))
+                                    {
+                                        JugadoresConectados.Remove(idJugador);
+                                        socketCliente.Send(Encoding.UTF8.GetBytes("LOGOUT_OK\n"));
+                                    }
+                                    else
+                                    {
+                                        socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|NO_CONECTADO\n"));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|FORMATO_LOGOUT\n"));
+                            }
+                            break;
+
                         case "PING":
                             if (partes.Length >= 3 &&
                                 int.TryParse(partes[2], out int idPing))
