@@ -402,7 +402,14 @@ namespace HangmanClient.View.Pages
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new CreateMatch(false, ""));
+            if (isEditMode)
+            {
+                NavigationService.Navigate(new CreateMatch(false, ""));
+            }
+            else
+            {
+                NavigationService.Navigate(new Login());
+            }
         }
     }
 }

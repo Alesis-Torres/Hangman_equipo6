@@ -1,17 +1,12 @@
-﻿using System.ComponentModel;
+﻿using HangmanClient.Model.Singleton;
+using HangmanClient.Model.ViewModels;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Threading;
-using HangmanClient.Model.Singleton;
-using HangmanClient.Model.ViewModels;
-using System.IO;
-using System.ServiceModel.Channels;
 using Timer = System.Timers.Timer;
 
 namespace HangmanClient.View.Pages
@@ -53,7 +48,7 @@ namespace HangmanClient.View.Pages
             };
             inactividadTimer.Tick += (s, e) =>
             {
-                inactividadTimer.Stop(); 
+                inactividadTimer.Stop();
                 try
                 {
                     string mensaje = $"SOLICITAR_ESTADO|{salaId}\n";
@@ -132,7 +127,8 @@ namespace HangmanClient.View.Pages
             escuchaTimer?.Stop();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e) {
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
             EscucharSocket();
         }
 
@@ -231,16 +227,34 @@ namespace HangmanClient.View.Pages
                                     var textChallenger = new TextBlock
                                     {
                                         Text = jugador,
-                                        Foreground = Brushes.White,
-                                        FontSize = 14,
-                                        Margin = new Thickness(5)
+                                        FontSize = 15,
+                                        FontFamily = new FontFamily("Rubik Bubbles"),
+                                        Foreground = new SolidColorBrush(Color.FromRgb(255, 251, 212)), // #FFFBD4
+                                        Margin = new Thickness(0, 10, 0, 0),
+                                        Effect = new DropShadowEffect
+                                        {
+                                            Color = Colors.Black,
+                                            Direction = 0,
+                                            ShadowDepth = 2,
+                                            Opacity = 1,
+                                            BlurRadius = 0
+                                        }
                                     };
                                     var textGuesser = new TextBlock
                                     {
                                         Text = jugador,
-                                        Foreground = Brushes.White,
-                                        FontSize = 14,
-                                        Margin = new Thickness(5)
+                                        FontSize = 15,
+                                        FontFamily = new FontFamily("Rubik Bubbles"),
+                                        Foreground = new SolidColorBrush(Color.FromRgb(255, 251, 212)), // #FFFBD4
+                                        Margin = new Thickness(0, 10, 0, 0),
+                                        Effect = new DropShadowEffect
+                                        {
+                                            Color = Colors.Black,
+                                            Direction = 0,
+                                            ShadowDepth = 2,
+                                            Opacity = 1,
+                                            BlurRadius = 0
+                                        }
                                     };
                                     ChallengerJugadoresPanel.Children.Add(textChallenger);
                                     GuessJugadoresPanel.Children.Add(textGuesser);
@@ -316,7 +330,7 @@ namespace HangmanClient.View.Pages
                 Console.WriteLine($"Error al reproducir sonido: {ex.Message}");
             }*/
         }
-        
+
         private void MostrarOverlayInicioPartida()
         {
             InicioOverlay.Visibility = Visibility.Visible;
@@ -354,7 +368,7 @@ namespace HangmanClient.View.Pages
                 ChallengerPanel.Visibility = Visibility.Visible;
                 GuessPanel.Visibility = Visibility.Collapsed;
                 MostrarOverlayPalabras();
-                
+
             }
             else
             {
@@ -395,7 +409,7 @@ namespace HangmanClient.View.Pages
                 {
                     string comando = $"LETRA|{letra}|{salaId}";
                     SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
-                    letrasUsadas.Add(letra); 
+                    letrasUsadas.Add(letra);
                     LetraPropuestaTextBlock.Text = letra;
 
                 }
@@ -454,10 +468,10 @@ namespace HangmanClient.View.Pages
 
             // Ocultar todas las partes
             Ch_Head.Visibility = Head.Visibility = Visibility.Hidden;
-            Ch_Torso.Visibility = Torso.Visibility  = Visibility.Hidden;
-            Ch_LeftArm.Visibility = LeftArm.Visibility  = Visibility.Hidden;
+            Ch_Torso.Visibility = Torso.Visibility = Visibility.Hidden;
+            Ch_LeftArm.Visibility = LeftArm.Visibility = Visibility.Hidden;
             Ch_RightArm.Visibility = RightArm.Visibility = Visibility.Hidden;
-            Ch_LeftLeg.Visibility = LeftLeg.Visibility= Visibility.Hidden;
+            Ch_LeftLeg.Visibility = LeftLeg.Visibility = Visibility.Hidden;
             Ch_RightLeg.Visibility = RightLeg.Visibility = Visibility.Hidden;
 
             if (intentosFallidos >= 1)

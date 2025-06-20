@@ -345,4 +345,7 @@
   <data name="GameStarted" xml:space="preserve">
     <value>Game Started!</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

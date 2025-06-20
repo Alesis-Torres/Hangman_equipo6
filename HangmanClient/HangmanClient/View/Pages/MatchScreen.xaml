@@ -229,21 +229,8 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <TextBlock Text="{x:Static res:Literals.PlayersInMatch}"            
-                        FontSize="15" 
-                        FontFamily="{StaticResource RubikBubbles}"
-                        Foreground="#FFFBD4">
-                <TextBlock.Effect>
-                    <DropShadowEffect Color="Black"
-                                       Direction="0"
-                                       ShadowDepth="2"
-                                       Opacity="1"
-                                       BlurRadius="0"/>
-                </TextBlock.Effect>
-            </TextBlock>
-
-            <TextBlock x:Name="PalabraEstadoTextBlock" Text="{x:Static res:Literals.WordStatus}"            
-                       FontSize="15" 
+            <TextBlock x:Name="PalabraEstadoTextBlock" Text="_____"            
+                       FontSize="20" 
                        FontFamily="{StaticResource RubikBubbles}"
                        Foreground="#FFFBD4"
                        Margin="0,10,0,0">
@@ -256,7 +243,7 @@
                 </TextBlock.Effect>
             </TextBlock>
 
-            <TextBlock x:Name="PistaTextBlock" Text="[hint]"            
+            <TextBlock x:Name="PistaTextBlock" Text="..."            
                        FontSize="20" 
                        FontFamily="{StaticResource RubikBubbles}"
                        Foreground="#FFFBD4"
@@ -288,6 +275,19 @@
                 <!--<Image x:Name="Hang" Source="/View/Images/GameLogic/Hang.png" Height="200" Visibility="Visible" Margin="0,0,90,0"/>-->
             </Grid>
             <WrapPanel x:Name="QwertyKeyboardPanel" Margin="0,10,0,0"/>
+
+            <TextBlock Text="{x:Static res:Literals.PlayersInMatch}"            
+                        FontSize="15" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                           Direction="0"
+                           ShadowDepth="2"
+                           Opacity="1"
+                           BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
             <StackPanel x:Name="GuessJugadoresPanel" Margin="10">
 
             </StackPanel>

@@ -33,10 +33,6 @@ public partial class MainWindow : Window
         {
             Console.WriteLine("[MainWindow] Cierre detectado.");
 
-            if (PaginaActual.Content is CreateMatch createMatch)
-            {
-                createMatch.DetenerTimer();
-            }
             var socket = SessionManager.Instance.SocketCliente;
             if (socket != null && socket.Connected)
             {

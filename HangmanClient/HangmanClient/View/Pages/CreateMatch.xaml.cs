@@ -15,7 +15,6 @@ namespace HangmanClient.View.Pages
 {
     public partial class CreateMatch : Page
     {
-        private Timer actualizacionSalasTimer = new Timer(3000);
         private readonly bool esLogin;
         private int idioma = SessionManager.Instance.CurrentLanguage;
 
@@ -25,36 +24,18 @@ namespace HangmanClient.View.Pages
             {
                 InitializeComponent();
                 this.esLogin = esLogin;
-                this.Loaded += CreateMatch_OnLoad;
-                this.Unloaded += CreateMatch_Unloaded;
+                ActualizarSalas();
                 if (!mensaje.Equals(""))
                 {
                     MessageBox.Show(mensaje, "Retorno a la pantalla de inicio");
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 Console.WriteLine(ex);
-                actualizacionSalasTimer.Stop();
             }
             
         }
-        private void CreateMatch_Unloaded(object sender, RoutedEventArgs e)
-        {
-            actualizacionSalasTimer?.Stop();
-            actualizacionSalasTimer = null;
-        }
-        private void CreateMatch_OnLoad(object sender, RoutedEventArgs e)
-        {
-            actualizacionSalasTimer = new Timer(3000);
-            actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
-            actualizacionSalasTimer?.Start();
-        }
-
-        public void DetenerTimer()
-        {
-            actualizacionSalasTimer?.Stop();
-        }
-
 
 
         private void ActualizarSalas()
@@ -93,7 +74,6 @@ namespace HangmanClient.View.Pages
         {
             try
             {
-                actualizacionSalasTimer?.Stop();
 
                 string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
                 int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
@@ -113,19 +93,18 @@ namespace HangmanClient.View.Pages
                     else
                     {
                         MessageBox.Show("Error al crear sala: " + respuesta);
-                        actualizacionSalasTimer?.Start();
+                        ActualizarSalas();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Timeout esperando respuesta del servidor.");
-                    actualizacionSalasTimer?.Start();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al crear sala: " + ex.Message);
-                actualizacionSalasTimer?.Start();
+                ActualizarSalas();
             }
         }
 
@@ -133,15 +112,13 @@ namespace HangmanClient.View.Pages
         {
             try
             {
-                actualizacionSalasTimer?.Stop();
-
                 if (sender is not Button boton) return;
 
                 ListBoxItem item = ItemsControl.ContainerFromElement(SalasListBox, boton) as ListBoxItem;
                 if (item == null)
                 {
                     MessageBox.Show("No se pudo determinar la sala correspondiente.");
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
                     return;
                 }
 
@@ -149,7 +126,7 @@ namespace HangmanClient.View.Pages
                 if (index < 0 || index >= SalasListBox.Items.Count)
                 {
                     MessageBox.Show("Índice inválido.");
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
                     return;
                 }
 
@@ -157,7 +134,7 @@ namespace HangmanClient.View.Pages
                 if (string.IsNullOrWhiteSpace(lineaSala))
                 {
                     MessageBox.Show("Formato de sala inválido.");
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
                     return;
                 }
                 string codigo = "";
@@ -174,7 +151,7 @@ namespace HangmanClient.View.Pages
                 if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 6)
                 {
                     MessageBox.Show("No se pudo extraer un código válido de la sala.");
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
                     return;
                 }
 
@@ -195,13 +172,13 @@ namespace HangmanClient.View.Pages
                 else
                 {
                     MessageBox.Show("No fue posible unirse a la sala: " + respuesta);
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al intentar unirse a la sala: " + ex.Message);
-                actualizacionSalasTimer?.Start();
+                ActualizarSalas();
             }
         }
 
@@ -216,8 +193,6 @@ namespace HangmanClient.View.Pages
                     MessageBox.Show("Código inválido. Asegúrate de ingresar un código de 6 caracteres alfanuméricos.");
                     return;
                 }
-
-                actualizacionSalasTimer?.Stop();
 
                 string codigo = input.ToUpperInvariant();
                 string nickname = SessionManager.Instance.CurrentPlayer.Nickname;
@@ -238,13 +213,14 @@ namespace HangmanClient.View.Pages
                 else
                 {
                     MessageBox.Show("No fue posible unirse a la sala: " + respuesta);
-                    actualizacionSalasTimer?.Start();
+                    ActualizarSalas();
+
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al intentar unirse por código: " + ex.Message);
-                actualizacionSalasTimer?.Start();
+                ActualizarSalas();
             }
         }
 
@@ -312,6 +288,11 @@ namespace HangmanClient.View.Pages
             {
                 MessageBox.Show("Error al cerrar sesión: " + ex.Message);
             }
+        }
+
+        private void ActualizarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ActualizarSalas();
         }
     }
 }
