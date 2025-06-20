@@ -313,6 +313,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game Started!.
+        /// </summary>
+        public static string GameStarted {
+            get {
+                return ResourceManager.GetString("GameStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guesser.
         /// </summary>
         public static string GuesserView {
@@ -529,6 +538,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected word:.
+        /// </summary>
+        public static string SelectedWord {
+            get {
+                return ResourceManager.GetString("SelectedWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spanish.
         /// </summary>
         public static string Spanish {
@@ -610,6 +628,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting for the other player....
+        /// </summary>
+        public static string WaitingPlayer {
+            get {
+                return ResourceManager.GetString("WaitingPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting Room.
         /// </summary>
         public static string WaitingRoom {
@@ -642,6 +669,15 @@ namespace HangmanClient {
         public static string Welcome {
             get {
                 return ResourceManager.GetString("Welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Word status:.
+        /// </summary>
+        public static string WordStatus {
+            get {
+                return ResourceManager.GetString("WordStatus", resourceCulture);
             }
         }
         

@@ -10,15 +10,49 @@
       Title="MatchScreen">
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/View/Images/town_background.png"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="SalirDePartidaButton" 
+                Padding="5,0,5,0" 
+                Height="30" 
+                Width="90"
+                HorizontalAlignment="Left"
+                Click="SalirDePartida_Click" 
+                Margin="10,5,0,0">
+            <Button.Background>
+                <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+            </Button.Background>
+            <Label x:Name="SalirDePartidaButtonText" Content="{x:Static res:Literals.Exit}" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    FontFamily="{StaticResource RubikBubbles}" 
+                    Foreground="#FFFBD4" 
+                    FontSize="15">
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                               Direction="0"
+                               ShadowDepth="2"
+                               Opacity="1"
+                               BlurRadius="0"/>
+                </Label.Effect>
+            </Label>
+        </Button>
+
         <Border x:Name="EsperandoOverlay"
-        Background="#80000000"
-        Visibility="Collapsed"
-        Grid.RowSpan="2"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        Panel.ZIndex="10">
+                Background="#80000000"
+                Visibility="Collapsed"
+                Grid.RowSpan="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Panel.ZIndex="10">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Background="White">
-                <TextBlock Text="Esperando al otro jugador..."
+                <TextBlock Text="{x:Static res:Literals.WaitingPlayer}"
                    FontSize="20"
                    FontWeight="Bold"
                    Margin="0,0,0,10"
@@ -26,62 +60,96 @@
                 <ProgressBar Width="200" Height="20" IsIndeterminate="True"/>
             </StackPanel>
         </Border>
+        
         <!-- Panel Challenger -->
-        <StackPanel x:Name="ChallengerPanel" Visibility="Visible" Margin="10">
-            <TextBlock Text="Panel challenger"            
+        <StackPanel x:Name="ChallengerPanel" Visibility="Collapsed" Margin="10" Grid.Row="1">
+            <TextBlock x:Name="ChallengerViewTextBlock" Text="{x:Static res:Literals.ChallengerView}"            
                        FontSize="30" 
-                       Foreground="#FFFBD4">
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
                 <TextBlock.Effect>
                     <DropShadowEffect Color="Black"
-                                      Direction="0"
-                                      ShadowDepth="5"
-                                      Opacity="1"
-                                      BlurRadius="0"/>
+                           Direction="0"
+                           ShadowDepth="2"
+                           Opacity="1"
+                           BlurRadius="0"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <TextBlock x:Name="ChallengerPalabraEstadoTextBlock" Text="" FontSize="16" Foreground="Black"/>
-            <Grid x:Name="ChallengerIntentosPanel"  Height="33" Width="49">
 
-                <Image x:Name="Ch_Torso" Source="/View/Images/GameLogic/torso_center.png" Width="40" Visibility="Visible" Margin="59,50,72,49"/>
-                <Image x:Name="Ch_LeftArm" Source="/View/Images/GameLogic/left_arm.png" Visibility="Visible" Margin="10,48,171,24"/>
-                <Image x:Name="Ch_RightArm" Source="/View/Images/GameLogic/right_arm.png" Visibility="Visible" Margin="170,80,10,79"/>
-                <Image x:Name="Ch_LeftLeg" Source="/View/Images/GameLogic/left_leg.png" Visibility="Visible" Margin="68,147,140,64"/>
-                <Image x:Name="Ch_RightLeg" Source="/View/Images/GameLogic/right_leg.png" Visibility="Visible" Margin="133,145,75,52"/>
-                <Image x:Name="Ch_Head" Source="/View/Images/GameLogic/head_center.png" Visibility="Visible" Margin="0,-26,61,111"/>
-            </Grid>
-            <TextBlock Text="Estado palabra"            
-                       FontSize="15" 
-                       Foreground="#FFFBD4">
+            <TextBlock x:Name="ChallengerPalabraEstadoTextBlock" Text=""            
+                        FontSize="16" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        Foreground="Orange"
+                        Margin="0,10,0,0">
                 <TextBlock.Effect>
                     <DropShadowEffect Color="Black"
-                                      Direction="0"
-                                      ShadowDepth="2"
-                                      Opacity="1"
-                                      BlurRadius="0"/>
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <TextBlock x:Name="LetraPropuestaTextBlock" Text="" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="Black"/>
-            <TextBlock x:Name="PalabraSeleccionadaTextBlock" Text="Palabra seleccionada: " FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="Black"/>
+
+            <Grid x:Name="ChallengerIntentosPanel"  Height="140" Width="180">
+                <Image x:Name="Ch_Torso" Source="/View/Images/GameLogic/torso_center.png" Width="40" Height="40" Visibility="Hidden" Margin="0,30,0,20"/>
+                <Image x:Name="Ch_LeftArm" Source="/View/Images/GameLogic/left_arm.png" Width="40" Height="40" Visibility="Hidden" Margin="0,10,50,0"/>
+                <Image x:Name="Ch_RightArm" Source="/View/Images/GameLogic/right_arm.png" Width="40" Height="40" Visibility="Hidden" Margin="50,10,0,0"/>
+                <Image x:Name="Ch_LeftLeg" Source="/View/Images/GameLogic/left_leg.png" Width="40" Height="40" Visibility="Hidden" Margin="0,80,35,0"/>
+                <Image x:Name="Ch_RightLeg" Source="/View/Images/GameLogic/right_leg.png" Width="40" Height="40" Visibility="Hidden" Margin="30,80,0,0"/>
+                <Image x:Name="Ch_Head" Source="/View/Images/GameLogic/head_center.png" Width="90" Height="80" Visibility="Hidden" Margin="0,0,0,60"/>
+                <!--<Image x:Name="Hang" Source="/View/Images/GameLogic/Hang.png" Height="200" Visibility="Visible" Margin="0,0,90,0"/>-->
+            </Grid>
+
+            <TextBlock Text="{x:Static res:Literals.WordStatus}"            
+                       FontSize="15" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock x:Name="LetraPropuestaTextBlock" Text=""            
+                       FontSize="18" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="Orange"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+
+            <TextBlock x:Name="PalabraSeleccionadaTextBlock" Text="{x:Static res:Literals.SelectedWord}"            
+                       FontSize="15" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" HorizontalAlignment="Center">
                 <Button x:Name="ConfirmLetterButton" Padding="30,0,30,0" Height="30" Click="ConfirmarLetra_Click" Margin="0,0,10,0">
-                    <Label x:Name="ConfirmLetterButtonText" Content="Confirmar letra" 
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="ConfirmLetterButtonText" Content="{x:Static res:Literals.ConfirmLetter}" 
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center" 
-                            Foreground="#FFFBD4" 
-                            FontSize="15">
-                        <Label.Effect>
-                            <DropShadowEffect Color="Black"
-                               Direction="0"
-                               ShadowDepth="2"
-                               Opacity="1"
-                               BlurRadius="0"/>
-                        </Label.Effect>
-                    </Label>
-                </Button>
-                <Button x:Name="DeclineLetterButton" Padding="30,0,30,0" Height="30" Click="RechazarLetra_Click" Margin="0,0,10,0">
-                    <Label x:Name="DeclineLetterButtonText" Content="Rechazar letra" 
-                            VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" 
+                            FontFamily="{StaticResource RubikBubbles}" 
                             Foreground="#FFFBD4" 
                             FontSize="15">
                         <Label.Effect>
@@ -93,42 +161,131 @@
                         </Label.Effect>
                     </Label>
                 </Button>
+                <Button x:Name="DeclineLetterButton" Padding="30,0,30,0" Height="30" Click="RechazarLetra_Click" Margin="0,0,10,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/View/Images/wood_button.png"/>
+                    </Button.Background>
+                    <Label x:Name="DeclineLetterButtonText" Content="{x:Static res:Literals.DeclineLetter}" 
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            FontFamily="{StaticResource RubikBubbles}" 
+                            Foreground="#FFFBD4" 
+                            FontSize="15">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                   Direction="0"
+                                   ShadowDepth="2"
+                                   Opacity="1"
+                                   BlurRadius="0"/>
+                        </Label.Effect>
+                    </Label>
+                </Button>
             </StackPanel>
-            <TextBlock x:Name="CodigoSalaTextBlock"
-           Text="Código de sala: ####"
-           FontSize="16"
-           FontWeight="Bold"
-           HorizontalAlignment="Center"
-           Margin="0,10,0,0"
-           Foreground="DarkSlateGray"/>
-            <StackPanel x:Name="ChallengerJugadoresPanel" Margin="10">
-                <TextBlock Text="Intentos"            
-           FontSize="15" 
-           Foreground="#FFFBD4">
+            <TextBlock x:Name="CodigoSalaTextBlock" Text="[room code]" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    FontFamily="{StaticResource RubikBubbles}" 
+                    Foreground="#FFFBD4" 
+                    FontSize="15">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <StackPanel x:Name="ChallengerJugadoresPanel" Margin="0">
+                <TextBlock x:Name="IntentosTextBlock" Text="[tries]" 
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            FontFamily="{StaticResource RubikBubbles}" 
+                            Foreground="#FFFBD4" 
+                            FontSize="15">
                     <TextBlock.Effect>
                         <DropShadowEffect Color="Black"
-                          Direction="0"
-                          ShadowDepth="2"
-                          Opacity="1"
-                          BlurRadius="0"/>
+                           Direction="0"
+                           ShadowDepth="2"
+                           Opacity="1"
+                           BlurRadius="0"/>
                     </TextBlock.Effect>
                 </TextBlock>
             </StackPanel>
         </StackPanel>
 
         <!-- Panel Guess -->
-        <StackPanel x:Name="GuessPanel" Visibility="Visible" Margin="10" Background="White">
-            <TextBlock Text="Jugadores en partida"/>
+        <StackPanel x:Name="GuessPanel" Visibility="Collapsed" Margin="10" Grid.Row="1">
+            <TextBlock x:Name="GuesserViewTextBlock" Text="{x:Static res:Literals.GuesserView}"            
+                       FontSize="30" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
 
-            <TextBlock x:Name="PalabraEstadoTextBlock" Text="Estado de la palabra" FontSize="16" Margin="0,0,0,10" Foreground="Black"/>
+            <TextBlock Text="{x:Static res:Literals.PlayersInMatch}"            
+                        FontSize="15" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        Foreground="#FFFBD4">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
 
-            <Grid x:Name="IntentosPanel" Height="221" Width="212">
-                <Image x:Name="Torso" Source="/View/Images/GameLogic/torso_center.png" Visibility="Hidden" Margin="59,50,72,49"/>
-                <Image x:Name="LeftArm" Source="/View/Images/GameLogic/left_arm.png" Visibility="Hidden" Margin="28,50,103,49"/>
-                <Image x:Name="RightArm" Source="/View/Images/GameLogic/right_arm.png" Visibility="Hidden" Margin="89,43,42,41"/>
-                <Image x:Name="LeftLeg" Source="/View/Images/GameLogic/left_leg.png" Visibility="Hidden" Margin="31,87,91,2"/>
-                <Image x:Name="RightLeg" Source="/View/Images/GameLogic/right_leg.png" Visibility="Hidden" Margin="76,87,48,2"/>
-                <Image x:Name="Head" Source="/View/Images/GameLogic/head_center.png" Visibility="Hidden" Margin="19,-11,35,75"/>
+            <TextBlock x:Name="PalabraEstadoTextBlock" Text="{x:Static res:Literals.WordStatus}"            
+                       FontSize="15" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                           Direction="0"
+                           ShadowDepth="2"
+                           Opacity="1"
+                           BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+
+            <TextBlock x:Name="PistaTextBlock" Text="[hint]"            
+                       FontSize="20" 
+                       FontFamily="{StaticResource RubikBubbles}"
+                       Foreground="#FFFBD4"
+                       Margin="0,10,0,0">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                                       Direction="0"
+                                       ShadowDepth="2"
+                                       Opacity="1"
+                                       BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+
+            <!--<Grid x:Name="IntentosPanel" Height="221" Width="212">
+                <Image x:Name="Torso" Source="/View/Images/GameLogic/torso_center.png" Visibility="Visible" Margin="59,50,72,49"/>
+                <Image x:Name="LeftArm" Source="/View/Images/GameLogic/left_arm.png" Visibility="Visible" Margin="28,50,103,49"/>
+                <Image x:Name="RightArm" Source="/View/Images/GameLogic/right_arm.png" Visibility="Visible" Margin="89,43,42,41"/>
+                <Image x:Name="LeftLeg" Source="/View/Images/GameLogic/left_leg.png" Visibility="Visible" Margin="31,87,91,2"/>
+                <Image x:Name="RightLeg" Source="/View/Images/GameLogic/right_leg.png" Visibility="Visible" Margin="76,87,48,2"/>
+                <Image x:Name="Head" Source="/View/Images/GameLogic/head_center.png" Visibility="Visible" Margin="19,-11,35,75"/>
+            </Grid>-->
+            <Grid x:Name="IntentosPanel" Height="140" Width="180">
+                <Image x:Name="Torso" Source="/View/Images/GameLogic/torso_center.png" Width="40" Height="40" Visibility="Hidden" Margin="0,30,0,20"/>
+                <Image x:Name="LeftArm" Source="/View/Images/GameLogic/left_arm.png" Width="40" Height="40" Visibility="Hidden" Margin="0,10,50,0"/>
+                <Image x:Name="RightArm" Source="/View/Images/GameLogic/right_arm.png" Width="40" Height="40" Visibility="Hidden" Margin="50,10,0,0"/>
+                <Image x:Name="LeftLeg" Source="/View/Images/GameLogic/left_leg.png" Width="40" Height="40" Visibility="Hidden" Margin="0,80,35,0"/>
+                <Image x:Name="RightLeg" Source="/View/Images/GameLogic/right_leg.png" Width="40" Height="40" Visibility="Hidden" Margin="30,80,0,0"/>
+                <Image x:Name="Head" Source="/View/Images/GameLogic/head_center.png" Width="90" Height="80" Visibility="Hidden" Margin="0,0,0,60"/>
+                <!--<Image x:Name="Hang" Source="/View/Images/GameLogic/Hang.png" Height="200" Visibility="Visible" Margin="0,0,90,0"/>-->
             </Grid>
             <WrapPanel x:Name="QwertyKeyboardPanel" Margin="0,10,0,0"/>
             <StackPanel x:Name="GuessJugadoresPanel" Margin="10">
@@ -137,8 +294,11 @@
         </StackPanel>
 
         <!-- Overlay de Palabras y Categorías -->
-        <Grid x:Name="OverlayPalabras" Background="#AA000000" Visibility="Collapsed">
+        <Border x:Name="OverlayPalabras" Background="#AA000000" Visibility="Collapsed" Grid.RowSpan="2">
             <Border Padding="20" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="800"  MaxHeight="600">
+                <Border.Background>
+                    <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
+                </Border.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
@@ -146,18 +306,22 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Margin="5">
-                        <TextBlock Text="Categorias"
+                        <StackPanel.Background>
+                            <ImageBrush ImageSource="/View/Images/categories_background.png"/>
+                        </StackPanel.Background>
+                        <TextBlock Text="{x:Static res:Literals.Categories}"
                                    FontSize="18" 
+                                   FontFamily="{StaticResource RubikBubbles}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Margin="0,10,0,0"
                                    Foreground="#FFFBD4">
                             <TextBlock.Effect>
                                 <DropShadowEffect Color="Black"
-                                  Direction="0"
-                                  ShadowDepth="5"
-                                  Opacity="1"
-                                  BlurRadius="0"/>
+                                                  Direction="0"
+                                                  ShadowDepth="5"
+                                                  Opacity="1"
+                                                  BlurRadius="0"/>
                             </TextBlock.Effect>
                         </TextBlock>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
@@ -204,20 +368,31 @@
                     </ScrollViewer>
                 </Grid>
             </Border>
-        </Grid>
+        </Border>
+        
         <Border x:Name="InicioOverlay"
-        Background="#B0000000"
-        Visibility="Collapsed"
-        Grid.RowSpan="2"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        Panel.ZIndex="11">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" >
-                <TextBlock Text="¡Partida Iniciada!" 
-                   FontSize="24" 
-                   FontWeight="Bold" 
-                   Foreground="Green"
-                   TextAlignment="Center"/>
+                Background="#B0000000"
+                Visibility="Collapsed"
+                Grid.RowSpan="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Panel.ZIndex="11">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{x:Static res:Literals.GameStarted}"
+                           FontSize="27" 
+                           FontFamily="{StaticResource RubikBubbles}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,0"
+                           Foreground="#FFFBD4">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="Black"
+                                          Direction="0"
+                                          ShadowDepth="5"
+                                          Opacity="1"
+                                          BlurRadius="0"/>
+                    </TextBlock.Effect>
+                </TextBlock>
             </StackPanel>
         </Border>
     </Grid>

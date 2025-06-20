@@ -112,7 +112,7 @@
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <ListBox x:Name="SalasListBox" Height="410" Width="760" Margin="0,0,0,10" Padding="20">
+            <ListBox x:Name="SalasListBox" Height="410" Width="860" Margin="0,0,0,10" Padding="20">
                 <ListBox.Background>
                     <ImageBrush ImageSource="/View/Images/rooms_table.png"/>
                 </ListBox.Background>

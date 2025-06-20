@@ -596,5 +596,9 @@ namespace HangmanClient.View.Pages
             }
         }
 
+        private void SalirDePartida_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Logica de salir de partida
+        }
     }
 }
