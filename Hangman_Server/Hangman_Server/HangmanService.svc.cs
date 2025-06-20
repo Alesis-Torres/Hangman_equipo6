@@ -58,7 +58,7 @@ namespace Hangman_Server
                 return player?.id_player ?? 0;
             }
         }
-        public List<string> ObtenerHistorialPartidas(int playerId, int idLanguage)
+        public (List<string> resultados, int puntajeTotal) ObtenerHistorialPartidas(int playerId, int idLanguage)
         {
             using (var db = new HangmanEntities())
             {
@@ -72,28 +72,53 @@ namespace Hangman_Server
                                     Resultado = s.name,
                                     IdGanador = g.id_playerinfo,
                                     Fecha = g.date_finished,
-                                    YoSoy = playerId
+                                    SoyYo = playerId,
+                                    IdStatus = g.id_gamematch_status,
+                                    EsChallenger = g.id_player_challenger == playerId,
+                                    EsGuesser = g.id_player_guesser == playerId
                                 }).ToList();
+
+                int puntajeTotal = 0;
 
                 var listaResultados = partidas.Select(p =>
                 {
                     string fechaStr = p.Fecha?.ToString("dd/MM/yyyy HH:mm") ?? (idLanguage == 1 ? "sin fecha" : "no date");
 
-                    if (p.Resultado.ToLower() == "inconclusa")
+                    string rolTraducido = p.EsGuesser
+                        ? (idLanguage == 1 ? "Adivinador" : "Guesser")
+                        : (idLanguage == 1 ? "Retador" : "Challenger");
+
+                    if (p.IdStatus == 2 && p.IdGanador == p.SoyYo)
+                    {
+                        puntajeTotal = Math.Max(0, puntajeTotal - 3);
                         return idLanguage == 1
-                            ? $"Inconclusa - Palabra: {p.Palabra} - Fecha: {fechaStr}"
-                            : $"Unfinished - Word: {p.Palabra} - Date: {fechaStr}";
-                    else if (p.IdGanador == p.YoSoy)
+                            ? $"Desconexión - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Disconnected - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                    }
+                    else if (p.IdStatus == 1 && p.IdGanador == p.SoyYo)
+                    {
+                        if (p.EsGuesser) puntajeTotal += 10;
+                        else if (p.EsChallenger) puntajeTotal += 5;
+
                         return idLanguage == 1
-                            ? $"Ganada - Palabra: {p.Palabra} - Fecha: {fechaStr}"
-                            : $"Won - Word: {p.Palabra} - Date: {fechaStr}";
+                            ? $"Ganada - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Won - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                    }
+                    else if (p.Resultado.ToLower() == "inconclusa")
+                    {
+                        return idLanguage == 1
+                            ? $"Inconclusa - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Unfinished - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                    }
                     else
+                    {
                         return idLanguage == 1
-                            ? $"Perdida - Palabra: {p.Palabra} - Fecha: {fechaStr}"
-                            : $"Lost - Word: {p.Palabra} - Date: {fechaStr}";
+                            ? $"Perdida - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Lost - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                    }
                 }).ToList();
 
-                return listaResultados;
+                return (listaResultados, puntajeTotal);
             }
         }
 

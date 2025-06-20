@@ -290,10 +290,10 @@ namespace HangmanServiceReference
         System.Threading.Tasks.Task<bool> NicknameExisteAsync(string nickname);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
-        string[] ObtenerHistorialPartidas(int playerId, int idLanguage);
+        System.ValueTuple<string[], int> ObtenerHistorialPartidas(int playerId, int idLanguage);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
-        System.Threading.Tasks.Task<string[]> ObtenerHistorialPartidasAsync(int playerId, int idLanguage);
+        System.Threading.Tasks.Task<System.ValueTuple<string[], int>> ObtenerHistorialPartidasAsync(int playerId, int idLanguage);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerIdPorUsername", ReplyAction="http://tempuri.org/IHangmanService/ObtenerIdPorUsernameResponse")]
         int ObtenerIdPorUsername(string username);
@@ -432,12 +432,12 @@ namespace HangmanServiceReference
             return base.Channel.NicknameExisteAsync(nickname);
         }
         
-        public string[] ObtenerHistorialPartidas(int playerId, int idLanguage)
+        public System.ValueTuple<string[], int> ObtenerHistorialPartidas(int playerId, int idLanguage)
         {
             return base.Channel.ObtenerHistorialPartidas(playerId, idLanguage);
         }
         
-        public System.Threading.Tasks.Task<string[]> ObtenerHistorialPartidasAsync(int playerId, int idLanguage)
+        public System.Threading.Tasks.Task<System.ValueTuple<string[], int>> ObtenerHistorialPartidasAsync(int playerId, int idLanguage)
         {
             return base.Channel.ObtenerHistorialPartidasAsync(playerId, idLanguage);
         }

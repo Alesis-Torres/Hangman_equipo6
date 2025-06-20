@@ -38,7 +38,7 @@ namespace HangmanClient.View.Pages
             {
                 int playerId = SessionManager.Instance.CurrentPlayer.IdPlayer;
                 var historial = hangmanService.ObtenerHistorialPartidas(playerId, SessionManager.Instance.CurrentLanguage);
-                EstadisticasListBox.ItemsSource = historial;
+                //EstadisticasListBox.ItemsSource = historial;
             }
             catch (Exception ex)
             {

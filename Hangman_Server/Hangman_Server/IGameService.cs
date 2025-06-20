@@ -8,8 +8,6 @@ namespace Hangman_Server
     [ServiceContract]
     public interface IGameService
     {
-        [OperationContract]
-        string ObtenerCodigoDeSala(int salaId); 
         
         [OperationContract]
         string ProbarConexion();

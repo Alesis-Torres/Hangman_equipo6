@@ -47,7 +47,7 @@
             <Grid.Background>
                 <ImageBrush ImageSource="/View/Images/statistics_table.png"/>
             </Grid.Background>
-            
+
             <TextBlock Grid.Row="0" Text="{x:Static res:Literals.Statistics}"
                        FontSize="30" 
                        FontFamily="{StaticResource RubikBubbles}"
@@ -63,12 +63,23 @@
                                       BlurRadius="0"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <!--<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20,0,40,20">
-                <WrapPanel x:Name="GamesPlayed"></WrapPanel>
-            </ScrollViewer>-->
+            <TextBlock x:Name="ScoreTextBox"  Text="Score:"
+           FontSize="30" 
+           FontFamily="{StaticResource RubikBubbles}"
+           HorizontalAlignment="Left"
+           Margin="35,4,0,320"
+           Foreground="#FFFBD4" RenderTransformOrigin="0.482,0.639" Grid.Row="1">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black"
+                          Direction="0"
+                          ShadowDepth="5"
+                          Opacity="1"
+                          BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
             <ListBox x:Name="EstadisticasListBox"
                  Grid.Row="1"
-                 Margin="35,15,35,15"
+                 Margin="35,45,35,15"
                  FontSize="16"
                  BorderThickness="1"
                  BorderBrush="Gray"
