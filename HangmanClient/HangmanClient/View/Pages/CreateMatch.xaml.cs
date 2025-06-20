@@ -157,9 +157,9 @@ namespace HangmanClient.View.Pages
                 string[] partes = lineaSala.Split('-');
                 foreach (var parte in partes)
                 {
-                    if (parte.Trim().StartsWith("Código:"))
+                    if (parte.Trim().StartsWith("Código:") || parte.Trim().StartsWith("Code:"))
                     {
-                        codigo = parte.Trim().Substring("Código:".Length).Trim();
+                        codigo = parte.Trim().Split(':')[1].Trim();
                         break;
                     }
                 }

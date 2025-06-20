@@ -18,9 +18,24 @@ namespace GameServiceReference
     public partial class WordDTO : object
     {
         
+        private int IdField;
+        
         private byte[] ImageBytesField;
         
         private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id
+        {
+            get
+            {
+                return this.IdField;
+            }
+            set
+            {
+                this.IdField = value;
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] ImageBytes

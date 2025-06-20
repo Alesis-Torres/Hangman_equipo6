@@ -14,6 +14,7 @@ namespace HangmanClient.Model.ViewModels
 
         public WordViewModel(WordDTO dto)
         {
+            Id = dto.Id;
             Name = dto.Name;
             ImageBytes = dto.ImageBytes;
         }

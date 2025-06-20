@@ -9,10 +9,11 @@ namespace HangmanClient.View.Pages
     
     public partial class Login : Page
     {
-        private int idioma = SessionManager.Instance.CurrentLanguage;
+        
         public Login()
         {
             InitializeComponent();
+            SessionManager.Instance.CurrentLanguage = 2;
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -108,12 +109,14 @@ namespace HangmanClient.View.Pages
         // Acciones para cambiar idioma
         private void SpanishButton_Click(object sender, RoutedEventArgs e)
         {
+            SessionManager.Instance.CurrentLanguage = 1;
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-MX");
             NavigationService.Navigate(new Login());
         }
 
         private void EnglishButton_Click(object sender, RoutedEventArgs e)
         {
+            SessionManager.Instance.CurrentLanguage = 2;
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
             NavigationService.Navigate(new Login());
         }

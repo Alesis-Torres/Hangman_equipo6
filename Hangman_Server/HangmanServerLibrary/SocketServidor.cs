@@ -11,6 +11,7 @@ using System.Windows;
 using HangmanServerLibrary.GameServiceReference;
 using HangmanServerLibrary.Model;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 
 namespace Hangman_Server
@@ -70,7 +71,7 @@ namespace Hangman_Server
         {
             try
             {
-                return !(socket.Poll(1000, SelectMode.SelectRead) && socket.Available == 0);
+                return !(socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0);
             }
             catch
             {
@@ -108,6 +109,7 @@ namespace Hangman_Server
 
                         if (salaId == -1 || !otroJugadorActivo)
                         {
+
                             Console.WriteLine($"Desconectado {jugador.Nickname}, pero no se registra (sala: {salaId}, otro activo: {otroJugadorActivo})");
                         }
                         else
@@ -356,7 +358,10 @@ namespace Hangman_Server
                 {
                     return "ERROR: Jugador ya unido a esta sala.";
                 }
-
+                if (sala.Clientes.Count >= 2)
+                {
+                    return "ERROR: La sala ya tiene dos jugadores.";
+                }
                 string rol = sala.Clientes.Count == 0 ? "challenger" : "guesser";
 
                 if (!JugadoresConectados.TryGetValue(idPlayerGuesser, out var jugador))
@@ -441,6 +446,14 @@ namespace Hangman_Server
 
         private void AtenderCliente(Socket socketCliente)
         {
+            if (!SocketActivo(socketCliente))
+            {
+                Console.WriteLine("❌ El socket ya estaba inactivo al intentar atenderlo.");
+                try { socketCliente?.Shutdown(SocketShutdown.Both); } catch { }
+                try { socketCliente?.Close(); } catch { }
+                return;
+            }
+            bool notificado = false;
             int idJugadorActual = -1;
             int salaId = -1;
             bool continuar = true;
@@ -457,6 +470,13 @@ namespace Hangman_Server
                     if (bytesLeidos == 0)
                     {
                         Console.WriteLine("[Socket cerrado por el cliente]");
+
+                        if (idJugadorActual != -1 && salaId != -1)
+                        {
+                            NotificarSalidaJugador(idJugadorActual, salaId);
+                            notificado = true;
+                        }
+
                         break;
                     }
 
@@ -861,13 +881,20 @@ namespace Hangman_Server
             }
             finally
             {
-                if (continuar && idJugadorActual != -1)
+                if (!notificado && idJugadorActual != -1 && salaId != -1)
                 {
                     NotificarSalidaJugador(idJugadorActual, salaId);
                 }
-
-                try { socketCliente?.Shutdown(SocketShutdown.Both); } catch { }
-                try { socketCliente?.Close(); } catch { }
+                try
+                {
+                    socketCliente?.Shutdown(SocketShutdown.Both);
+                }
+                catch { }
+                try
+                {
+                    socketCliente?.Close();
+                }
+                catch { }
             }
         }
 
@@ -967,22 +994,7 @@ namespace Hangman_Server
             return salacreacion;
         }
 
-        private void AtenderSalaCliente(Socket socketCliente, string mensaje, string[] partes)
-        {
-            SalaJuego sala = null;
 
-            string comando = partes[0].Trim();
-
-            switch (comando)
-            {
-                
-
-                default:
-                    socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Comando no reconocido.\n"));
-                    return;
-            }
-            
-        }
         private void ActualizarPartida(SalaJuego sala, Socket socketIndividual, bool limpiar)
         {
             if (socketIndividual == null || !socketIndividual.Connected)
@@ -1147,10 +1159,12 @@ namespace Hangman_Server
                         Console.WriteLine($"❌ Error notificando salida: {ex.Message}");
                     }
                 }
-                if (!sala.Terminada && sala.idPalabra > 0)
+
+                if (!sala.PartidaInconclusaRegistrada && sala.idPalabra > 0)
                 {
                     try
                     {
+                        Console.WriteLine("[PARTIDA] INTENTANDO REGISTRO");
                         var binding = new BasicHttpBinding();
                         var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
                         var factory = new ChannelFactory<IGameService>(binding, endpoint);
@@ -1216,103 +1230,7 @@ namespace Hangman_Server
         }
 
         
-        public void AtenderClienteEnSala(int salaId, Socket socketCliente, string rol)
-        {
-            try
-            {
-                if (!salasActivas.TryGetValue(salaId, out var sala)) return;
-
-                if (rol == "challenger")
-                {
-                    Console.WriteLine($"[Socket] Cliente challenger conectado en sala {salaId}. Esperando establecimiento de palabra vía GameService...");
-                }
-
-                while (true)
-                {
-                    byte[] buffer = new byte[1024];
-                    int bytesLeidos;
-
-                    try
-                    {
-                        bytesLeidos = socketCliente.Receive(buffer);
-                        if (bytesLeidos == 0)
-                        {
-                            Console.WriteLine("[Socket cerrado desde cliente dentro de sala]");
-                            break;
-                        }
-                    }
-                    catch (SocketException ex)
-                    {
-                        Console.WriteLine($"[Desconexión desde sala detectada: {ex.SocketErrorCode}]");
-                        break;
-                    }
-
-                    string mensaje = Encoding.UTF8.GetString(buffer, 0, bytesLeidos).Trim();
-
-                    if (mensaje.Equals("SALIR", StringComparison.OrdinalIgnoreCase))
-                        break;
-
-                    if (rol == "guesser" && mensaje.Length == 1)
-                    {
-                        string letra = mensaje;
-                        bool acierto = false;
-                        string estadoActual;
-
-                        lock (locker)
-                        {
-                            if (!sala.LetrasAdivinadas.Contains(letra, StringComparer.OrdinalIgnoreCase))
-                            {
-                                sala.LetrasAdivinadas.Add(letra);
-                                char[] estado = sala.EstadoPalabra.ToCharArray();
-
-                                for (int i = 0; i < sala.Palabra.Length; i++)
-                                {
-                                    if (sala.Palabra[i].ToString().Equals(letra, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        estado[i] = sala.Palabra[i];
-                                        acierto = true;
-                                    }
-                                }
-
-                                sala.EstadoPalabra = new string(estado);
-
-                                if (!acierto)
-                                {
-                                    sala.IntentosFallidos++;
-                                }
-                            }
-
-                            estadoActual = sala.EstadoPalabra;
-                        }
-
-                        string respuesta = acierto
-                            ? $"ACIERTO:{estadoActual}"
-                            : $"ERROR:{estadoActual}|INTENTOS:{sala.IntentosFallidos}";
-
-                        socketCliente.Send(Encoding.UTF8.GetBytes(respuesta + "\n"));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en la sala {salaId}: {ex.Message}");
-            }
-            finally
-            {
-                lock (locker)
-                {
-                    if (salasActivas.TryGetValue(salaId, out var sala))
-                    {
-                        sala.Clientes.RemoveAll(c => c.Socket == socketCliente);
-                        Console.WriteLine($"[Server] Jugador desconectado de la sala {salaId}. Jugadores restantes: {sala.Clientes.Count}");
-                    }
-                }
-
-                try { socketCliente?.Shutdown(SocketShutdown.Both); } catch { }
-                try { socketCliente?.Close(); } catch { }
-            }
-        }
-
+        
 
         public int EstablecerPalabra(int salaId, string palabra, int idPalabra)
         {
@@ -1335,17 +1253,7 @@ namespace Hangman_Server
             }
         }
 
-        public string ObtenerPalabraPorSala(int salaId)
-        {
-            lock (locker)
-            {
-                if (salasActivas.TryGetValue(salaId, out var sala))
-                {
-                    return sala.Palabra ?? string.Empty;
-                }
-            }
-            return string.Empty;
-        }
+
 
 
 
@@ -1382,22 +1290,35 @@ namespace Hangman_Server
             int idPalabra = sala.idPalabra;
             string codigoSala = sala.CodigoUnico;
 
-            Console.WriteLine($"[Monitor] Registrando partida inconclusa (sala {salaId})");
-
-            var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
-            var factory = new ChannelFactory<IGameService>(binding, endpoint);
-            var gameService = factory.CreateChannel();
-
-            try
+            if (!sala.Terminada && sala.idPalabra > 0 && !sala.PartidaInconclusaRegistrada)
             {
-                //gameService.RegistrarPartidaInconclusa(idChallenger, idGuesser, idPalabra, codigoSala, idPlayer);
-                ((IClientChannel)gameService).Close();
-                factory.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ERROR WCF] No se pudo registrar partida: {ex.Message}");
+                try
+                {
+                    var binding = new BasicHttpBinding();
+                    var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
+                    var factory = new ChannelFactory<IGameService>(binding, endpoint);
+                    var gameService = factory.CreateChannel();
+
+                    gameService.RegistrarPartidaInconclusa(
+                        sala.Id,
+                        sala.idChallenger,
+                        sala.idGuesser,
+                        sala.idPalabra,
+                        idPlayer,
+                        sala.CodigoUnico
+                    );
+
+                    sala.PartidaInconclusaRegistrada = true;
+
+                    ((IClientChannel)gameService).Close();
+                    factory.Close();
+
+                    Console.WriteLine($"✅ Partida {salaId} registrada como inconclusa.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Error al registrar partida inconclusa: {ex.Message}");
+                }
             }
             try
             {
@@ -1412,21 +1333,7 @@ namespace Hangman_Server
             LimpiarSala(salaId);
         }
 
-        private int ObtenerJugadorRestante(int salaId, int idPlayer)
-        {
-            foreach (var sala in salasActivas.ToList())
-            {
-                if (sala.Value.idChallenger == idPlayer)
-                {
-                    return sala.Value.idGuesser;
-                }
-                else
-                {
-                    return sala.Value.idGuesser;
-                }
-            }
-            return -1;
-        }
+
 
         private int ObtenerSalaIdPorJugador(int idPlayer)
         {
@@ -1477,7 +1384,7 @@ namespace Hangman_Server
         public int idChallenger { get; set; }
         public int idGuesser { get; set; }
         public string TurnoActual { get; set; } = "GUESSER";
-
+        public bool PartidaInconclusaRegistrada { get; set; } = false;
         public List<JugadorConectado> Clientes { get; set; } = new List<JugadorConectado>();
     }
 }

@@ -6,6 +6,8 @@ namespace Hangman_Server.Model.DTO
     public class WordDTO
     {
         [DataMember]
+        public int Id { get; set; }
+        [DataMember]
         public string Name { get; set; }
 
         [DataMember]
