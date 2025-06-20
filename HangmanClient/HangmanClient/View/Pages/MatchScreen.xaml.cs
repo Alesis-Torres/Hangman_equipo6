@@ -170,7 +170,8 @@ namespace HangmanClient.View.Pages
                         string letraPropuesta = partes.FirstOrDefault(p => p.StartsWith("LETRA:"))?.Substring(6);
                         string accion = partes.FirstOrDefault(p => p.StartsWith("ACCION:"))?.Substring(7);
                         string turno = partes.FirstOrDefault(p => p.StartsWith("TECLADO:"))?.Substring(8);
-                        Debug.WriteLine(turno);
+                        string codigoSala = partes.FirstOrDefault(p => p.StartsWith("CODIGO:"))?.Substring(7);
+                        
                         if (turno == "CHALLENGER")
                         {
                             ConfirmLetterButton.IsEnabled = true;
@@ -184,6 +185,7 @@ namespace HangmanClient.View.Pages
                             CambiarEstadoTeclado(true);
                         }
 
+                        CodigoSalaTextBlock.Text = codigoSala;
 
                         Dispatcher.Invoke(() =>
                         {
@@ -348,10 +350,6 @@ namespace HangmanClient.View.Pages
         {
             if (rol == "challenger")
             {
-                string codigo = SessionManager.Instance.GameServiceClient.ObtenerCodigoDeSala(salaId);
-
-
-                CodigoSalaTextBlock.Text = $"Código de sala: {codigo}";
                 ChallengerPanel.Visibility = Visibility.Visible;
                 GuessPanel.Visibility = Visibility.Collapsed;
                 MostrarOverlayPalabras();
@@ -537,7 +535,7 @@ namespace HangmanClient.View.Pages
                     int idSala = salaId;
                     string palabra = palabraSeleccionada.Name;
                     int idPalabra = palabraSeleccionada.Id;
-
+                    PalabraSeleccionadaTextBlock.Text = PalabraSeleccionadaTextBlock.Text + palabra;
                     string comando = $"PALABRA|{palabra}|{idSala}|{idPalabra}";
                     SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
                 }

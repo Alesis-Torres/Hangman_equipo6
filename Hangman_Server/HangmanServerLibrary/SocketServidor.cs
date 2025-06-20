@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows;
-using HangmanServerLibrary.GameServiceReference;
+
 using HangmanServerLibrary.Model;
 using System.Windows.Threading;
 using System.Diagnostics;
+using HangmanServerLibrary.GameServiceReference;
 
 
 namespace Hangman_Server
@@ -864,7 +865,7 @@ namespace Hangman_Server
                             }
                             else
                             {
-                                Console.WriteLine("⚠ Formato inválido en mensaje SALIR.");
+                                Console.WriteLine("Formato inválido en mensaje SALIR.");
                             }
                             break;
 
@@ -1002,23 +1003,27 @@ namespace Hangman_Server
                 Console.WriteLine("❌ Socket no conectado. Se omite el envío de estado.");
                 return;
             }
-
+            int idGanador = -1;
             string jugadoresConcat = string.Join(",", sala.Clientes.Select(c => c.Nickname));
             string estado = sala.EstadoPalabra ?? new string('_', sala.Palabra?.Length ?? 5);
             int intentos = 6 - sala.IntentosFallidos;
-
+            bool partidaFinalizada = false;
             string estadoLogico;
             if (intentos <= 0 && sala.Estado == "INICIADA")
             {
                 estadoLogico = sala.Clientes.Any(c => c.RolActual == "guesser" && c.Socket == socketIndividual)
                     ? "PERDISTE"
                     : "GANASTE";
+                partidaFinalizada = true;
+                idGanador = sala.idChallenger;
             }
             else if (!estado.Contains("_") && sala.Estado == "INICIADA")
             {
                 estadoLogico = sala.Clientes.Any(c => c.RolActual == "guesser" && c.Socket == socketIndividual)
                     ? "GANASTE"
                     : "PERDISTE";
+                partidaFinalizada = true;
+                idGanador = sala.idGuesser;
             }
             else
             {
@@ -1026,7 +1031,14 @@ namespace Hangman_Server
             }
             string turnoActual = sala.TurnoActual;
 
-            string estadoMensaje = $"ESTADO_PARTIDA|{estado}|INTENTOS:{intentos}|JUGADORES:{jugadoresConcat}|ESTADO:{estadoLogico}|LETRA:{sala.LetraPropuesta}|ACCION:{sala.AccionResultado}|TECLADO:{turnoActual}";
+            string estadoMensaje = $"ESTADO_PARTIDA|" +
+                $"{estado}|INTENTOS:{intentos}|" +
+                $"JUGADORES:{jugadoresConcat}|" +
+                $"ESTADO:{estadoLogico}|" +
+                $"LETRA:{sala.LetraPropuesta}|" +
+                $"ACCION:{sala.AccionResultado}|" +
+                $"TECLADO:{turnoActual}|" +
+                $"CODIGO:{sala.CodigoUnico}";
 
             try
             {
@@ -1036,53 +1048,40 @@ namespace Hangman_Server
             {
                 Console.WriteLine($"❌ Error enviando estado a un cliente: {ex.Message}");
             }
+            if (partidaFinalizada && !sala.PartidaRegistrada)
+            {
+                try
+                {
+                    var binding = new BasicHttpBinding();
+                    var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
+                    var factory = new ChannelFactory<IGameService>(binding, endpoint);
+                    var gameService = factory.CreateChannel();
 
+                    gameService.RegistrarPartidaFinalizada(
+                        sala.Id,
+                        sala.idChallenger,
+                        sala.idGuesser,
+                        sala.idPalabra,
+                        idGanador,
+                        sala.CodigoUnico
+                    );
+                    sala.PartidaRegistrada = true;
+                    Console.WriteLine($"✅ Partida {sala.Id} finalizada y registrada. Ganador: {idGanador}");
+
+                    ((IClientChannel)gameService).Close();
+                    factory.Close();
+
+                    LimpiarSala(sala.Id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Error registrando partida finalizada: {ex.Message}");
+                }
+            }
             if (limpiar)
             {
                 sala.LetraPropuesta = "";
                 sala.AccionResultado = "";
-            }
-        }
-
-        public void RegistrarPartidaFinalizada(int salaId, bool palabraAdivinada)
-        {
-            Console.WriteLine($"[GameService] Registrando partida para salaId={salaId}, palabraAdivinada={palabraAdivinada}");
-
-            if (!salasActivas.TryGetValue(salaId, out var sala))
-            {
-                Console.WriteLine("Sala no encontrada.");
-                return;
-            }
-
-            int idPlayerChallenger = sala.idChallenger;
-            int idPlayerGuesser = sala.idGuesser;
-            int idPalabra = sala.idPalabra;
-
-            if (idPlayerChallenger == 0 || idPlayerGuesser == 0 || idPalabra == 0)
-            {
-                Console.WriteLine($"❌ Error: Datos incompletos para registrar partida. Challenger={idPlayerChallenger}, Guesser={idPlayerGuesser}, Palabra={idPalabra}");
-                return;
-            }
-
-            string estado = "Finalizada";
-            int idGanador = palabraAdivinada ? idPlayerGuesser : idPlayerChallenger;
-
-            try
-            {
-                var binding = new BasicHttpBinding();
-                var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
-                var factory = new ChannelFactory<IGameService>(binding, endpoint);
-                var gameService = factory.CreateChannel();
-
-                gameService.RegistrarPartidaFinalizada(idPlayerChallenger, idPlayerGuesser, idPalabra, 1, idGanador);
-
-                Console.WriteLine("✅ Partida registrada correctamente en el servicio.");
-
-                LimpiarSala(salaId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error al registrar la partida en el servicio: {ex.Message}");
             }
         }
 
@@ -1160,7 +1159,7 @@ namespace Hangman_Server
                     }
                 }
 
-                if (!sala.PartidaInconclusaRegistrada && sala.idPalabra > 0)
+                if (!sala.PartidaRegistrada && sala.idPalabra > 0)
                 {
                     try
                     {
@@ -1290,7 +1289,7 @@ namespace Hangman_Server
             int idPalabra = sala.idPalabra;
             string codigoSala = sala.CodigoUnico;
 
-            if (!sala.Terminada && sala.idPalabra > 0 && !sala.PartidaInconclusaRegistrada)
+            if (!sala.Terminada && sala.idPalabra > 0 && !sala.PartidaRegistrada)
             {
                 try
                 {
@@ -1308,12 +1307,12 @@ namespace Hangman_Server
                         sala.CodigoUnico
                     );
 
-                    sala.PartidaInconclusaRegistrada = true;
+                    sala.PartidaRegistrada = true;
 
                     ((IClientChannel)gameService).Close();
                     factory.Close();
 
-                    Console.WriteLine($"✅ Partida {salaId} registrada como inconclusa.");
+                    Console.WriteLine($" Partida {salaId} registrada como inconclusa.");
                 }
                 catch (Exception ex)
                 {
@@ -1384,7 +1383,7 @@ namespace Hangman_Server
         public int idChallenger { get; set; }
         public int idGuesser { get; set; }
         public string TurnoActual { get; set; } = "GUESSER";
-        public bool PartidaInconclusaRegistrada { get; set; } = false;
+        public bool PartidaRegistrada { get; set; } = false;
         public List<JugadorConectado> Clientes { get; set; } = new List<JugadorConectado>();
     }
 }

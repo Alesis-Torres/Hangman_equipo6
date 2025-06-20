@@ -69,9 +69,6 @@
     <None Include="Connected Services\GameServiceReference\GameService2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\GameServiceReference\GameService3.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Connected Services\GameServiceReference\HangmanServerLibrary.GameServiceReference.CategoryDTO.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

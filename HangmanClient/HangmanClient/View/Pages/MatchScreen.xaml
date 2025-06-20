@@ -61,6 +61,7 @@
                 </TextBlock.Effect>
             </TextBlock>
             <TextBlock x:Name="LetraPropuestaTextBlock" Text="" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="Black"/>
+            <TextBlock x:Name="PalabraSeleccionadaTextBlock" Text="Palabra seleccionada: " FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="Black"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" HorizontalAlignment="Center">
                 <Button x:Name="ConfirmLetterButton" Padding="30,0,30,0" Height="30" Click="ConfirmarLetra_Click" Margin="0,0,10,0">
                     <Label x:Name="ConfirmLetterButtonText" Content="Confirmar letra" 

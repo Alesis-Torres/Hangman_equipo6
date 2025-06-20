@@ -4,117 +4,14 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model.DTO" />
+      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model.DTO" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IGameService_RechazarLetra_InputMessage">
-    <wsdl:part name="parameters" element="tns:RechazarLetra" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_RechazarLetra_OutputMessage">
-    <wsdl:part name="parameters" element="tns:RechazarLetraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_CrearSala_InputMessage">
-    <wsdl:part name="parameters" element="tns:CrearSala" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_CrearSala_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CrearSalaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_CrearSalaV2_InputMessage">
-    <wsdl:part name="parameters" element="tns:CrearSalaV2" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_CrearSalaV2_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CrearSalaV2Response" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerSalaIdPorCodigo_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSalaIdPorCodigo" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerSalaIdPorCodigo_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSalaIdPorCodigoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_UnirseSala_InputMessage">
-    <wsdl:part name="parameters" element="tns:UnirseSala" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_UnirseSala_OutputMessage">
-    <wsdl:part name="parameters" element="tns:UnirseSalaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_Salir_InputMessage">
-    <wsdl:part name="parameters" element="tns:Salir" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_Salir_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SalirResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerPalabraPorSala_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerPalabraPorSala" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerPalabraPorSala_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerPalabraPorSalaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerCodigoDeSala_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCodigoDeSala" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerCodigoDeSala_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCodigoDeSalaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EsPartidaTerminada_InputMessage">
-    <wsdl:part name="parameters" element="tns:EsPartidaTerminada" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EsPartidaTerminada_OutputMessage">
-    <wsdl:part name="parameters" element="tns:EsPartidaTerminadaResponse" />
-  </wsdl:message>
   <wsdl:message name="IGameService_ProbarConexion_InputMessage">
     <wsdl:part name="parameters" element="tns:ProbarConexion" />
   </wsdl:message>
   <wsdl:message name="IGameService_ProbarConexion_OutputMessage">
     <wsdl:part name="parameters" element="tns:ProbarConexionResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerSalas_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSalas" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerSalas_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSalasResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerEstadoPalabra_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerEstadoPalabra" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerEstadoPalabra_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerEstadoPalabraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIntentosRestantes_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIntentosRestantes" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIntentosRestantes_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIntentosRestantesResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerLetraPropuesta_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerLetraPropuesta" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerLetraPropuesta_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerLetraPropuestaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EnviarLetra_InputMessage">
-    <wsdl:part name="parameters" element="tns:EnviarLetra" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EnviarLetra_OutputMessage">
-    <wsdl:part name="parameters" element="tns:EnviarLetraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ConfirmarLetra_InputMessage">
-    <wsdl:part name="parameters" element="tns:ConfirmarLetra" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ConfirmarLetra_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ConfirmarLetraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_AgregarJugador_InputMessage">
-    <wsdl:part name="parameters" element="tns:AgregarJugador" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_AgregarJugador_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AgregarJugadorResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerJugadoresEnSala_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerJugadoresEnSala" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerJugadoresEnSala_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerJugadoresEnSalaResponse" />
   </wsdl:message>
   <wsdl:message name="IGameService_RegistrarPartidaInconclusa_InputMessage">
     <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusa" />
@@ -127,30 +24,6 @@
   </wsdl:message>
   <wsdl:message name="IGameService_RegistrarPartidaFinalizada_OutputMessage">
     <wsdl:part name="parameters" element="tns:RegistrarPartidaFinalizadaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EstablecerPalabra_InputMessage">
-    <wsdl:part name="parameters" element="tns:EstablecerPalabra" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_EstablecerPalabra_OutputMessage">
-    <wsdl:part name="parameters" element="tns:EstablecerPalabraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIdGuesser_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIdGuesser" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIdGuesser_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIdGuesserResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIdWord_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIdWord" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerIdWord_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerIdWordResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerJugadoresEnPartida_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerJugadoresEnPartida" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_ObtenerJugadoresEnPartida_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerJugadoresEnPartidaResponse" />
   </wsdl:message>
   <wsdl:message name="IGameService_ObtenerPalabrasPorCategoria_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerPalabrasPorCategoria" />
@@ -165,77 +38,9 @@
     <wsdl:part name="parameters" element="tns:ObtenerCategoriasResponse" />
   </wsdl:message>
   <wsdl:portType name="IGameService">
-    <wsdl:operation name="RechazarLetra">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RechazarLetra" message="tns:IGameService_RechazarLetra_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RechazarLetraResponse" message="tns:IGameService_RechazarLetra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CrearSala">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/CrearSala" message="tns:IGameService_CrearSala_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/CrearSalaResponse" message="tns:IGameService_CrearSala_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CrearSalaV2">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/CrearSalaV2" message="tns:IGameService_CrearSalaV2_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/CrearSalaV2Response" message="tns:IGameService_CrearSalaV2_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerSalaIdPorCodigo">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerSalaIdPorCodigo" message="tns:IGameService_ObtenerSalaIdPorCodigo_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerSalaIdPorCodigoResponse" message="tns:IGameService_ObtenerSalaIdPorCodigo_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="UnirseSala">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/UnirseSala" message="tns:IGameService_UnirseSala_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/UnirseSalaResponse" message="tns:IGameService_UnirseSala_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="Salir">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/Salir" message="tns:IGameService_Salir_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/SalirResponse" message="tns:IGameService_Salir_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerPalabraPorSala">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerPalabraPorSala" message="tns:IGameService_ObtenerPalabraPorSala_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerPalabraPorSalaResponse" message="tns:IGameService_ObtenerPalabraPorSala_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerCodigoDeSala">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerCodigoDeSala" message="tns:IGameService_ObtenerCodigoDeSala_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerCodigoDeSalaResponse" message="tns:IGameService_ObtenerCodigoDeSala_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="EsPartidaTerminada">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/EsPartidaTerminada" message="tns:IGameService_EsPartidaTerminada_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/EsPartidaTerminadaResponse" message="tns:IGameService_EsPartidaTerminada_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="ProbarConexion">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ProbarConexion" message="tns:IGameService_ProbarConexion_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ProbarConexionResponse" message="tns:IGameService_ProbarConexion_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerSalas">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerSalas" message="tns:IGameService_ObtenerSalas_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerSalasResponse" message="tns:IGameService_ObtenerSalas_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerEstadoPalabra">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerEstadoPalabra" message="tns:IGameService_ObtenerEstadoPalabra_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerEstadoPalabraResponse" message="tns:IGameService_ObtenerEstadoPalabra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIntentosRestantes">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerIntentosRestantes" message="tns:IGameService_ObtenerIntentosRestantes_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerIntentosRestantesResponse" message="tns:IGameService_ObtenerIntentosRestantes_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerLetraPropuesta">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerLetraPropuesta" message="tns:IGameService_ObtenerLetraPropuesta_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerLetraPropuestaResponse" message="tns:IGameService_ObtenerLetraPropuesta_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="EnviarLetra">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/EnviarLetra" message="tns:IGameService_EnviarLetra_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/EnviarLetraResponse" message="tns:IGameService_EnviarLetra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ConfirmarLetra">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ConfirmarLetra" message="tns:IGameService_ConfirmarLetra_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ConfirmarLetraResponse" message="tns:IGameService_ConfirmarLetra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="AgregarJugador">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/AgregarJugador" message="tns:IGameService_AgregarJugador_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/AgregarJugadorResponse" message="tns:IGameService_AgregarJugador_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerJugadoresEnSala">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSala" message="tns:IGameService_ObtenerJugadoresEnSala_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSalaResponse" message="tns:IGameService_ObtenerJugadoresEnSala_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="RegistrarPartidaInconclusa">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" message="tns:IGameService_RegistrarPartidaInconclusa_InputMessage" />
@@ -244,22 +49,6 @@
     <wsdl:operation name="RegistrarPartidaFinalizada">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" message="tns:IGameService_RegistrarPartidaFinalizada_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse" message="tns:IGameService_RegistrarPartidaFinalizada_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="EstablecerPalabra">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/EstablecerPalabra" message="tns:IGameService_EstablecerPalabra_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/EstablecerPalabraResponse" message="tns:IGameService_EstablecerPalabra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIdGuesser">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerIdGuesser" message="tns:IGameService_ObtenerIdGuesser_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerIdGuesserResponse" message="tns:IGameService_ObtenerIdGuesser_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIdWord">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerIdWord" message="tns:IGameService_ObtenerIdWord_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerIdWordResponse" message="tns:IGameService_ObtenerIdWord_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerJugadoresEnPartida">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnPartida" message="tns:IGameService_ObtenerJugadoresEnPartida_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnPartidaResponse" message="tns:IGameService_ObtenerJugadoresEnPartida_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerPalabrasPorCategoria">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoria" message="tns:IGameService_ObtenerPalabrasPorCategoria_InputMessage" />
@@ -272,161 +61,8 @@
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IGameService" type="tns:IGameService">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="RechazarLetra">
-      <soap:operation soapAction="http://tempuri.org/IGameService/RechazarLetra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="CrearSala">
-      <soap:operation soapAction="http://tempuri.org/IGameService/CrearSala" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="CrearSalaV2">
-      <soap:operation soapAction="http://tempuri.org/IGameService/CrearSalaV2" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerSalaIdPorCodigo">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerSalaIdPorCodigo" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="UnirseSala">
-      <soap:operation soapAction="http://tempuri.org/IGameService/UnirseSala" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="Salir">
-      <soap:operation soapAction="http://tempuri.org/IGameService/Salir" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerPalabraPorSala">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerPalabraPorSala" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerCodigoDeSala">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerCodigoDeSala" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="EsPartidaTerminada">
-      <soap:operation soapAction="http://tempuri.org/IGameService/EsPartidaTerminada" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="ProbarConexion">
       <soap:operation soapAction="http://tempuri.org/IGameService/ProbarConexion" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerSalas">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerSalas" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerEstadoPalabra">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerEstadoPalabra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIntentosRestantes">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerIntentosRestantes" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerLetraPropuesta">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerLetraPropuesta" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="EnviarLetra">
-      <soap:operation soapAction="http://tempuri.org/IGameService/EnviarLetra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ConfirmarLetra">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ConfirmarLetra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="AgregarJugador">
-      <soap:operation soapAction="http://tempuri.org/IGameService/AgregarJugador" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerJugadoresEnSala">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerJugadoresEnSala" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -445,42 +81,6 @@
     </wsdl:operation>
     <wsdl:operation name="RegistrarPartidaFinalizada">
       <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="EstablecerPalabra">
-      <soap:operation soapAction="http://tempuri.org/IGameService/EstablecerPalabra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIdGuesser">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerIdGuesser" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerIdWord">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerIdWord" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerJugadoresEnPartida">
-      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerJugadoresEnPartida" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

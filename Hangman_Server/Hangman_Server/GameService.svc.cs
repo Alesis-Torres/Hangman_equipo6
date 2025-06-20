@@ -14,143 +14,42 @@ namespace Hangman_Server
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class GameService : IGameService
     {
-        
 
         public string ProbarConexion()
         {
             return "Conexión establecida";
         }
 
-        public string ObtenerSalas()
+        public void RegistrarPartidaFinalizada(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala)
         {
-            return "TEST OBTENER SALA CLIENTE";
-        }
+            Console.WriteLine($"[GameService] Registrando partida finalizada. salaId={salaId}, idDesconectado={idDesconectado}, idPalabra={idPalabra}");
 
-        public string ObtenerPalabraPorSala(int salaId)
-        {
-            return "TEST";
-        }
-        public int CrearSala(string nombreJugador, int idCliente)
-        {
-            return 99999999;
-        }
-        public int CrearSalaV2(string nombreJugador, int idCliente)
-        {
-            return 99999999;
-        }
-        public int EstablecerPalabra(int idSala, string palabra)
-        {
-            int mensaje = 9999;
-            return mensaje;
-        }
-        public bool EsPartidaTerminada(int salaId)
-        {
-            return false;
-        }
-
-        public string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser)
-        {
-            return "TEST";
-        }
-
-        public void Salir(int salaId, string nombreJugador)
-        {
-        }
-
-        public int ObtenerJugadoresEnSala(int salaId)
-        {
-            return 999;
-        }
-        public string AgregarJugador(int salaId, string nombreJugador)
-        {
-            return "TEST";
-        }
-
-        public string ObtenerEstadoPalabra(int salaId)
-        {
-            try
+            using (var db = new HangmanEntities())
             {
-                return "TEST";
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        public int ObtenerIntentosRestantes(int salaId)
-        {
-            try
-            {
-                return 9999;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        public string ObtenerLetraPropuesta(int salaId)
-        {
-            try
-            {
-                return "TEST";
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        public void EnviarLetra(int salaId, string letra)
-        {
-
-        }
-
-        public string ConfirmarLetra(int salaId, string letra)
-        {
-            return "TEST";
-        }
-
-        public string RechazarLetra(int salaId, string letra)
-        {
-            return "TEST";
-        }
-        public int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador)
-        {
-            Console.WriteLine($"[WCF] Registrando partida finalizada - Challenger: {idChallenger}, Guesser: {idGuesser}, Palabra: {idPalabra}, Estado: {idEstado}, Ganador: {idJugadorGanador}");
-
-            try
-            {
-                if (idChallenger <= 0 || idGuesser <= 0 || idPalabra <= 0 || idEstado <= 0 || idJugadorGanador <= 0)
+                var palabra = db.word.FirstOrDefault(w => w.id_word == idPalabra);
+                if (palabra == null)
                 {
-                    Console.WriteLine(" Datos inválidos para el registro.");
-                    return 0;
+                    Console.WriteLine($"No se encontró la palabra con ID '{idPalabra}' en la base de datos.");
+                    return;
                 }
 
-                using (var db = new HangmanEntities())
+                var gamematch = new gamematch
                 {
-                    var partida = new gamematch
-                    {
-                        id_player_challenger = idChallenger,
-                        id_player_guesser = idGuesser,
-                        id_word = idPalabra,
-                        id_gamematch_status = idEstado,
-                        id_playerinfo = idJugadorGanador,
-                        date_finished = DateTime.Now
-                    };
+                    id_player_challenger = idChallenger,
+                    id_player_guesser = idGuesser,
+                    id_playerinfo = idDesconectado,
+                    id_word = idPalabra,
+                    id_gamematch_status = 1,
+                    code = codigoSala,
+                    date_finished = DateTime.Now
+                };
 
-                    db.gamematch.Add(partida);
-                    db.SaveChanges();
+                db.gamematch.Add(gamematch);
+                db.SaveChanges();
 
-                    Console.WriteLine(" Partida registrada correctamente en la base de datos.");
-                    return 1;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($" Error al registrar partida: {ex.Message}");
-                return -1;
+
+                db.SaveChanges();
+                Console.WriteLine($"Partida Finalizada registrada correctamente. id_gamematch={gamematch.id_gamematch}");
             }
         }
         public void RegistrarPartidaInconclusa(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala)
@@ -172,7 +71,7 @@ namespace Hangman_Server
                     id_player_guesser = idGuesser,
                     id_playerinfo = idDesconectado,
                     id_word = idPalabra,
-                    id_gamematch = 2, //INCONCLUSA
+                    id_gamematch_status = 2, 
                     code = codigoSala,
                     date_finished = DateTime.Now
                 };
@@ -185,29 +84,7 @@ namespace Hangman_Server
                 Console.WriteLine($"Partida inconclusa registrada correctamente. id_gamematch={gamematch.id_gamematch}");
             }
         }
-        public int ObtenerSalaIdPorCodigo(string codigo)
-        {
-            //var id = _servidor.ObtenerSalaIdPorCodigo(codigo);
-            return  -1;
-        }
-        public string ObtenerCodigoDeSala(int salaId)
-        {
-            return "TEST";
-        }
-        public int ObtenerIdGuesser(int salaId)
-        {
-                return 0;
-        }
-        public List<string> ObtenerJugadoresEnPartida(int salaId)
-        {
-            List<string> test =  null;
-            return test;
-        }
-        public int ObtenerIdWord(int salaId)
-        {
-                
-                return 0;
-        }
+        
         public List<CategoryDTO> ObtenerCategorias(int idLanguage)
         {
             using (var db = new HangmanEntities())
