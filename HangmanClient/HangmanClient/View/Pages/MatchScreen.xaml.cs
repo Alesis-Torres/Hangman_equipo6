@@ -536,8 +536,9 @@ namespace HangmanClient.View.Pages
                 {
                     int idSala = salaId;
                     string palabra = palabraSeleccionada.Name;
-                    string comando = $"PALABRA|{palabraSeleccionada.Name}|{idSala}";
+                    int idPalabra = palabraSeleccionada.Id;
 
+                    string comando = $"PALABRA|{palabra}|{idSala}|{idPalabra}";
                     SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
                 }
                 catch (Exception ex)

@@ -29,7 +29,7 @@ namespace Hangman_Server
         [OperationContract]
         bool NicknameExiste(string nickname);
         [OperationContract]
-        List<string> ObtenerHistorialPartidas(int playerId);
+        List<string> ObtenerHistorialPartidas(int playerId, int idLanguage);
         [OperationContract]
         int ObtenerIdPorUsername(string username);
     }

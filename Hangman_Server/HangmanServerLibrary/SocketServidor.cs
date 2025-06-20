@@ -50,7 +50,7 @@ namespace Hangman_Server
                 servidor.Start();
                 enEjecucion = true;
                 Console.WriteLine("Servidor Socket iniciado correctamente.");
-                new Thread(() => VerificarDesconectadosPorPing())
+                new Thread(() => VerificarDesconectadosSocket())
                 {
                     IsBackground = true
                 }.Start();
@@ -66,54 +66,64 @@ namespace Hangman_Server
                 Console.WriteLine($"Error al iniciar el servidor: {ex.Message}");
             }
         }
-
-        private void VerificarDesconectadosPorPing()
+        private bool SocketActivo(Socket socket)
+        {
+            try
+            {
+                return !(socket.Poll(1000, SelectMode.SelectRead) && socket.Available == 0);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private void VerificarDesconectadosSocket()
         {
             while (true)
             {
-                Thread.Sleep(60000);
-                List<JugadorConectado> desconectados = new List<JugadorConectado>();
-
+                Thread.Sleep(5000);
+                var desconectados = new List<JugadorConectado>();
+                
                 lock (locker)
                 {
                     foreach (var jugador in JugadoresConectados.Values.ToList())
                     {
-                        DateTime ultimoPing = jugador.UltimoPing;
-                        bool timeout = (DateTime.UtcNow - ultimoPing) > tiempoLimiteInactividad;
-                        bool pollDetectado = false;
-
-                        if (jugador.Socket != null && jugador.Socket.Connected)
-                        {
-                            try
-                            {
-                                pollDetectado = jugador.Socket.Poll(120000, SelectMode.SelectRead) && jugador.Socket.Available == 0;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"[Error] Verificando socket de {jugador.Nickname}: {ex.Message}");
-                                pollDetectado = true;
-                            }
-                        }
-
-                        if (timeout || pollDetectado)
+                        if (!SocketActivo(jugador.Socket))
                         {
                             desconectados.Add(jugador);
-                            Console.WriteLine(timeout
-                                ? $"[Timeout] Usuario {jugador.Nickname} inactivo desde {ultimoPing:T}"
-                                : $"[Desconectado] Socket de {jugador.Nickname} está cerrado (Poll detectado)");
                         }
                     }
 
                     foreach (var jugador in desconectados)
                     {
-                        JugadoresConectados.Remove(jugador.IdPlayer);
-                        NotificarDesconexionEnPartida(jugador.IdPlayer);
+                        int salaId = ObtenerSalaIdPorJugador(jugador.IdPlayer);
+                        bool otroJugadorActivo = false;
 
+                        if (salaId != -1 && salasActivas.TryGetValue(salaId, out var sala))
+                        {
+                            otroJugadorActivo = sala.Clientes.Any(j =>
+                                j.IdPlayer != jugador.IdPlayer &&
+                                SocketActivo(j.Socket));
+                        }
+
+                        if (salaId == -1 || !otroJugadorActivo)
+                        {
+                            Console.WriteLine($"Desconectado {jugador.Nickname}, pero no se registra (sala: {salaId}, otro activo: {otroJugadorActivo})");
+                        }
+                        else
+                        {
+                            Console.WriteLine($" Desconectado {jugador.Nickname}, registrando partida inconclusa");
+                            NotificarDesconexionEnPartida(jugador.IdPlayer);
+                        }
+
+                        JugadoresConectados.Remove(jugador.IdPlayer);
                     }
+
+                    EliminarSalasVacias();
                 }
+
                 MonitorearSalas();
                 MonitorearClientes();
-                EliminarSalasVacias();
             }
         }
 
@@ -196,44 +206,68 @@ namespace Hangman_Server
         {
             lock (locker)
             {
-                if (salasActivas.TryGetValue(salaId, out var sala))
+                if (!salasActivas.TryGetValue(salaId, out var sala))
+                    return;
+
+                sala.Clientes.RemoveAll(c => c.Nombre.Equals(nombreJugador, StringComparison.OrdinalIgnoreCase));
+
+                if (sala.Clientes.Count == 0)
                 {
-                    sala.Clientes.RemoveAll(c => c.Nombre.Equals(nombreJugador, StringComparison.OrdinalIgnoreCase));
-
-                    if (sala.Clientes.Count == 0)
+                    if (sala.Terminada)
                     {
-                        if (sala.Terminada)
-                        {
-                            salasActivas.Remove(salaId);
-                            Console.WriteLine($"Sala {salaId} limpiada tras finalizar partida.");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[Salir] Último jugador salió antes de finalizar la partida en sala {salaId}.");
+                        salasActivas.Remove(salaId);
+                        Console.WriteLine($"Sala {salaId} limpiada tras finalizar partida.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[Salir] Último jugador salió antes de finalizar la partida en sala {salaId}.");
 
-                            try
+                        try
+                        {
+                            int idDesconectado;
+                            if (JugadoresConectados.TryGetValue(sala.idGuesser, out var guesser) &&
+                                guesser.Nickname.Equals(nombreJugador, StringComparison.OrdinalIgnoreCase))
                             {
-                                int idDesconectado = nombreJugador == JugadoresConectados[sala.idGuesser]?.Nickname
-                                    ? sala.idGuesser
-                                    : sala.idChallenger;
-
-                                if (sala.idChallenger != 0 && sala.idGuesser != 0 && idDesconectado != 0)
-                                {
-                                   var factory = new ChannelFactory<IGameService>("*");
-                                   var gameService = factory.CreateChannel();
-
-                                   gameService.RegistrarPartidaInconclusa(salaId, idDesconectado, sala.Palabra);
-                                   Console.WriteLine($"Partida inconclusa registrada al salir el último jugador en sala {salaId}.");
-                                }
+                                idDesconectado = sala.idGuesser;
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                Console.WriteLine($"Error al registrar partida inconclusa desde Salir(): {ex.Message}");
+                                idDesconectado = sala.idChallenger;
                             }
 
-                            salasActivas.Remove(salaId);
-                            Console.WriteLine($" Sala {salaId} eliminada.");
+                            if (sala.idChallenger != 0 && sala.idGuesser != 0 && idDesconectado != 0 && sala.idPalabra != 0)
+                            {
+                                var binding = new BasicHttpBinding();
+                                var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
+                                var factory = new ChannelFactory<IGameService>(binding, endpoint);
+                                var gameService = factory.CreateChannel();
+
+                                gameService.RegistrarPartidaInconclusa(
+                                    sala.Id,
+                                    sala.idChallenger,
+                                    sala.idGuesser,
+                                    sala.idPalabra,
+                                    idDesconectado,
+                                    sala.CodigoUnico
+                                );
+
+                                ((IClientChannel)gameService).Close();
+                                factory.Close();
+
+                                Console.WriteLine($"✅ Partida inconclusa registrada desde Salir() en sala {salaId}.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"❌ No se pudo registrar partida inconclusa: datos incompletos.");
+                            }
                         }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[ERROR] Fallo al registrar partida inconclusa desde Salir(): {ex.Message}");
+                        }
+
+                        salasActivas.Remove(salaId);
+                        Console.WriteLine($"🧹 Sala {salaId} eliminada.");
                     }
                 }
             }
@@ -450,7 +484,7 @@ namespace Hangman_Server
                                     if (JugadoresConectados.ContainsKey(idJugador))
                                     {
                                         socketCliente.Send(Encoding.UTF8.GetBytes("DUPLICADO\n"));
-                                        break; 
+                                        break;
                                     }
 
                                     JugadoresConectados[idJugador] = new JugadorConectado
@@ -463,13 +497,13 @@ namespace Hangman_Server
 
                                     socketCliente.Send(Encoding.UTF8.GetBytes("LOGIN_OK\n"));
                                 }
+                                idJugadorActual = idJugador;
                             }
                             else
                             {
                                 socketCliente.Send(Encoding.UTF8.GetBytes("ERROR|FORMATO_LOGIN\n"));
                             }
                             break;
-
                         case "LOGOUT":
                             if (partes.Length >= 2)
                             {
@@ -500,26 +534,15 @@ namespace Hangman_Server
                             }
                             break;
 
-                        case "PING":
-                            if (partes.Length >= 3 &&
-                                int.TryParse(partes[2], out int idPing))
-                            {
-                                lock (locker)
-                                {
-                                    if (JugadoresConectados.ContainsKey(idPing))
-                                    {
-                                        JugadoresConectados[idPing].UltimoPing = DateTime.UtcNow;
-                                    }
-                                }
-                                idJugadorActual = idPing;
-                            }
-                            break;
-
                         case "CREAR_SALA":
-                            if (partes.Length >= 4 && int.TryParse(partes[1], out int idJugadorCrear) && int.TryParse(partes[3], out int idioma))
+                            if (partes.Length >= 4 &&
+                                int.TryParse(partes[1], out int idJugadorCrear) &&
+                                int.TryParse(partes[3], out int idioma))
                             {
                                 string nickname = partes[2];
-                                CrearSala(idJugadorCrear, nickname, idioma, socketCliente);
+
+                                salaId = CrearSala(idJugadorCrear, nickname, idioma, socketCliente);
+                                idJugadorActual = idJugadorCrear;
                             }
                             else
                             {
@@ -590,25 +613,245 @@ namespace Hangman_Server
                             }
                             break;
 
-                        case "UNIRSE_SALA":
-                        case "UNIRSE_CODIGO":
-                        case "PALABRA":
-                        case "LETRA":
-                        case "RECHAZAR_LETRA":
-                        case "CONFIRMAR_LETRA": 
-                        case "SOLICITAR_ESTADO":
-                        case "SALIR":
-                        
-                            AtenderSalaCliente(socketCliente, mensaje, partes);
-                            if (comando == "SALIR")
+                        case "CONFIRMAR_LETRA":
+                            if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaConfirmar))
                             {
+                                string letra = partes[1].Trim();
+                                lock (locker)
+                                {
+                                    if (!salasActivas.ContainsKey(idSalaConfirmar))
+                                        break;
+
+                                    var sala = salasActivas[idSalaConfirmar];
+                                    salaId = idSalaConfirmar;
+
+                                    var jugador = sala.Clientes.FirstOrDefault(c => c.Socket == socketCliente);
+                                    if (jugador != null)
+                                        idJugadorActual = jugador.IdPlayer;
+
+                                    string resultado = ConfirmarLetra(sala, letra);
+                                    Console.WriteLine($"[CONFIRMAR_LETRA] Resultado: {resultado}");
+
+                                    foreach (var cliente in sala.Clientes)
+                                    {
+                                        ActualizarPartida(sala, cliente.Socket, true);
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "RECHAZAR_LETRA":
+                            if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaRechazo))
+                            {
+                                string letra = partes[1].Trim();
+                                lock (locker)
+                                {
+                                    if (!salasActivas.ContainsKey(idSalaRechazo))
+                                        break;
+
+                                    var sala = salasActivas[idSalaRechazo];
+                                    salaId = idSalaRechazo;
+
+                                    var jugador = sala.Clientes.FirstOrDefault(c => c.Socket == socketCliente);
+                                    if (jugador != null)
+                                        idJugadorActual = jugador.IdPlayer;
+
+                                    string resultado = ConfirmarRechazoLetra(sala, letra);
+                                    Console.WriteLine($"[RECHAZAR_LETRA] Resultado: {resultado}");
+
+                                    foreach (var cliente in sala.Clientes)
+                                    {
+                                        ActualizarPartida(sala, cliente.Socket, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case "LETRA":
+                            if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaLetra))
+                            {
+                                string letra = partes[1].Trim();
+
+                                lock (locker)
+                                {
+                                    if (salasActivas.TryGetValue(idSalaLetra, out var salaLocal))
+                                    {
+                                        salaLocal.LetraPropuesta = letra;
+                                        salaLocal.AccionResultado = "";
+                                        salaLocal.TurnoActual = "CHALLENGER";
+
+                                        salaId = idSalaLetra;
+
+                                        var jugador = salaLocal.Clientes.FirstOrDefault(c => c.Socket == socketCliente);
+                                        if (jugador != null)
+                                            idJugadorActual = jugador.IdPlayer;
+
+                                        foreach (var cliente in salaLocal.Clientes)
+                                        {
+                                            ActualizarPartida(salaLocal, cliente.Socket, true);
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "UNIRSE_SALA":
+                            if (partes.Length >= 4 &&
+                                int.TryParse(partes[1], out int idSala) &&
+                                int.TryParse(partes[3], out int idPlayer))
+                            {
+                                string nickname = partes[2];
+
+                                string resultado = UnirseSala(idSala, nickname, idPlayer);
+
+                                lock (locker)
+                                {
+                                    if (salasActivas.TryGetValue(idSala, out var salaLocal))
+                                    {
+                                        if (!salaLocal.Clientes.Any(c => c.IdPlayer == idPlayer))
+                                        {
+                                            var jugador = new JugadorConectado
+                                            {
+                                                IdPlayer = idPlayer,
+                                                Nickname = nickname,
+                                                Nombre = nickname,
+                                                RolActual = "guesser",
+                                                Socket = socketCliente,
+                                                UltimoPing = DateTime.UtcNow
+                                            };
+
+                                            salaLocal.Clientes.Add(jugador);
+                                            salaLocal.idGuesser = idPlayer;
+                                            JugadoresConectados[idPlayer] = jugador;
+                                        }
+                                        VerificarInicioDePartida(salaLocal);
+                                        ActualizarPartida(salaLocal, socketCliente, false);
+
+                                    }
+                                }
+                                socketCliente.Send(Encoding.UTF8.GetBytes(resultado));
+                                MostrarEstadoSala(idSala);
+                            }
+                            break;
+
+                        case "PALABRA":
+                            if (partes.Length >= 4 &&
+                                int.TryParse(partes[2], out int idSalaPalabra) &&
+                                int.TryParse(partes[3], out int idPalabra))
+                            {
+                                string palabra = partes[1].Trim();
+                                int resultado = EstablecerPalabra(idSalaPalabra, palabra,idPalabra);
+
+                                if (salasActivas.TryGetValue(idSalaPalabra, out SalaJuego sala))
+                                {
+
+                                    sala.idPalabra = idPalabra;
+
+                                    Console.WriteLine("PALABRA " + sala.Id);
+                                    VerificarInicioDePartida(sala);
+                                    ActualizarPartida(sala, socketCliente, false);
+                                }
+
+                                string respuesta;
+                                switch (resultado)
+                                {
+                                    case 1:
+                                        respuesta = "PALABRA_ESTABLECIDA\n";
+                                        break;
+                                    case -2:
+                                        respuesta = "YA_HAY_PALABRA\n";
+                                        break;
+                                    default:
+                                        respuesta = "ERROR_PALABRA\n";
+                                        break;
+                                }
+
+                                socketCliente.Send(Encoding.UTF8.GetBytes(respuesta));
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR_FORMATO_PALABRA\n"));
+                            }
+                            break;
+                        case "UNIRSE_CODIGO":
+                            if (partes.Length >= 4)
+                            {
+                                string codigo = partes[1].Trim();
+                                string nickname = partes[2];
+                                if (!int.TryParse(partes[3], out int idGuesser))
+                                {
+                                    socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: ID inválido\n"));
+                                    break;
+                                }
+
+                                lock (locker)
+                                {
+                                    var salaLocal = salasActivas.Values.FirstOrDefault(s => s.CodigoUnico.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+                                    if (salaLocal == null)
+                                    {
+                                        socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Código de sala no encontrado\n"));
+                                        break;
+                                    }
+
+                                    var jugador = new JugadorConectado
+                                    {
+                                        IdPlayer = idGuesser,
+                                        Nickname = nickname,
+                                        Nombre = nickname,
+                                        RolActual = "guesser",
+                                        Socket = socketCliente,
+                                        UltimoPing = DateTime.UtcNow
+                                    };
+
+                                    JugadoresConectados[idGuesser] = jugador;
+
+                                    if (!salaLocal.Clientes.Any(c => c.IdPlayer == idGuesser))
+                                    {
+                                        salaLocal.Clientes.Add(jugador);
+                                        salaLocal.idGuesser = idGuesser;
+                                    }
+
+                                    salaId = salaLocal.Id;
+                                    idJugadorActual = idGuesser;
+
+                                    socketCliente.Send(Encoding.UTF8.GetBytes($"UNIDO|{salaLocal.Id}\n"));
+                                }
+                            }
+                            else
+                            {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Formato UNIRSE_CODIGO inválido\n"));
+                            }
+                            break;
+                        case "SOLICITAR_ESTADO":
+                            if (partes.Length >= 2 && int.TryParse(partes[1], out int idSalaEstado))
+                            {
+                                lock (locker)
+                                {
+                                    if (salasActivas.TryGetValue(idSalaEstado, out var salaEstado))
+                                    {
+                                        VerificarInicioDePartida(salaEstado);
+                                        ActualizarPartida(salaEstado, socketCliente, false);
+                                    }
+                                }
+                            }
+                            break;
+                        case "SALIR":
+                            if (partes.Length >= 3 &&
+                                int.TryParse(partes[1], out int idJugadorSalir) &&
+                                int.TryParse(partes[2], out int idSalaSalir))
+                            {
+                                NotificarSalidaJugador(idJugadorSalir, idSalaSalir);
                                 continuar = false;
+                            }
+                            else
+                            {
+                                Console.WriteLine("⚠ Formato inválido en mensaje SALIR.");
                             }
                             break;
 
                         default:
                             Console.WriteLine($"[Advertencia] Comando no reconocido: {comando}");
                             break;
+
                     }
                 }
             }
@@ -692,8 +935,9 @@ namespace Hangman_Server
             return nuevaSalaId;
         }
         
-        private void CrearSala(int idJugador, string nickname, int idioma, Socket socketCliente)
+        private int CrearSala(int idJugador, string nickname, int idioma, Socket socketCliente)
         {
+            int salacreacion = -1;
             lock (locker)
             {
                 var sala = new SalaJuego
@@ -705,7 +949,7 @@ namespace Hangman_Server
                     idGuesser = 0,
                     Idioma = idioma
                 };
-
+                salacreacion = sala.Id;
                 sala.Clientes.Add(new JugadorConectado
                 {
                     IdPlayer = idJugador,
@@ -720,6 +964,7 @@ namespace Hangman_Server
 
                 socketCliente.Send(Encoding.UTF8.GetBytes($"SALA_CREADA|{sala.Id}\n"));
             }
+            return salacreacion;
         }
 
         private void AtenderSalaCliente(Socket socketCliente, string mensaje, string[] partes)
@@ -730,227 +975,7 @@ namespace Hangman_Server
 
             switch (comando)
             {
-                case "CONFIRMAR_LETRA":
-                    if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaConfirmar))
-                    {
-                        string letra = partes[1].Trim();
-                        lock (locker)
-                        {
-                            if (!salasActivas.ContainsKey(idSalaConfirmar))
-                            {
-                                break;
-                            }
-                            else {
-                                sala = salasActivas[idSalaConfirmar];
-                                string resultado = ConfirmarLetra(sala, letra);
-                                Console.WriteLine($"[CONFIRMAR_LETRA] Resultado: {resultado}");
-
-                                foreach (var cliente in sala.Clientes)
-                                {
-                                    ActualizarPartida(sala, cliente.Socket, true);
-                                }
-                            }   
-                        }   
-                    }
-                    break;
-
-                case "RECHAZAR_LETRA":
-                    if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaRechazo))
-                    {
-                        string letra = partes[1].Trim();
-                        lock (locker)
-                        {
-                            if (!salasActivas.ContainsKey(idSalaRechazo))
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                sala = salasActivas[idSalaRechazo];
-                                string resultado = ConfirmarRechazoLetra(sala, letra);
-                                Console.WriteLine($"[RECHAZAR_LETRA] Resultado: {resultado}");
-
-                                foreach (var cliente in sala.Clientes)
-                                {
-                                    ActualizarPartida(sala, cliente.Socket, true); 
-                                }
-                            }
-                        }
-                    }
-                    break;
-                case "LETRA":
-                    if (partes.Length >= 3 && int.TryParse(partes[2], out int idSalaLetra))
-                    {
-                        string letra = partes[1].Trim();
-
-                        lock (locker)
-                        {
-                            if (salasActivas.TryGetValue(idSalaLetra, out var salaLocal))
-                            {
-                                salaLocal.LetraPropuesta = letra;
-                                salaLocal.AccionResultado = "";
-                                salaLocal.TurnoActual = "CHALLENGER";
-                                foreach (var cliente in salaLocal.Clientes)
-                                {
-                                    ActualizarPartida(salaLocal, cliente.Socket, true);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                    
-                case "UNIRSE_SALA":
-                    if (partes.Length >= 4 &&
-                        int.TryParse(partes[1], out int idSala) &&
-                        int.TryParse(partes[3], out int idPlayer))
-                    {
-                        string nickname = partes[2];
-
-                        string resultado = UnirseSala(idSala, nickname, idPlayer);
-
-                        lock (locker)
-                        {
-                            if (salasActivas.TryGetValue(idSala, out var salaLocal))
-                            {
-                                if (!salaLocal.Clientes.Any(c => c.IdPlayer == idPlayer))
-                                {
-                                    var jugador = new JugadorConectado
-                                    {
-                                        IdPlayer = idPlayer,
-                                        Nickname = nickname,
-                                        Nombre = nickname,
-                                        RolActual = "guesser",
-                                        Socket = socketCliente,
-                                        UltimoPing = DateTime.UtcNow
-                                    };
-
-                                    salaLocal.Clientes.Add(jugador);
-                                    salaLocal.idGuesser = idPlayer;
-                                    JugadoresConectados[idPlayer] = jugador;
-                                }
-                                VerificarInicioDePartida(salaLocal);
-                                ActualizarPartida(salaLocal, socketCliente, false);
-
-                            }
-                            sala = salaLocal;
-                        }
-
-                        socketCliente.Send(Encoding.UTF8.GetBytes(resultado));
-                        MostrarEstadoSala(idSala);
-                    }
-                    break;
-
-                case "PALABRA":
-                    if (partes.Length >= 3 &&
-                        int.TryParse(partes[2], out int idSalaPalabra))
-                    {
-                        string palabra = partes[1].Trim();
-                        int resultado = EstablecerPalabra(idSalaPalabra, palabra);
-
-                        if (salasActivas.TryGetValue(idSalaPalabra, out sala))
-                        {
-                            Console.WriteLine("PALABRA " + sala.Id);
-                            VerificarInicioDePartida(sala);
-                            ActualizarPartida(sala, socketCliente, false);
-                        }
-
-                        string respuesta;
-                        switch (resultado)
-                        {
-                            case 1:
-                                respuesta = "PALABRA_ESTABLECIDA\n";
-                                break;
-                            case -2:
-                                respuesta = "YA_HAY_PALABRA\n";
-                                break;
-                            default:
-                                respuesta = "ERROR_PALABRA\n";
-                                break;
-                        }
-
-                        socketCliente.Send(Encoding.UTF8.GetBytes(respuesta));
-                    }
-                    else
-                    {
-                        socketCliente.Send(Encoding.UTF8.GetBytes("ERROR_FORMATO_PALABRA\n"));
-                    }
-                    break;
-                case "UNIRSE_CODIGO":
-                    if (partes.Length >= 4)
-                    {
-                        string codigo = partes[1].Trim();
-                        string nickname = partes[2];
-                        if (!int.TryParse(partes[3], out int idGuesser))
-                        {
-                            socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: ID inválido\n"));
-                            break;
-                        }
-
-                        SalaJuego salaLocal;
-
-                        lock (locker)
-                        {
-                            salaLocal = salasActivas.Values.FirstOrDefault(s => s.CodigoUnico.Equals(codigo, StringComparison.OrdinalIgnoreCase));
-                            if (salaLocal == null)
-                            {
-                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Código de sala no encontrado\n"));
-                                break;
-                            }
-
-                            var jugador = new JugadorConectado
-                            {
-                                IdPlayer = idGuesser,
-                                Nickname = nickname,
-                                Nombre = nickname,
-                                RolActual = "guesser",
-                                Socket = socketCliente,
-                                UltimoPing = DateTime.UtcNow
-                            };
-
-                            JugadoresConectados[idGuesser] = jugador;
-
-                            if (!salaLocal.Clientes.Any(c => c.IdPlayer == idGuesser))
-                            {
-                                salaLocal.Clientes.Add(JugadoresConectados[idGuesser]);
-                                salaLocal.idGuesser = idGuesser;
-                            }
-
-
-                            sala = salaLocal;
-                            socketCliente.Send(Encoding.UTF8.GetBytes($"UNIDO|{sala.Id}\n"));
-                        }
-                        
-                    }
-                    else
-                    {
-                        socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Formato UNIRSE_CODIGO inválido\n"));
-                    }
-                    break;
-                case "SOLICITAR_ESTADO":
-                    if (partes.Length >= 2 && int.TryParse(partes[1], out int idSalaEstado))
-                    {
-                        lock (locker)
-                        {
-                            if (salasActivas.TryGetValue(idSalaEstado, out var salaEstado))
-                            {
-                                VerificarInicioDePartida(salaEstado);
-                                ActualizarPartida(salaEstado, socketCliente, false);
-                            }
-                        }
-                    }
-                    break;
-                case "SALIR":
-                    if (partes.Length >= 3 &&
-                        int.TryParse(partes[1], out int idJugadorSalir) &&
-                        int.TryParse(partes[2], out int idSalaSalir))
-                    {
-                        NotificarSalidaJugador(idJugadorSalir, idSalaSalir);
-                    }
-                    else
-                    {
-                        Console.WriteLine("⚠ Formato inválido en mensaje SALIR.");
-                    }
-                    break;
+                
 
                 default:
                     socketCliente.Send(Encoding.UTF8.GetBytes("ERROR: Comando no reconocido.\n"));
@@ -1037,7 +1062,7 @@ namespace Hangman_Server
                 var factory = new ChannelFactory<IGameService>(binding, endpoint);
                 var gameService = factory.CreateChannel();
 
-                gameService.RegistrarPartidaFinalizada(idPlayerChallenger, idPlayerGuesser, idPalabra, estado, idGanador);
+                gameService.RegistrarPartidaFinalizada(idPlayerChallenger, idPlayerGuesser, idPalabra, 1, idGanador);
 
                 Console.WriteLine("✅ Partida registrada correctamente en el servicio.");
 
@@ -1101,10 +1126,9 @@ namespace Hangman_Server
         {
             lock (locker)
             {
-                if (!salasActivas.ContainsKey(salaId))
+                if (!salasActivas.TryGetValue(salaId, out var sala))
                     return;
 
-                var sala = salasActivas[salaId];
                 var desconectado = sala.Clientes.FirstOrDefault(c => c.IdPlayer == idJugador);
 
                 if (desconectado != null)
@@ -1112,7 +1136,6 @@ namespace Hangman_Server
                     sala.Clientes.Remove(desconectado);
                     JugadoresConectados.Remove(desconectado.IdPlayer);
                 }
-
                 foreach (var cliente in sala.Clientes)
                 {
                     try
@@ -1124,23 +1147,35 @@ namespace Hangman_Server
                         Console.WriteLine($"❌ Error notificando salida: {ex.Message}");
                     }
                 }
-
-                if (!sala.Terminada && !string.IsNullOrEmpty(sala.Palabra))
+                if (!sala.Terminada && sala.idPalabra > 0)
                 {
                     try
                     {
-                        var factory = new ChannelFactory<IGameService>("*");
+                        var binding = new BasicHttpBinding();
+                        var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
+                        var factory = new ChannelFactory<IGameService>(binding, endpoint);
                         var gameService = factory.CreateChannel();
 
-                        gameService.RegistrarPartidaInconclusa(salaId, idJugador, sala.Palabra);
-                        Console.WriteLine($"✅ Partida {salaId} registrada como inconclusa.");
+                        gameService.RegistrarPartidaInconclusa(
+                            sala.Id,
+                            sala.idChallenger,
+                            sala.idGuesser,
+                            sala.idPalabra,
+                            idJugador, 
+                            sala.CodigoUnico
+                        );
+
+                        ((IClientChannel)gameService).Close();
+                        factory.Close();
+
+                        Console.WriteLine($"Partida {salaId} registrada como inconclusa.");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"❌ Error al registrar partida inconclusa: {ex.Message}");
+                        Console.WriteLine($" Error al registrar partida inconclusa: {ex.Message}");
                     }
                 }
-               salasActivas.Remove(salaId);
+                salasActivas.Remove(salaId);
                 Console.WriteLine($"[Servidor] Jugador con ID {idJugador} salió o fue desconectado de la sala {salaId}.");
             }
         }
@@ -1279,37 +1314,24 @@ namespace Hangman_Server
         }
 
 
-        public int EstablecerPalabra(int salaId, string palabra)
+        public int EstablecerPalabra(int salaId, string palabra, int idPalabra)
         {
             lock (locker)
             {
-                try
-                {
-                    if (!salasActivas.ContainsKey(salaId))
-                        return -1;
-
-                    var sala = salasActivas[salaId];
-                    if (!string.IsNullOrEmpty(sala.Palabra))
-                    {
-                        Console.WriteLine($"[Advertencia] Ya hay una palabra establecida en la sala {salaId}. No se puede sobrescribir.");
-                        return -2;
-                    }
-
-                    sala.Palabra = palabra.ToUpper();
-                    sala.EstadoPalabra = new string('_', palabra.Length);
-                    sala.LetrasAdivinadas.Clear();
-                    sala.IntentosFallidos = 0;
-                    sala.LetraPropuesta = "";
-                    sala.Estado = "EN_ESPERA";
-
-                    Console.WriteLine($"[Servidor] Palabra '{sala.Palabra}'  establecida correctamente en sala {salaId}.");
-                    return 1;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[Error] al establecer palabra en sala {salaId}: {ex.Message}");
+                if (!salasActivas.TryGetValue(salaId, out var sala))
                     return -1;
-                }
+
+                if (!string.IsNullOrEmpty(sala.Palabra))
+                    return -2;
+
+                sala.Palabra = palabra.ToUpper();
+                sala.EstadoPalabra = new string('_', palabra.Length);
+                sala.LetrasAdivinadas.Clear();
+                sala.IntentosFallidos = 0;
+                sala.idPalabra = idPalabra;
+                sala.Terminada = false;
+
+                return 1; 
             }
         }
 
@@ -1327,42 +1349,66 @@ namespace Hangman_Server
 
 
 
-        public  void NotificarDesconexionEnPartida(int idPlayer)
+        public void NotificarDesconexionEnPartida(int idPlayer)
         {
+            int salaId = ObtenerSalaIdPorJugador(idPlayer);
+            if (salaId == -1)
+            {
+                Console.WriteLine($"[Monitor] No se encontró una sala para el jugador {idPlayer}");
+                return;
+            }
+
+            if (!salasActivas.TryGetValue(salaId, out var sala))
+            {
+                Console.WriteLine($"[Monitor] Sala {salaId} no activa. Abortando.");
+                return;
+            }
+
+            int idJugadorRestante = sala.Clientes
+                .FirstOrDefault(j => j.IdPlayer != idPlayer)?.IdPlayer ?? 0;
+
+            bool jugadorRestanteActivo = JugadoresConectados.TryGetValue(idJugadorRestante, out var jugadorRestante)
+                                         && SocketActivo(jugadorRestante.Socket);
+
+            if (!jugadorRestanteActivo)
+            {
+                Console.WriteLine($"[Monitor] Ambos jugadores están desconectados en sala {salaId}. No se registrará partida.");
+                LimpiarSala(salaId); 
+                return;
+            }
+
+            int idChallenger = sala.idChallenger;
+            int idGuesser = sala.idGuesser;
+            int idPalabra = sala.idPalabra;
+            string codigoSala = sala.CodigoUnico;
+
+            Console.WriteLine($"[Monitor] Registrando partida inconclusa (sala {salaId})");
+
             var binding = new BasicHttpBinding();
             var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
             var factory = new ChannelFactory<IGameService>(binding, endpoint);
             var gameService = factory.CreateChannel();
 
-            int salaId = ObtenerSalaIdPorJugador(idPlayer);
-            if (salaId == -1) return;
-
-            string palabra = ObtenerPalabraPorSala(salaId);
-            int idJugadorRestante = ObtenerJugadorRestante(salaId, idPlayer);
-
-            Console.WriteLine($"[Monitor] Notificando desconexión en sala {salaId}");
             try
             {
-                gameService.RegistrarPartidaInconclusa(salaId, idPlayer, palabra);
-            } catch (Exception ex)
-            {
-                Console.WriteLine("Error de notificacion, no existen jugadores en la sala");
+                //gameService.RegistrarPartidaInconclusa(idChallenger, idGuesser, idPalabra, codigoSala, idPlayer);
+                ((IClientChannel)gameService).Close();
+                factory.Close();
             }
-            
-            foreach(var jugador in JugadoresConectados.ToList())
+            catch (Exception ex)
             {
-                if(jugador.Value.IdPlayer == idJugadorRestante)
-                {
-                    try{
-                        jugador.Value.Socket.Send(Encoding.UTF8.GetBytes($"OPONENTE_DESCONECTADO|{idJugadorRestante}"));
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("[ERROR: No se pudo notificar a los integrantes de la partida");
-                    }
-                }
+                Console.WriteLine($"[ERROR WCF] No se pudo registrar partida: {ex.Message}");
             }
-            
+            try
+            {
+                jugadorRestante.Socket.Send(Encoding.UTF8.GetBytes($"OPONENTE_DESCONECTADO|{idJugadorRestante}"));
+                Console.WriteLine($"[Notificación] Se avisó a {jugadorRestante.Nickname} que su oponente se desconectó.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] No se pudo notificar al jugador restante: {ex.Message}");
+            }
+
             LimpiarSala(salaId);
         }
 

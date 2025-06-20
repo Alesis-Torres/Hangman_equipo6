@@ -55,9 +55,10 @@ namespace Hangman_Server
         string AgregarJugador(int salaId, string nombreJugador);
         [OperationContract]
         int ObtenerJugadoresEnSala(int salaId);
-
         [OperationContract]
-        int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado);
+        void RegistrarPartidaInconclusa(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala);
+        [OperationContract]
+        int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador);
         [OperationContract]
         int EstablecerPalabra(int idSala, string palabra);
 

@@ -255,14 +255,31 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="RegistrarPartidaInconclusa">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="salaId" type="xs:int" />
+        <xs:element minOccurs="0" name="idChallenger" type="xs:int" />
+        <xs:element minOccurs="0" name="idGuesser" type="xs:int" />
+        <xs:element minOccurs="0" name="idPalabra" type="xs:int" />
+        <xs:element minOccurs="0" name="idDesconectado" type="xs:int" />
+        <xs:element minOccurs="0" name="codigoSala" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RegistrarPartidaInconclusaResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="RegistrarPartidaFinalizada">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="idChallenger" type="xs:int" />
         <xs:element minOccurs="0" name="idGuesser" type="xs:int" />
         <xs:element minOccurs="0" name="idPalabra" type="xs:int" />
-        <xs:element minOccurs="0" name="estado" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="idJugadorResultado" type="xs:int" />
+        <xs:element minOccurs="0" name="idEstado" type="xs:int" />
+        <xs:element minOccurs="0" name="idJugadorGanador" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -286,20 +303,6 @@
       <xs:sequence>
         <xs:element minOccurs="0" name="EstablecerPalabraResult" type="xs:int" />
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="RegistrarPartidaInconclusa">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="salaId" type="xs:int" />
-        <xs:element minOccurs="0" name="idDesconectado" type="xs:int" />
-        <xs:element minOccurs="0" name="palabra" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="RegistrarPartidaInconclusaResponse">
-    <xs:complexType>
-      <xs:sequence />
     </xs:complexType>
   </xs:element>
   <xs:element name="ObtenerIdGuesser">

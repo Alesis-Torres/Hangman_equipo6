@@ -247,23 +247,23 @@ namespace HangmanServerLibrary.GameServiceReference {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSala", ReplyAction="http://tempuri.org/IGameService/ObtenerJugadoresEnSalaResponse")]
         System.Threading.Tasks.Task<int> ObtenerJugadoresEnSalaAsync(int salaId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse")]
-        int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
+        void RegistrarPartidaInconclusa(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
+        System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse")]
-        System.Threading.Tasks.Task<int> RegistrarPartidaFinalizadaAsync(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado);
+        int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse")]
+        System.Threading.Tasks.Task<int> RegistrarPartidaFinalizadaAsync(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/EstablecerPalabra", ReplyAction="http://tempuri.org/IGameService/EstablecerPalabraResponse")]
         int EstablecerPalabra(int idSala, string palabra);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/EstablecerPalabra", ReplyAction="http://tempuri.org/IGameService/EstablecerPalabraResponse")]
         System.Threading.Tasks.Task<int> EstablecerPalabraAsync(int idSala, string palabra);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
-        void RegistrarPartidaInconclusa(int salaId, int idDesconectado, string palabra);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa", ReplyAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse")]
-        System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int salaId, int idDesconectado, string palabra);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ObtenerIdGuesser", ReplyAction="http://tempuri.org/IGameService/ObtenerIdGuesserResponse")]
         int ObtenerIdGuesser(int salaId);
@@ -467,12 +467,20 @@ namespace HangmanServerLibrary.GameServiceReference {
             return base.Channel.ObtenerJugadoresEnSalaAsync(salaId);
         }
         
-        public int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado) {
-            return base.Channel.RegistrarPartidaFinalizada(idChallenger, idGuesser, idPalabra, estado, idJugadorResultado);
+        public void RegistrarPartidaInconclusa(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala) {
+            base.Channel.RegistrarPartidaInconclusa(salaId, idChallenger, idGuesser, idPalabra, idDesconectado, codigoSala);
         }
         
-        public System.Threading.Tasks.Task<int> RegistrarPartidaFinalizadaAsync(int idChallenger, int idGuesser, int idPalabra, string estado, int idJugadorResultado) {
-            return base.Channel.RegistrarPartidaFinalizadaAsync(idChallenger, idGuesser, idPalabra, estado, idJugadorResultado);
+        public System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala) {
+            return base.Channel.RegistrarPartidaInconclusaAsync(salaId, idChallenger, idGuesser, idPalabra, idDesconectado, codigoSala);
+        }
+        
+        public int RegistrarPartidaFinalizada(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador) {
+            return base.Channel.RegistrarPartidaFinalizada(idChallenger, idGuesser, idPalabra, idEstado, idJugadorGanador);
+        }
+        
+        public System.Threading.Tasks.Task<int> RegistrarPartidaFinalizadaAsync(int idChallenger, int idGuesser, int idPalabra, int idEstado, int idJugadorGanador) {
+            return base.Channel.RegistrarPartidaFinalizadaAsync(idChallenger, idGuesser, idPalabra, idEstado, idJugadorGanador);
         }
         
         public int EstablecerPalabra(int idSala, string palabra) {
@@ -481,14 +489,6 @@ namespace HangmanServerLibrary.GameServiceReference {
         
         public System.Threading.Tasks.Task<int> EstablecerPalabraAsync(int idSala, string palabra) {
             return base.Channel.EstablecerPalabraAsync(idSala, palabra);
-        }
-        
-        public void RegistrarPartidaInconclusa(int salaId, int idDesconectado, string palabra) {
-            base.Channel.RegistrarPartidaInconclusa(salaId, idDesconectado, palabra);
-        }
-        
-        public System.Threading.Tasks.Task RegistrarPartidaInconclusaAsync(int salaId, int idDesconectado, string palabra) {
-            return base.Channel.RegistrarPartidaInconclusaAsync(salaId, idDesconectado, palabra);
         }
         
         public int ObtenerIdGuesser(int salaId) {

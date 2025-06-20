@@ -58,30 +58,39 @@ namespace Hangman_Server
                 return player?.id_player ?? 0;
             }
         }
-        public List<string> ObtenerHistorialPartidas(int playerId)
+        public List<string> ObtenerHistorialPartidas(int playerId, int idLanguage)
         {
             using (var db = new HangmanEntities())
             {
                 var partidas = (from g in db.gamematch
-                                join s in db.gamematch_status on g.id_gamematch equals s.id_gamematch_status
+                                join s in db.gamematch_status on g.id_gamematch_status equals s.id_gamematch_status
                                 join w in db.word on g.id_word equals w.id_word
                                 where g.id_player_challenger == playerId || g.id_player_guesser == playerId
                                 select new
                                 {
                                     Palabra = w.name,
                                     Resultado = s.name,
-                                    GanadorId = s.id_player,
+                                    IdGanador = g.id_playerinfo,
+                                    Fecha = g.date_finished,
                                     YoSoy = playerId
                                 }).ToList();
 
                 var listaResultados = partidas.Select(p =>
                 {
-                    if (p.Resultado == "desconectada")
-                        return $"Inconclusa - Palabra: {p.Palabra}";
-                    else if (p.GanadorId == p.YoSoy)
-                        return $"Ganada - Palabra: {p.Palabra}";
+                    string fechaStr = p.Fecha?.ToString("dd/MM/yyyy HH:mm") ?? (idLanguage == 1 ? "sin fecha" : "no date");
+
+                    if (p.Resultado.ToLower() == "inconclusa")
+                        return idLanguage == 1
+                            ? $"Inconclusa - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Unfinished - Word: {p.Palabra} - Date: {fechaStr}";
+                    else if (p.IdGanador == p.YoSoy)
+                        return idLanguage == 1
+                            ? $"Ganada - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Won - Word: {p.Palabra} - Date: {fechaStr}";
                     else
-                        return $"Perdida - Palabra: {p.Palabra}";
+                        return idLanguage == 1
+                            ? $"Perdida - Palabra: {p.Palabra} - Fecha: {fechaStr}"
+                            : $"Lost - Word: {p.Palabra} - Date: {fechaStr}";
                 }).ToList();
 
                 return listaResultados;
@@ -105,7 +114,7 @@ namespace Hangman_Server
                 }
                 string imgFileName = $"{newPlayer.Username}.png";
                 string imagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images", "Users");
-                Directory.CreateDirectory(imagesFolder); // Asegura que exista
+                Directory.CreateDirectory(imagesFolder);
                 string imagePath = Path.Combine(imagesFolder, imgFileName);
 
                 if (newPlayer.ImgBytes != null && newPlayer.ImgBytes.Length > 0)

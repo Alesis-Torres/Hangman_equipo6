@@ -30,6 +30,7 @@ namespace Hangman_Server.Model
         public virtual DbSet<gamematch_status> gamematch_status { get; set; }
         public virtual DbSet<language> language { get; set; }
         public virtual DbSet<player> player { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<word> word { get; set; }
     }
 }

@@ -116,6 +116,12 @@
   <wsdl:message name="IGameService_ObtenerJugadoresEnSala_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerJugadoresEnSalaResponse" />
   </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusa" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusaResponse" />
+  </wsdl:message>
   <wsdl:message name="IGameService_RegistrarPartidaFinalizada_InputMessage">
     <wsdl:part name="parameters" element="tns:RegistrarPartidaFinalizada" />
   </wsdl:message>
@@ -127,12 +133,6 @@
   </wsdl:message>
   <wsdl:message name="IGameService_EstablecerPalabra_OutputMessage">
     <wsdl:part name="parameters" element="tns:EstablecerPalabraResponse" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_InputMessage">
-    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusa" />
-  </wsdl:message>
-  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_OutputMessage">
-    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusaResponse" />
   </wsdl:message>
   <wsdl:message name="IGameService_ObtenerIdGuesser_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerIdGuesser" />
@@ -237,6 +237,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSala" message="tns:IGameService_ObtenerJugadoresEnSala_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerJugadoresEnSalaResponse" message="tns:IGameService_ObtenerJugadoresEnSala_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaInconclusa">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" message="tns:IGameService_RegistrarPartidaInconclusa_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse" message="tns:IGameService_RegistrarPartidaInconclusa_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="RegistrarPartidaFinalizada">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" message="tns:IGameService_RegistrarPartidaFinalizada_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse" message="tns:IGameService_RegistrarPartidaFinalizada_OutputMessage" />
@@ -244,10 +248,6 @@
     <wsdl:operation name="EstablecerPalabra">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/EstablecerPalabra" message="tns:IGameService_EstablecerPalabra_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/EstablecerPalabraResponse" message="tns:IGameService_EstablecerPalabra_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="RegistrarPartidaInconclusa">
-      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" message="tns:IGameService_RegistrarPartidaInconclusa_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse" message="tns:IGameService_RegistrarPartidaInconclusa_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerIdGuesser">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerIdGuesser" message="tns:IGameService_ObtenerIdGuesser_InputMessage" />
@@ -434,6 +434,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaInconclusa">
+      <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="RegistrarPartidaFinalizada">
       <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" style="document" />
       <wsdl:input>
@@ -445,15 +454,6 @@
     </wsdl:operation>
     <wsdl:operation name="EstablecerPalabra">
       <soap:operation soapAction="http://tempuri.org/IGameService/EstablecerPalabra" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="RegistrarPartidaInconclusa">
-      <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
