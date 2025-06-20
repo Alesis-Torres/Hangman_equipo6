@@ -15,7 +15,7 @@ namespace HangmanClient.Model.Singleton
         public static SessionManager Instance => _instance ??= new SessionManager();
 
         public PlayerDTO CurrentPlayer { get; set; }
-        public int CurrentLanguage { get; set; } = 1;
+        public int CurrentLanguage { get; set; } 
 
         public Socket SocketCliente { get; set; }
 

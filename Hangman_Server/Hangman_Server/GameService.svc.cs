@@ -64,7 +64,7 @@ namespace Hangman_Server
                     Console.WriteLine($"No se encontró la palabra con ID '{idPalabra}' en la base de datos.");
                     return;
                 }
-
+                try { 
                 var gamematch = new gamematch
                 {
                     id_player_challenger = idChallenger,
@@ -77,11 +77,14 @@ namespace Hangman_Server
                 };
 
                 db.gamematch.Add(gamematch);
-                db.SaveChanges();
-
-
-                db.SaveChanges();
-                Console.WriteLine($"Partida inconclusa registrada correctamente. id_gamematch={gamematch.id_gamematch}");
+                    db.SaveChanges();
+                    Console.WriteLine($"Partida inconclusa registrada correctamente. id_gamematch={gamematch.id_gamematch}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR: DATOS FALTANTES EN EL REGISTRO DE LA PARTIDA:"+ ex.ToString());
+                }
+                
             }
         }
         

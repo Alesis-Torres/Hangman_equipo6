@@ -92,17 +92,27 @@ namespace Hangman_Server
                     {
                         puntajeTotal = Math.Max(0, puntajeTotal - 3);
                         return idLanguage == 1
-                            ? $"Desconexión - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
-                            : $"Disconnected - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                            ? $"Desconexión - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr} - Score: -3"
+                            : $"Disconnected - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr} - Score: -3";
                     }
                     else if (p.IdStatus == 1 && p.IdGanador == p.SoyYo)
                     {
-                        if (p.EsGuesser) puntajeTotal += 10;
-                        else if (p.EsChallenger) puntajeTotal += 5;
+                        int puntaje = 0;
+                        if (p.EsGuesser)
+                        {
+                            puntajeTotal += 10;
+                            puntaje = 10;
+                        }
+                        else if (p.EsChallenger)
+                        {
+                            puntajeTotal += 5;
+                            puntaje = 5;
+                        }
 
                         return idLanguage == 1
-                            ? $"Ganada - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}"
-                            : $"Won - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr}";
+                            ? $"Ganada - Rol: {rolTraducido} - Palabra: {p.Palabra} - Fecha: {fechaStr}  - Score: {puntaje}"
+                            : $"Won - Role: {rolTraducido} - Word: {p.Palabra} - Date: {fechaStr} - Score: {puntaje}"
+                ;
                     }
                     else if (p.Resultado.ToLower() == "inconclusa")
                     {

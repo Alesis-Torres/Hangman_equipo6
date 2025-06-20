@@ -7,7 +7,8 @@
       mc:Ignorable="d" 
       xmlns:res="clr-namespace:HangmanClient"
       d:DesignHeight="600" d:DesignWidth="1020"
-      Title="CreateMatch">
+      Title="CreateMatch"
+      Loaded="CreateMatch_OnLoad">
 
     <Grid>
         <Grid.Background>

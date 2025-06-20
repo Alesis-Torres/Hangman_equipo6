@@ -905,7 +905,12 @@ namespace Hangman_Server
             {
                 var sb = new StringBuilder();
 
-                foreach (var sala in salasActivas.Values)
+
+                var salasFiltradas = salasActivas.Values
+                    .Where(s => s.Idioma == idioma)
+                    .ToList();
+
+                foreach (var sala in salasFiltradas)
                 {
                     string estadoTraducido = sala.Estado;
 
@@ -923,6 +928,8 @@ namespace Hangman_Server
                                 estadoTraducido = "Finalizada";
                                 break;
                         }
+
+                        sb.AppendLine($"ID:{sala.Id} - Código:{sala.CodigoUnico} - Idioma:{idioma} - Estado:{estadoTraducido}");
                     }
                     else
                     {
@@ -938,16 +945,9 @@ namespace Hangman_Server
                                 estadoTraducido = "Finished";
                                 break;
                         }
-                    }
-                    if(idioma == 1)
-                    {
-                        sb.AppendLine($"ID:{sala.Id} - Código:{sala.CodigoUnico} - Idioma:{idioma} - Estado:{estadoTraducido}");
-                    }
-                    else
-                    {
+
                         sb.AppendLine($"ID:{sala.Id} - Code:{sala.CodigoUnico} - Language:{idioma} - Status:{estadoTraducido}");
                     }
-                    
                 }
 
                 return sb.ToString();
@@ -1046,7 +1046,7 @@ namespace Hangman_Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error enviando estado a un cliente: {ex.Message}");
+                Console.WriteLine($"Error enviando estado a un cliente: {ex.Message}");
             }
             if (partidaFinalizada && !sala.PartidaRegistrada)
             {
@@ -1066,7 +1066,7 @@ namespace Hangman_Server
                         sala.CodigoUnico
                     );
                     sala.PartidaRegistrada = true;
-                    Console.WriteLine($"✅ Partida {sala.Id} finalizada y registrada. Ganador: {idGanador}");
+                    Console.WriteLine($"Partida {sala.Id} finalizada y registrada. Ganador: {idGanador}");
 
                     ((IClientChannel)gameService).Close();
                     factory.Close();

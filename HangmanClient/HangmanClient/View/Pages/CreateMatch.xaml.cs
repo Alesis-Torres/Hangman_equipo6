@@ -21,21 +21,32 @@ namespace HangmanClient.View.Pages
 
         public CreateMatch(bool esLogin, string mensaje)
         {
-            InitializeComponent();
-            this.esLogin = esLogin;
-            actualizacionSalasTimer = new Timer(3000);
-            actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
-            actualizacionSalasTimer.Start();
-            this.Unloaded += CreateMatch_Unloaded;
-            if (!mensaje.Equals(""))
+            try
             {
-                MessageBox.Show(mensaje, "Retorno a la pantalla de inicio");
+                InitializeComponent();
+                this.esLogin = esLogin;
+                actualizacionSalasTimer = new Timer(3000);
+                actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
+                actualizacionSalasTimer.Start();
+                this.Unloaded += CreateMatch_Unloaded;
+                if (!mensaje.Equals(""))
+                {
+                    MessageBox.Show(mensaje, "Retorno a la pantalla de inicio");
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
             }
+            
         }
         private void CreateMatch_Unloaded(object sender, RoutedEventArgs e)
         {
             actualizacionSalasTimer?.Stop();
             actualizacionSalasTimer = null;
+        }
+        private void CreateMatch_OnLoad(object sender, RoutedEventArgs e)
+        {
+            actualizacionSalasTimer?.Start();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

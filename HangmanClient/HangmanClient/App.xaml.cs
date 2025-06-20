@@ -27,6 +27,7 @@ namespace HangmanClient
         {
             base.OnStartup(e);
             InicializarServicioConReintento();
+            SessionManager.Instance.CurrentLanguage = 2;
         }
 
         private async void InicializarServicioConReintento()
