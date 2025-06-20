@@ -98,11 +98,6 @@
 				PreserveNewest
 			</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\Images\match_background_spanish.png">
-      <CopyToOutputDirectory>
-				PreserveNewest
-			</CopyToOutputDirectory>
-    </Content>
     <Content Include="View\Images\Words\apple_img.png">
       <CopyToOutputDirectory>
 				PreserveNewest
@@ -263,7 +258,11 @@
     <Resource Include="View\Images\game_title.png" />
     <Resource Include="View\Images\login_background.png" />
     <Resource Include="View\Images\lose_background.png" />
-    <Resource Include="View\Images\match_background_spanish.png" />
+    <Resource Include="View\Images\match_background_spanish.png">
+      <CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="View\Images\menu_icon.png" />
     <Resource Include="View\Images\notification_background.png"></Resource>
     <Resource Include="View\Images\rooms_table.png" />

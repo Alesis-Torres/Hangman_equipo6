@@ -333,4 +333,16 @@
   <data name="JoinByCode" xml:space="preserve">
     <value>Join by code</value>
   </data>
+  <data name="WordStatus" xml:space="preserve">
+    <value>Word status:</value>
+  </data>
+  <data name="SelectedWord" xml:space="preserve">
+    <value>Selected word:</value>
+  </data>
+  <data name="WaitingPlayer" xml:space="preserve">
+    <value>Waiting for the other player...</value>
+  </data>
+  <data name="GameStarted" xml:space="preserve">
+    <value>Game Started!</value>
+  </data>
 </root>
