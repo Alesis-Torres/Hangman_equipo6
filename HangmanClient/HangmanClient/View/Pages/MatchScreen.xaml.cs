@@ -171,7 +171,8 @@ namespace HangmanClient.View.Pages
                         string accion = partes.FirstOrDefault(p => p.StartsWith("ACCION:"))?.Substring(7);
                         string turno = partes.FirstOrDefault(p => p.StartsWith("TECLADO:"))?.Substring(8);
                         string codigoSala = partes.FirstOrDefault(p => p.StartsWith("CODIGO:"))?.Substring(7);
-                        
+                        string pista = partes.FirstOrDefault(p => p.StartsWith("PISTA:"))?.Substring(6) ?? "";
+                        PistaTextBlock.Text = pista;
                         if (turno == "CHALLENGER")
                         {
                             ConfirmLetterButton.IsEnabled = true;
@@ -506,25 +507,7 @@ namespace HangmanClient.View.Pages
         }
 
 
-        private void SalirButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string comando = $"SALIR|{nombreJugador}|{salaId}";
-                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al salir: {ex.Message}");
-            }
-            finally
-            {
-                try { SessionManager.Instance.SocketCliente?.Shutdown(SocketShutdown.Both); } catch { }
-                try { SessionManager.Instance.SocketCliente?.Close(); } catch { }
 
-                NavigationService.Navigate(new Login());
-            }
-        }
 
         private void SeleccionarPalabra_Click(object sender, RoutedEventArgs e)
         {
@@ -536,7 +519,7 @@ namespace HangmanClient.View.Pages
                     string palabra = palabraSeleccionada.Name;
                     int idPalabra = palabraSeleccionada.Id;
                     PalabraSeleccionadaTextBlock.Text = PalabraSeleccionadaTextBlock.Text + palabra;
-                    string comando = $"PALABRA|{palabra}|{idSala}|{idPalabra}";
+                    string comando = $"PALABRA|{palabra}|{idSala}|{idPalabra}|{palabraSeleccionada.Hint}";
                     SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
                 }
                 catch (Exception ex)
@@ -598,7 +581,27 @@ namespace HangmanClient.View.Pages
 
         private void SalirDePartida_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Logica de salir de partida
+            try
+            {
+                string comando = $"SALIR|{SessionManager.Instance.CurrentPlayer.IdPlayer}|{salaId}";
+                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
+                byte[] buffer = new byte[1024];
+                int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
+                string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
+
+                if (respuesta == "SALIDA_CONFIRMADA")
+                {
+                    NavigationService.Navigate(new CreateMatch(false, ""));
+                }
+                else
+                {
+                    MessageBox.Show("El servidor no confirmó la salida correctamente: " + respuesta);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al salir: {ex.Message}");
+            }
         }
     }
 }

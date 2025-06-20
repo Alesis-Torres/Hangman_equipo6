@@ -115,13 +115,14 @@ namespace Hangman_Server
                 var palabrasBD = (from w in db.word
                                   join c in db.category on w.id_category equals c.id_category
                                   where c.name == categoria && w.id_language == idLanguage
-                                  select new { w.id_word, w.name, w.img_name })
+                                  select new { w.id_word, w.name, w.img_name, w.hint })
                                   .ToList();
 
                 var palabras = palabrasBD.Select(w => new WordDTO
                 {
                     Id = w.id_word,
                     Name = w.name,
+                    Hint = w.hint,
                     ImageBytes = LeerImagenConPlaceholder("Words", w.img_name)
                 }).ToList();
 

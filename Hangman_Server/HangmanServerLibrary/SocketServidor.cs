@@ -192,89 +192,10 @@ namespace Hangman_Server
             }
         }
 
-        public int ObtenerIntentosRestantes(int salaId)
-        {
-            lock (locker)
-            {
-                if (!salasActivas.ContainsKey(salaId))
-                    return -1;
-
-                var sala = salasActivas[salaId];
-                return Math.Max(0, 5 - sala.IntentosFallidos);
-            }
-        }
 
 
-        public void Salir(int salaId, string nombreJugador)
-        {
-            lock (locker)
-            {
-                if (!salasActivas.TryGetValue(salaId, out var sala))
-                    return;
 
-                sala.Clientes.RemoveAll(c => c.Nombre.Equals(nombreJugador, StringComparison.OrdinalIgnoreCase));
-
-                if (sala.Clientes.Count == 0)
-                {
-                    if (sala.Terminada)
-                    {
-                        salasActivas.Remove(salaId);
-                        Console.WriteLine($"Sala {salaId} limpiada tras finalizar partida.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[Salir] Último jugador salió antes de finalizar la partida en sala {salaId}.");
-
-                        try
-                        {
-                            int idDesconectado;
-                            if (JugadoresConectados.TryGetValue(sala.idGuesser, out var guesser) &&
-                                guesser.Nickname.Equals(nombreJugador, StringComparison.OrdinalIgnoreCase))
-                            {
-                                idDesconectado = sala.idGuesser;
-                            }
-                            else
-                            {
-                                idDesconectado = sala.idChallenger;
-                            }
-
-                            if (sala.idChallenger != 0 && sala.idGuesser != 0 && idDesconectado != 0 && sala.idPalabra != 0)
-                            {
-                                var binding = new BasicHttpBinding();
-                                var endpoint = new EndpointAddress("http://localhost:64520/GameService.svc");
-                                var factory = new ChannelFactory<IGameService>(binding, endpoint);
-                                var gameService = factory.CreateChannel();
-
-                                gameService.RegistrarPartidaInconclusa(
-                                    sala.Id,
-                                    sala.idChallenger,
-                                    sala.idGuesser,
-                                    sala.idPalabra,
-                                    idDesconectado,
-                                    sala.CodigoUnico
-                                );
-
-                                ((IClientChannel)gameService).Close();
-                                factory.Close();
-
-                                Console.WriteLine($"✅ Partida inconclusa registrada desde Salir() en sala {salaId}.");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"❌ No se pudo registrar partida inconclusa: datos incompletos.");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"[ERROR] Fallo al registrar partida inconclusa desde Salir(): {ex.Message}");
-                        }
-
-                        salasActivas.Remove(salaId);
-                        Console.WriteLine($"🧹 Sala {salaId} eliminada.");
-                    }
-                }
-            }
-        }
+        
         public void LimpiarSala(int idSala)
         {
             lock (locker)
@@ -474,7 +395,7 @@ namespace Hangman_Server
 
                         if (idJugadorActual != -1 && salaId != -1)
                         {
-                            NotificarSalidaJugador(idJugadorActual, salaId);
+                            NotificarSalidaJugador(idJugadorActual, salaId, false);
                             notificado = true;
                         }
 
@@ -755,19 +676,28 @@ namespace Hangman_Server
                             break;
 
                         case "PALABRA":
-                            if (partes.Length >= 4 &&
+                            if (partes.Length >= 5 &&
                                 int.TryParse(partes[2], out int idSalaPalabra) &&
                                 int.TryParse(partes[3], out int idPalabra))
                             {
                                 string palabra = partes[1].Trim();
-                                int resultado = EstablecerPalabra(idSalaPalabra, palabra,idPalabra);
+                                string hint = partes[4].Trim();
+
+
+                                if (hint.Length > 40)
+                                {
+                                    socketCliente.Send(Encoding.UTF8.GetBytes("ERROR_HINT_LARGO\n"));
+                                    break;
+                                }
+
+                                int resultado = EstablecerPalabra(idSalaPalabra, palabra, idPalabra, hint);
 
                                 if (salasActivas.TryGetValue(idSalaPalabra, out SalaJuego sala))
                                 {
-
                                     sala.idPalabra = idPalabra;
+                                    sala.Hint = hint; 
 
-                                    Console.WriteLine("PALABRA " + sala.Id);
+                                    Console.WriteLine($"PALABRA ESTABLECIDA - Sala: {sala.Id}, Pista: {hint}");
                                     VerificarInicioDePartida(sala);
                                     ActualizarPartida(sala, socketCliente, false);
                                 }
@@ -860,11 +790,13 @@ namespace Hangman_Server
                                 int.TryParse(partes[1], out int idJugadorSalir) &&
                                 int.TryParse(partes[2], out int idSalaSalir))
                             {
-                                NotificarSalidaJugador(idJugadorSalir, idSalaSalir);
+                                NotificarSalidaJugador(idJugadorSalir, idSalaSalir, true);
+                                socketCliente.Send(Encoding.UTF8.GetBytes("SALIDA_CONFIRMADA\n"));
                                 continuar = false;
                             }
                             else
                             {
+                                socketCliente.Send(Encoding.UTF8.GetBytes("ERROR_FORMATO_SALIR\n"));
                                 Console.WriteLine("Formato inválido en mensaje SALIR.");
                             }
                             break;
@@ -884,7 +816,7 @@ namespace Hangman_Server
             {
                 if (!notificado && idJugadorActual != -1 && salaId != -1)
                 {
-                    NotificarSalidaJugador(idJugadorActual, salaId);
+                    NotificarSalidaJugador(idJugadorActual, salaId, false);
                 }
                 try
                 {
@@ -1009,6 +941,7 @@ namespace Hangman_Server
             int intentos = 6 - sala.IntentosFallidos;
             bool partidaFinalizada = false;
             string estadoLogico;
+            string pista = sala.Hint;
             if (intentos <= 0 && sala.Estado == "INICIADA")
             {
                 estadoLogico = sala.Clientes.Any(c => c.RolActual == "guesser" && c.Socket == socketIndividual)
@@ -1038,7 +971,8 @@ namespace Hangman_Server
                 $"LETRA:{sala.LetraPropuesta}|" +
                 $"ACCION:{sala.AccionResultado}|" +
                 $"TECLADO:{turnoActual}|" +
-                $"CODIGO:{sala.CodigoUnico}";
+                $"CODIGO:{sala.CodigoUnico}|" +
+                $"PISTA:{pista}";
 
             try
             {
@@ -1133,20 +1067,25 @@ namespace Hangman_Server
             return "RECHAZADA";
         }
 
-        private void NotificarSalidaJugador(int idJugador, int salaId)
+        private void NotificarSalidaJugador(int idJugador, int salaId, bool salidaVoluntaria)
         {
             lock (locker)
             {
+
                 if (!salasActivas.TryGetValue(salaId, out var sala))
                     return;
-
-                var desconectado = sala.Clientes.FirstOrDefault(c => c.IdPlayer == idJugador);
-
-                if (desconectado != null)
+                if (!salidaVoluntaria)
                 {
-                    sala.Clientes.Remove(desconectado);
-                    JugadoresConectados.Remove(desconectado.IdPlayer);
+                    var desconectado = sala.Clientes.FirstOrDefault(c => c.IdPlayer == idJugador);
+                    if (desconectado != null)
+                    {
+                        sala.Clientes.Remove(desconectado);
+                        JugadoresConectados.Remove(desconectado.IdPlayer);
+                    }
                 }
+               
+
+                
                 foreach (var cliente in sala.Clientes)
                 {
                     try
@@ -1231,7 +1170,7 @@ namespace Hangman_Server
         
         
 
-        public int EstablecerPalabra(int salaId, string palabra, int idPalabra)
+        public int EstablecerPalabra(int salaId, string palabra, int idPalabra, string hint)
         {
             lock (locker)
             {
@@ -1247,7 +1186,7 @@ namespace Hangman_Server
                 sala.IntentosFallidos = 0;
                 sala.idPalabra = idPalabra;
                 sala.Terminada = false;
-
+                sala.Hint = hint;
                 return 1; 
             }
         }
@@ -1379,7 +1318,8 @@ namespace Hangman_Server
         public HashSet<string> LetrasAdivinadas { get; set; } = new HashSet<string>();
         public int IntentosFallidos { get; set; }
         public bool Terminada { get; set; }
-        public int Idioma { get; set; } 
+        public int Idioma { get; set; }
+        public string Hint { get; set; }
         public int idChallenger { get; set; }
         public int idGuesser { get; set; }
         public string TurnoActual { get; set; } = "GUESSER";

@@ -25,9 +25,7 @@ namespace HangmanClient.View.Pages
             {
                 InitializeComponent();
                 this.esLogin = esLogin;
-                actualizacionSalasTimer = new Timer(3000);
-                actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
-                actualizacionSalasTimer.Start();
+                this.Loaded += CreateMatch_OnLoad;
                 this.Unloaded += CreateMatch_Unloaded;
                 if (!mensaje.Equals(""))
                 {
@@ -36,6 +34,7 @@ namespace HangmanClient.View.Pages
             }catch(Exception ex)
             {
                 Console.WriteLine(ex);
+                actualizacionSalasTimer.Stop();
             }
             
         }
@@ -46,14 +45,11 @@ namespace HangmanClient.View.Pages
         }
         private void CreateMatch_OnLoad(object sender, RoutedEventArgs e)
         {
+            actualizacionSalasTimer = new Timer(3000);
+            actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
             actualizacionSalasTimer?.Start();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-
-            ActualizarSalas();
-        }
         public void DetenerTimer()
         {
             actualizacionSalasTimer?.Stop();

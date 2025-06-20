@@ -10,11 +10,13 @@ namespace HangmanClient.Model.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Hint { get; set; }
         public byte[] ImageBytes { get; set; }
 
         public WordViewModel(WordDTO dto)
         {
             Id = dto.Id;
+            Hint = dto.Hint;
             Name = dto.Name;
             ImageBytes = dto.ImageBytes;
         }
