@@ -219,47 +219,6 @@ namespace HangmanClient.View.Pages
                                     LetraPropuestaTextBlock.Text = "";
                                 }
 
-                                ChallengerJugadoresPanel.Children.Clear();
-                                GuessJugadoresPanel.Children.Clear();
-
-                                foreach (var jugador in jugadores)
-                                {
-                                    var textChallenger = new TextBlock
-                                    {
-                                        Text = jugador,
-                                        FontSize = 15,
-                                        FontFamily = new FontFamily("Rubik Bubbles"),
-                                        Foreground = new SolidColorBrush(Color.FromRgb(255, 251, 212)), // #FFFBD4
-                                        Margin = new Thickness(0, 10, 0, 0),
-                                        Effect = new DropShadowEffect
-                                        {
-                                            Color = Colors.Black,
-                                            Direction = 0,
-                                            ShadowDepth = 2,
-                                            Opacity = 1,
-                                            BlurRadius = 0
-                                        }
-                                    };
-                                    var textGuesser = new TextBlock
-                                    {
-                                        Text = jugador,
-                                        FontSize = 15,
-                                        FontFamily = new FontFamily("Rubik Bubbles"),
-                                        Foreground = new SolidColorBrush(Color.FromRgb(255, 251, 212)), // #FFFBD4
-                                        Margin = new Thickness(0, 10, 0, 0),
-                                        Effect = new DropShadowEffect
-                                        {
-                                            Color = Colors.Black,
-                                            Direction = 0,
-                                            ShadowDepth = 2,
-                                            Opacity = 1,
-                                            BlurRadius = 0
-                                        }
-                                    };
-                                    ChallengerJugadoresPanel.Children.Add(textChallenger);
-                                    GuessJugadoresPanel.Children.Add(textGuesser);
-                                }
-
                                 switch (estadoPartida?.ToUpperInvariant())
                                 {
                                     case "GANASTE":
@@ -599,22 +558,14 @@ namespace HangmanClient.View.Pages
             {
                 string comando = $"SALIR|{SessionManager.Instance.CurrentPlayer.IdPlayer}|{salaId}";
                 SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(comando));
-                byte[] buffer = new byte[1024];
-                int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
-                string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
-
-                if (respuesta == "SALIDA_CONFIRMADA")
-                {
-                    NavigationService.Navigate(new CreateMatch(false, ""));
-                }
-                else
-                {
-                    MessageBox.Show("El servidor no confirmó la salida correctamente: " + respuesta);
-                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al salir: {ex.Message}");
+            }
+            finally
+            {
+                NavigationService.Navigate(new CreateMatch(false, ""));
             }
         }
     }
