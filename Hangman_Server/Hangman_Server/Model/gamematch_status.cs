@@ -14,11 +14,16 @@ namespace Hangman_Server.Model
     
     public partial class gamematch_status
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public gamematch_status()
+        {
+            this.gamematch = new HashSet<gamematch>();
+        }
+    
         public int id_gamematch_status { get; set; }
         public string name { get; set; }
-        public Nullable<int> id_player { get; set; }
     
-        public virtual gamematch gamematch { get; set; }
-        public virtual player player { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<gamematch> gamematch { get; set; }
     }
 }

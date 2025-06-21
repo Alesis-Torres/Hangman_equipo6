@@ -1,4 +1,5 @@
 ﻿using Hangman_Server.Model;
+using System.Collections.Generic;
 using System.ServiceModel;
 
 namespace Hangman_Server
@@ -28,7 +29,8 @@ namespace Hangman_Server
         [OperationContract]
         bool NicknameExiste(string nickname);
         [OperationContract]
-        void Logout(string username);
-
+        (List<string> resultados, int puntajeTotal) ObtenerHistorialPartidas(int playerId, int idLanguage);
+        [OperationContract]
+        int ObtenerIdPorUsername(string username);
     }
 }

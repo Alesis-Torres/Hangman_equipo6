@@ -19,7 +19,7 @@ namespace Hangman_Server.Model
         {
             this.gamematch = new HashSet<gamematch>();
             this.gamematch1 = new HashSet<gamematch>();
-            this.gamematch_status = new HashSet<gamematch_status>();
+            this.gamematch2 = new HashSet<gamematch>();
         }
     
         public int id_player { get; set; }
@@ -37,6 +37,6 @@ namespace Hangman_Server.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<gamematch> gamematch1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<gamematch_status> gamematch_status { get; set; }
+        public virtual ICollection<gamematch> gamematch2 { get; set; }
     }
 }

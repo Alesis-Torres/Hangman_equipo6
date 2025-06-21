@@ -3,6 +3,7 @@ using HangmanClient.Util;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,8 +58,9 @@ namespace HangmanClient.View.Pages
             }
 
             var hangmanService = new HangmanServiceReference.HangmanServiceClient();
+            var currentPlayer = SessionManager.Instance.CurrentPlayer;
 
-            var newPlayer = new HangmanServiceReference.PlayerDTO
+            var player = new HangmanServiceReference.PlayerDTO
             {
                 Username = UsernameTextBox.Text.Trim(),
                 Nickname = NicknameTextBox.Text.Trim(),
@@ -66,35 +68,101 @@ namespace HangmanClient.View.Pages
                 Email = EmailTextBox.Text.Trim(),
                 Birthdate = BirthdatePicker.SelectedDate,
                 PhoneNumber = PhoneNumberTextBox.Text.Trim(),
-                ImgBytes = profileImageBytes 
+                ImgBytes = profileImageBytes
             };
 
-            try
+            if (isEditMode && currentPlayer != null)
             {
-                bool registrado = hangmanService.RegisterPlayer(newPlayer);
+                player.IdPlayer = currentPlayer.IdPlayer;
 
-                if (registrado)
+                try
                 {
-                    var successContent = new NotificationContent
+                    bool actualizado = hangmanService.UpdatePlayerProfile(player);
+
+                    if (actualizado)
                     {
-                        NotificationTitle = Literals.RegistrationSuccessful,
-                        NotificationMessage = Literals.Welcome,
-                        Type = NotificationType.Confirmation,
+                        SessionManager.Instance.CurrentPlayer = player;
+                        var successContent = new NotificationContent
+                        {
+                            NotificationTitle = "Perfil actualizado",
+                            NotificationMessage = "Tus datos han sido actualizados correctamente.",
+                            Type = NotificationType.Confirmation,
+                            AcceptButtonText = Literals.Accept
+                        };
+                        var window = new NotificationWindow(successContent);
+                        window.ShowDialog();
+                        NavigationService.Navigate(new CreateMatch(false, ""));
+                    }
+                    else
+                    {
+                        var errorContent = new NotificationContent
+                        {
+                            NotificationTitle = "Error al actualizar",
+                            NotificationMessage = "No se pudo actualizar tu perfil. Verifica que los datos no estén en uso.",
+                            Type = NotificationType.Error,
+                            AcceptButtonText = Literals.Accept
+                        };
+                        var window = new NotificationWindow(errorContent);
+                        window.ShowDialog();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var errorContent = new NotificationContent
+                    {
+                        NotificationTitle = "Error",
+                        NotificationMessage = "Ocurrió un error al actualizar el perfil.",
+                        Type = NotificationType.Error,
                         AcceptButtonText = Literals.Accept
                     };
-                    var window = new NotificationWindow(successContent);
+                    var window = new NotificationWindow(errorContent);
                     window.ShowDialog();
-
-                    NavigationService.GoBack();
-                }
-                else
-                {
-                    MessageBox.Show("No se pudo completar el registro (duplicado o error en datos).");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error al registrar: {ex.Message}");
+                try
+                {
+                    bool registrado = hangmanService.RegisterPlayer(player);
+
+                    if (registrado)
+                    {
+                        var successContent = new NotificationContent
+                        {
+                            NotificationTitle = Literals.RegistrationSuccessful,
+                            NotificationMessage = Literals.Welcome,
+                            Type = NotificationType.Confirmation,
+                            AcceptButtonText = Literals.Accept
+                        };
+                        var window = new NotificationWindow(successContent);
+                        window.ShowDialog();
+                        NavigationService.Navigate(new Login());
+                    }
+                    else
+                    {
+                        var errorContent = new NotificationContent
+                        {
+                            NotificationTitle = Literals.ErrorRegister,
+                            NotificationMessage = Literals.CouldntCompleteRegister,
+                            Type = NotificationType.Error,
+                            AcceptButtonText = Literals.Accept
+                        };
+                        var window = new NotificationWindow(errorContent);
+                        window.ShowDialog();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var errorContent = new NotificationContent
+                    {
+                        NotificationTitle = Literals.ErrorRegister,
+                        NotificationMessage = Literals.CouldntCompleteRegister,
+                        Type = NotificationType.Error,
+                        AcceptButtonText = Literals.Accept
+                    };
+                    var window = new NotificationWindow(errorContent);
+                    window.ShowDialog();
+                }
             }
         }
 
@@ -132,6 +200,16 @@ namespace HangmanClient.View.Pages
                 return false;
             }
 
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            if (!emailRegex.IsMatch(email))
+            {
+                mensajeError.NotificationTitle = Literals.InvalidFields;
+                mensajeError.NotificationMessage = Literals.NotVaildEmail;
+                mensajeError.Type = NotificationType.Error;
+                mensajeError.AcceptButtonText = Literals.Accept;
+                return false;
+            }
+
             var regex = new Regex("^[a-zA-Z0-9]+$");
             if (!regex.IsMatch(username) || !regex.IsMatch(nickname) || !regex.IsMatch(password))
             {
@@ -142,17 +220,7 @@ namespace HangmanClient.View.Pages
                 return false;
             }
 
-            var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!emailRegex.IsMatch(email))
-            {
-                mensajeError.NotificationTitle = Literals.InvalidFields;
-                mensajeError.NotificationMessage = Literals.NotVaildEmail;
-                mensajeError.Type = NotificationType.Error;
-                mensajeError.AcceptButtonText = Literals.Accept;
-                return false;
-            }
-
-            if (!string.IsNullOrWhiteSpace(phoneNumber) && !Regex.IsMatch(phoneNumber, @"^\d{0,10}$"))
+            if (!string.IsNullOrWhiteSpace(phoneNumber) && !Regex.IsMatch(phoneNumber, @"^\d{0,15}$"))
             {
                 mensajeError.NotificationTitle = Literals.InvalidFields;
                 mensajeError.NotificationMessage = Literals.PhoneNumberLength;
@@ -172,11 +240,46 @@ namespace HangmanClient.View.Pages
             }
         }
 
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            bool result=false;
+            if (SessionManager.Instance.CurrentLanguage == 1)
+            {
+                                var msgBox = new CustomMessageBox(
+                    "Cancelar registro",
+                    "Los datos ingresados se perderán permanentemente, ¿desea continuar?",
+                    "Aceptar",
+                    "Cancelar"
+                );
+                msgBox.ShowDialog();
+                result = msgBox.Resultado;
+            }
+            if(SessionManager.Instance.CurrentLanguage == 2)
+            {
+                var msgBox = new CustomMessageBox(
+                    "Cancel Registration",
+                    "Entered data will be permanently lost. Do you wish to continue?",
+                    "Yes",
+                    "Cancel"
+                );
+                msgBox.ShowDialog();
+                result = msgBox.Resultado;
+            }
+            if (result)
+            {
+                if (isEditMode)
+                {
+                    NavigationService.Navigate(new CreateMatch(false,""));
+                }
+                else
+                {
+                    NavigationService.Navigate(new Login());
+                }
+                
+            }
+            
         }
-
         private void EmailTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var email = EmailTextBox.Text.Trim();
@@ -186,20 +289,25 @@ namespace HangmanClient.View.Pages
                 return;
             }
 
-            var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
             if (!emailRegex.IsMatch(email))
             {
                 EmailFormatStatusLabel.Visibility = Visibility.Visible;
                 EmailFormatStatusLabel.Content = "El email no tiene un formato válido.";
+                return;
             }
-            else
+            if (isEditMode && SessionManager.Instance.CurrentPlayer?.Email == email)
             {
                 EmailFormatStatusLabel.Visibility = Visibility.Collapsed;
+                return;
             }
+            EmailFormatStatusLabel.Visibility = Visibility.Collapsed;
         }
+
         private async void PhoneNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var phoneNumber = PhoneNumberTextBox.Text.Trim();
+
             if (string.IsNullOrEmpty(phoneNumber))
             {
                 PhoneStatusLabel.Visibility = Visibility.Collapsed;
@@ -210,6 +318,12 @@ namespace HangmanClient.View.Pages
             {
                 PhoneStatusLabel.Visibility = Visibility.Visible;
                 PhoneStatusLabel.Content = "El número de teléfono debe ser numérico.";
+                return;
+            }
+
+            if (isEditMode && SessionManager.Instance.CurrentPlayer?.PhoneNumber == phoneNumber)
+            {
+                PhoneStatusLabel.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -235,6 +349,11 @@ namespace HangmanClient.View.Pages
                 UsernameStatusLabel.Visibility = Visibility.Collapsed;
                 return;
             }
+            if (isEditMode && SessionManager.Instance.CurrentPlayer?.Username == username)
+            {
+                UsernameStatusLabel.Visibility = Visibility.Collapsed;
+                return;
+            }
 
             try
             {
@@ -250,10 +369,17 @@ namespace HangmanClient.View.Pages
                 UsernameStatusLabel.Content = $"Error al validar usuario: {ex.Message}";
             }
         }
+
         private async void NicknameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var nickname = NicknameTextBox.Text.Trim();
             if (string.IsNullOrEmpty(nickname))
+            {
+                NicknameStatusLabel.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (isEditMode && SessionManager.Instance.CurrentPlayer?.Nickname == nickname)
             {
                 NicknameStatusLabel.Visibility = Visibility.Collapsed;
                 return;
@@ -276,7 +402,14 @@ namespace HangmanClient.View.Pages
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            if (isEditMode)
+            {
+                NavigationService.Navigate(new CreateMatch(false, ""));
+            }
+            else
+            {
+                NavigationService.Navigate(new Login());
+            }
         }
     }
 }

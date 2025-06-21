@@ -1,41 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GameServiceReference;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace HangmanClient.Model.ViewModels
 {
-    class CategoryViewModel
+    public class CategoryViewModel
     {
         public string Name { get; set; }
         public byte[] ImageBytes { get; set; }
 
-        public BitmapImage Image
+        public CategoryViewModel(CategoryDTO dto)
+        {
+            Name = dto.Name;
+            ImageBytes = dto.ImageBytes;
+        }
+
+        public ImageSource Image
         {
             get
             {
                 if (ImageBytes == null || ImageBytes.Length == 0)
                     return null;
 
-                using (var ms = new MemoryStream(ImageBytes))
+                try
                 {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.StreamSource = ms;
-                    image.EndInit();
-                    return image;
+                    using (var ms = new MemoryStream(ImageBytes))
+                    {
+                        var image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.StreamSource = ms;
+                        image.EndInit();
+                        image.Freeze();
+                        return image;
+                    }
+                }
+                catch
+                {
+                    return null;
                 }
             }
-        }
-
-        public CategoryViewModel(GameServiceReference.CategoryDTO dto)
-        {
-            Name = dto.Name;
-            ImageBytes = dto.ImageBytes;
         }
     }
 }

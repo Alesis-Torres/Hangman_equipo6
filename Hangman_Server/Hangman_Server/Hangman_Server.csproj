@@ -132,7 +132,9 @@
     <Compile Include="Model\player.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Singleton\SessionManager.cs" />
+    <Compile Include="Model\sysdiagrams.cs">
+      <DependentUpon>Hangman_DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\word.cs">
       <DependentUpon>Hangman_DB.tt</DependentUpon>
     </Compile>

@@ -14,11 +14,11 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <Grid.Background>
             <ImageBrush ImageSource="/View/Images/login_background.png"/>
         </Grid.Background>
-        
+
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
             <Button x:Name="SpanishButton" Height="80" Width="170" Click="ReturnButton_Click">
                 <Button.Background>
@@ -39,7 +39,7 @@
                 </TextBlock.Effect>
             </TextBlock>
         </StackPanel>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -96,7 +96,21 @@
                         <SolidColorBrush Color="#FFFBD4"/>
                     </TextBox.Foreground>
                 </TextBox>
-                <Label x:Name="UsernameStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+                <Label x:Name="UsernameStatusLabel"
+                        Content=""
+                        FontSize="18" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="Red">
+                    <Label.Effect>
+                        <DropShadowEffect Color="Black"
+                           Direction="0"
+                           ShadowDepth="2"
+                           Opacity="1"
+                           BlurRadius="0"/>
+                    </Label.Effect>
+                </Label>
             </StackPanel>
             <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static res:Literals.DateBirth}"
@@ -140,6 +154,7 @@
                             <Setter Property="FontFamily" Value="{StaticResource RubikBubbles}"/>
                             <Setter Property="FontSize" Value="30"/>
                             <Setter Property="Padding" Value="0"/>
+                            <Setter Property="IsReadOnly" Value="True"/>
                         </Style>
                     </DatePicker.Resources>
 
@@ -176,7 +191,7 @@
                               VerticalContentAlignment="Center"
                               Background="Transparent"
                               BorderThickness="0"
-                              Foreground="#FFFBD4"> 
+                              Foreground="#FFFBD4">
                     <PasswordBox.Template>
                         <ControlTemplate TargetType="PasswordBox">
                             <Grid>
@@ -246,7 +261,21 @@
                         <SolidColorBrush Color="#FFFBD4"/>
                     </TextBox.Foreground>
                 </TextBox>
-                <Label x:Name="NicknameStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+                <Label x:Name="NicknameStatusLabel"
+                        Content=""
+                        FontSize="18" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="Red">
+                        <Label.Effect>
+                            <DropShadowEffect Color="Black"
+                                               Direction="0"
+                                               ShadowDepth="2"
+                                               Opacity="1"
+                                               BlurRadius="0"/>
+                    </Label.Effect>
+                </Label>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static res:Literals.PhoneNumber}"
@@ -294,7 +323,21 @@
                         <SolidColorBrush Color="#FFFBD4"/>
                     </TextBox.Foreground>
                 </TextBox>
-                <Label x:Name="PhoneStatusLabel" Foreground="Red" Visibility="Collapsed" Content="" />
+                <Label x:Name="PhoneStatusLabel"
+                        Content=""
+                        FontSize="18" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="Red">
+                    <Label.Effect>
+                        <DropShadowEffect Color="Black"
+                                           Direction="0"
+                                           ShadowDepth="2"
+                                           Opacity="1"
+                                           BlurRadius="0"/>
+                    </Label.Effect>
+                </Label>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static res:Literals.Email}"
@@ -342,7 +385,21 @@
                         <SolidColorBrush Color="#FFFBD4"/>
                     </TextBox.Foreground>
                 </TextBox>
-                <Label x:Name="EmailFormatStatusLabel" Foreground="Red" Visibility="Collapsed" Content=""/>
+                <Label x:Name="EmailFormatStatusLabel"
+                        Content=""
+                        FontSize="18" 
+                        FontFamily="{StaticResource RubikBubbles}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="Red">
+                    <Label.Effect>
+                        <DropShadowEffect Color="Black"
+                                           Direction="0"
+                                           ShadowDepth="2"
+                                           Opacity="1"
+                                           BlurRadius="0"/>
+                    </Label.Effect>
+                </Label>
             </StackPanel>
         </Grid>
         <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">

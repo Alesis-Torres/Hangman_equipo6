@@ -318,4 +318,34 @@
   <data name="DeclineLetter" xml:space="preserve">
     <value>Decline Letter</value>
   </data>
+  <data name="CouldntCompleteRegister" xml:space="preserve">
+    <value>Couldn't complete register (duplicate or error in data)</value>
+  </data>
+  <data name="ErrorRegister" xml:space="preserve">
+    <value>Couldn't complete register</value>
+  </data>
+  <data name="UserAlreadyLogged" xml:space="preserve">
+    <value>User is active in another device</value>
+  </data>
+  <data name="UserAlreadyLoggedDesc" xml:space="preserve">
+    <value>This is already active in another device</value>
+  </data>
+  <data name="JoinByCode" xml:space="preserve">
+    <value>Join by code</value>
+  </data>
+  <data name="WordStatus" xml:space="preserve">
+    <value>Word status:</value>
+  </data>
+  <data name="SelectedWord" xml:space="preserve">
+    <value>Selected word:</value>
+  </data>
+  <data name="WaitingPlayer" xml:space="preserve">
+    <value>Waiting for the other player...</value>
+  </data>
+  <data name="GameStarted" xml:space="preserve">
+    <value>Game Started!</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

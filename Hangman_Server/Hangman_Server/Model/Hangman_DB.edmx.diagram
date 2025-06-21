@@ -4,20 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4fde315a82d54f5794ee026303928786" Name="Diagram1">
-        <EntityTypeShape EntityType="HangmanModel.category" Width="1.5" PointX="1.5" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="HangmanModel.gamematch" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="HangmanModel.gamematch_status" Width="1.5" PointX="5.25" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="HangmanModel.language" Width="1.5" PointX="1.5" PointY="12.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="HangmanModel.player" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="HangmanModel.word" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+      <Diagram DiagramId="8384c78b00414db5b9c2b48f46414a02" Name="Diagram1">
+        <EntityTypeShape EntityType="HangmanModel.category" Width="1.5" PointX="1.5" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.gamematch" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.gamematch_status" Width="1.5" PointX="0.75" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.language" Width="1.5" PointX="1.5" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.player" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HangmanModel.word" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
         <AssociationConnector Association="HangmanModel.FK__category__id_lan__3B75D760" ManuallyRouted="false" />
         <AssociationConnector Association="HangmanModel.FK__word__id_categor__3E52440B" ManuallyRouted="false" />
-        <AssociationConnector Association="HangmanModel.FK__gamematch__id_ga__5165187F" ManuallyRouted="false" />
-        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__4BAC3F29" ManuallyRouted="false" />
-        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__4CA06362" ManuallyRouted="false" />
-        <AssociationConnector Association="HangmanModel.FK__gamematch__id_wo__4D94879B" ManuallyRouted="false" />
-        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="HangmanModel.FK__gamematch__id_ga__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__44FF419A" ManuallyRouted="false" />
+        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__45F365D3" ManuallyRouted="false" />
+        <AssociationConnector Association="HangmanModel.FK__gamematch__id_pl__46E78A0C" ManuallyRouted="false" />
+        <AssociationConnector Association="HangmanModel.FK__gamematch__id_wo__47DBAE45" ManuallyRouted="false" />
         <AssociationConnector Association="HangmanModel.FK__word__id_languag__3F466844" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

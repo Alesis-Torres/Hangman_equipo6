@@ -178,6 +178,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t complete register (duplicate or error in data).
+        /// </summary>
+        public static string CouldntCompleteRegister {
+            get {
+                return ResourceManager.GetString("CouldntCompleteRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Birth.
         /// </summary>
         public static string DateBirth {
@@ -259,6 +268,15 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t complete register.
+        /// </summary>
+        public static string ErrorRegister {
+            get {
+                return ResourceManager.GetString("ErrorRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string Exit {
@@ -291,6 +309,15 @@ namespace HangmanClient {
         public static string GameCode {
             get {
                 return ResourceManager.GetString("GameCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Started!.
+        /// </summary>
+        public static string GameStarted {
+            get {
+                return ResourceManager.GetString("GameStarted", resourceCulture);
             }
         }
         
@@ -354,6 +381,15 @@ namespace HangmanClient {
         public static string Join {
             get {
                 return ResourceManager.GetString("Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join by code.
+        /// </summary>
+        public static string JoinByCode {
+            get {
+                return ResourceManager.GetString("JoinByCode", resourceCulture);
             }
         }
         
@@ -493,11 +529,29 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Registration Successful.
         /// </summary>
         public static string RegistrationSuccessful {
             get {
                 return ResourceManager.GetString("RegistrationSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected word:.
+        /// </summary>
+        public static string SelectedWord {
+            get {
+                return ResourceManager.GetString("SelectedWord", resourceCulture);
             }
         }
         
@@ -556,11 +610,38 @@ namespace HangmanClient {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User is active in another device.
+        /// </summary>
+        public static string UserAlreadyLogged {
+            get {
+                return ResourceManager.GetString("UserAlreadyLogged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is already active in another device.
+        /// </summary>
+        public static string UserAlreadyLoggedDesc {
+            get {
+                return ResourceManager.GetString("UserAlreadyLoggedDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ViewScore.
         /// </summary>
         public static string ViewScore {
             get {
                 return ResourceManager.GetString("ViewScore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for the other player....
+        /// </summary>
+        public static string WaitingPlayer {
+            get {
+                return ResourceManager.GetString("WaitingPlayer", resourceCulture);
             }
         }
         
@@ -597,6 +678,15 @@ namespace HangmanClient {
         public static string Welcome {
             get {
                 return ResourceManager.GetString("Welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Word status:.
+        /// </summary>
+        public static string WordStatus {
+            get {
+                return ResourceManager.GetString("WordStatus", resourceCulture);
             }
         }
         

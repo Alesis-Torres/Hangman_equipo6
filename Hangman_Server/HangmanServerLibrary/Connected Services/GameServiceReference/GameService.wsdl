@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="GameService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:64520/GameService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model.DTO" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IGameService_ProbarConexion_InputMessage">
+    <wsdl:part name="parameters" element="tns:ProbarConexion" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ProbarConexion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ProbarConexionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusa" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaInconclusa_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaInconclusaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaFinalizada_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaFinalizada" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_RegistrarPartidaFinalizada_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegistrarPartidaFinalizadaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ObtenerPalabrasPorCategoria_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerPalabrasPorCategoria" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ObtenerPalabrasPorCategoria_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerPalabrasPorCategoriaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ObtenerCategorias_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCategorias" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ObtenerCategorias_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCategoriasResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IGameService">
+    <wsdl:operation name="ProbarConexion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ProbarConexion" message="tns:IGameService_ProbarConexion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ProbarConexionResponse" message="tns:IGameService_ProbarConexion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaInconclusa">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" message="tns:IGameService_RegistrarPartidaInconclusa_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaInconclusaResponse" message="tns:IGameService_RegistrarPartidaInconclusa_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaFinalizada">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" message="tns:IGameService_RegistrarPartidaFinalizada_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/RegistrarPartidaFinalizadaResponse" message="tns:IGameService_RegistrarPartidaFinalizada_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPalabrasPorCategoria">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoria" message="tns:IGameService_ObtenerPalabrasPorCategoria_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoriaResponse" message="tns:IGameService_ObtenerPalabrasPorCategoria_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCategorias">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ObtenerCategorias" message="tns:IGameService_ObtenerCategorias_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ObtenerCategoriasResponse" message="tns:IGameService_ObtenerCategorias_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IGameService" type="tns:IGameService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ProbarConexion">
+      <soap:operation soapAction="http://tempuri.org/IGameService/ProbarConexion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaInconclusa">
+      <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaInconclusa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegistrarPartidaFinalizada">
+      <soap:operation soapAction="http://tempuri.org/IGameService/RegistrarPartidaFinalizada" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPalabrasPorCategoria">
+      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerPalabrasPorCategoria" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCategorias">
+      <soap:operation soapAction="http://tempuri.org/IGameService/ObtenerCategorias" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GameService">
+    <wsdl:port name="BasicHttpBinding_IGameService" binding="tns:BasicHttpBinding_IGameService">
+      <soap:address location="http://localhost:64520/GameService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

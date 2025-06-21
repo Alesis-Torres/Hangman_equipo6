@@ -16,7 +16,7 @@
         </StackPanel.Background>
 
         <StackPanel>
-            
+
         </StackPanel>
         <Label Content="{x:Static res:Literals.WaitingRoom}" 
                HorizontalAlignment="Center" 

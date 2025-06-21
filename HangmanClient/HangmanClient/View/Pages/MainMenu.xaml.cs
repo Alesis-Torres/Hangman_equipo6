@@ -27,7 +27,6 @@ namespace HangmanClient.View.Pages
         }
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            SessionManager.Instance.Logout();
             NavigationService.Navigate(new Login());
         }
 

@@ -13,7 +13,7 @@ namespace HangmanServiceReference
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="PlayerDTO", Namespace="http://schemas.datacontract.org/2004/07/Hangman_Server.Model")]
     public partial class PlayerDTO : object
     {
@@ -185,7 +185,7 @@ namespace HangmanServiceReference
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="PlayerStatsDTO", Namespace="http://schemas.datacontract.org/2004/07/")]
     public partial class PlayerStatsDTO : object
     {
@@ -236,7 +236,7 @@ namespace HangmanServiceReference
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="HangmanServiceReference.IHangmanService")]
     public interface IHangmanService
     {
@@ -289,20 +289,26 @@ namespace HangmanServiceReference
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/NicknameExiste", ReplyAction="http://tempuri.org/IHangmanService/NicknameExisteResponse")]
         System.Threading.Tasks.Task<bool> NicknameExisteAsync(string nickname);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
-        void Logout(string username);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
+        System.ValueTuple<string[], int> ObtenerHistorialPartidas(int playerId, int idLanguage);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/Logout", ReplyAction="http://tempuri.org/IHangmanService/LogoutResponse")]
-        System.Threading.Tasks.Task LogoutAsync(string username);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerHistorialPartidas", ReplyAction="http://tempuri.org/IHangmanService/ObtenerHistorialPartidasResponse")]
+        System.Threading.Tasks.Task<System.ValueTuple<string[], int>> ObtenerHistorialPartidasAsync(int playerId, int idLanguage);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerIdPorUsername", ReplyAction="http://tempuri.org/IHangmanService/ObtenerIdPorUsernameResponse")]
+        int ObtenerIdPorUsername(string username);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHangmanService/ObtenerIdPorUsername", ReplyAction="http://tempuri.org/IHangmanService/ObtenerIdPorUsernameResponse")]
+        System.Threading.Tasks.Task<int> ObtenerIdPorUsernameAsync(string username);
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     public interface IHangmanServiceChannel : HangmanServiceReference.IHangmanService, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "8.0.0")]
     public partial class HangmanServiceClient : System.ServiceModel.ClientBase<HangmanServiceReference.IHangmanService>, HangmanServiceReference.IHangmanService
     {
         
@@ -426,20 +432,37 @@ namespace HangmanServiceReference
             return base.Channel.NicknameExisteAsync(nickname);
         }
         
-        public void Logout(string username)
+        public System.ValueTuple<string[], int> ObtenerHistorialPartidas(int playerId, int idLanguage)
         {
-            base.Channel.Logout(username);
+            return base.Channel.ObtenerHistorialPartidas(playerId, idLanguage);
         }
         
-        public System.Threading.Tasks.Task LogoutAsync(string username)
+        public System.Threading.Tasks.Task<System.ValueTuple<string[], int>> ObtenerHistorialPartidasAsync(int playerId, int idLanguage)
         {
-            return base.Channel.LogoutAsync(username);
+            return base.Channel.ObtenerHistorialPartidasAsync(playerId, idLanguage);
+        }
+        
+        public int ObtenerIdPorUsername(string username)
+        {
+            return base.Channel.ObtenerIdPorUsername(username);
+        }
+        
+        public System.Threading.Tasks.Task<int> ObtenerIdPorUsernameAsync(string username)
+        {
+            return base.Channel.ObtenerIdPorUsernameAsync(username);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
         }
+        
+        #if !NET6_0_OR_GREATER
+        public virtual System.Threading.Tasks.Task CloseAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
+        }
+        #endif
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {

@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="id_category" />
           </Key>
-          <Property Name="id_category" Type="int" Nullable="false" />
+          <Property Name="id_category" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="45" />
           <Property Name="img_name" Type="varchar" MaxLength="24" />
           <Property Name="id_language" Type="int" />
@@ -23,7 +23,9 @@
           <Property Name="id_player_challenger" Type="int" />
           <Property Name="id_player_guesser" Type="int" />
           <Property Name="id_word" Type="int" />
+          <Property Name="id_playerinfo" Type="int" />
           <Property Name="id_gamematch_status" Type="int" />
+          <Property Name="date_finished" Type="datetime" />
         </EntityType>
         <EntityType Name="gamematch_status">
           <Key>
@@ -31,7 +33,6 @@
           </Key>
           <Property Name="id_gamematch_status" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="45" />
-          <Property Name="id_player" Type="int" />
         </EntityType>
         <EntityType Name="language">
           <Key>
@@ -54,6 +55,16 @@
           <Property Name="img_route" Type="varchar" MaxLength="24" />
           <Property Name="password" Type="varchar" MaxLength="20" />
           <Property Name="score" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="word">
           <Key>
@@ -79,21 +90,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_ga__5165187F">
-          <End Role="gamematch" Type="Self.gamematch" Multiplicity="1">
+        <Association Name="FK__gamematch__id_ga__440B1D61">
+          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="0..1" />
+          <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="gamematch">
-              <PropertyRef Name="id_gamematch" />
+            <Principal Role="gamematch_status">
+              <PropertyRef Name="id_gamematch_status" />
             </Principal>
-            <Dependent Role="gamematch_status">
+            <Dependent Role="gamematch">
               <PropertyRef Name="id_gamematch_status" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_pl__4BAC3F29">
+        <Association Name="FK__gamematch__id_pl__44FF419A">
+          <End Role="player" Type="Self.player" Multiplicity="0..1" />
+          <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="player">
+              <PropertyRef Name="id_player" />
+            </Principal>
+            <Dependent Role="gamematch">
+              <PropertyRef Name="id_playerinfo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__gamematch__id_pl__45F365D3">
           <End Role="player" Type="Self.player" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -105,7 +128,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_pl__4CA06362">
+        <Association Name="FK__gamematch__id_pl__46E78A0C">
           <End Role="player" Type="Self.player" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -117,19 +140,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_pl__5070F446">
-          <End Role="player" Type="Self.player" Multiplicity="0..1" />
-          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="player">
-              <PropertyRef Name="id_player" />
-            </Principal>
-            <Dependent Role="gamematch_status">
-              <PropertyRef Name="id_player" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__gamematch__id_wo__4D94879B">
+        <Association Name="FK__gamematch__id_wo__47DBAE45">
           <End Role="word" Type="Self.word" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -171,28 +182,29 @@
           <EntitySet Name="gamematch_status" EntityType="Self.gamematch_status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="language" EntityType="Self.language" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="player" EntityType="Self.player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="word" EntityType="Self.word" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__category__id_lan__3B75D760" Association="Self.FK__category__id_lan__3B75D760">
             <End Role="language" EntitySet="language" />
             <End Role="category" EntitySet="category" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_ga__5165187F" Association="Self.FK__gamematch__id_ga__5165187F">
-            <End Role="gamematch" EntitySet="gamematch" />
+          <AssociationSet Name="FK__gamematch__id_ga__440B1D61" Association="Self.FK__gamematch__id_ga__440B1D61">
             <End Role="gamematch_status" EntitySet="gamematch_status" />
+            <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__4BAC3F29" Association="Self.FK__gamematch__id_pl__4BAC3F29">
+          <AssociationSet Name="FK__gamematch__id_pl__44FF419A" Association="Self.FK__gamematch__id_pl__44FF419A">
             <End Role="player" EntitySet="player" />
             <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__4CA06362" Association="Self.FK__gamematch__id_pl__4CA06362">
+          <AssociationSet Name="FK__gamematch__id_pl__45F365D3" Association="Self.FK__gamematch__id_pl__45F365D3">
             <End Role="player" EntitySet="player" />
             <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__5070F446" Association="Self.FK__gamematch__id_pl__5070F446">
+          <AssociationSet Name="FK__gamematch__id_pl__46E78A0C" Association="Self.FK__gamematch__id_pl__46E78A0C">
             <End Role="player" EntitySet="player" />
-            <End Role="gamematch_status" EntitySet="gamematch_status" />
+            <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_wo__4D94879B" Association="Self.FK__gamematch__id_wo__4D94879B">
+          <AssociationSet Name="FK__gamematch__id_wo__47DBAE45" Association="Self.FK__gamematch__id_wo__47DBAE45">
             <End Role="word" EntitySet="word" />
             <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
@@ -214,7 +226,7 @@
           <Key>
             <PropertyRef Name="id_category" />
           </Key>
-          <Property Name="id_category" Type="Int32" Nullable="false" />
+          <Property Name="id_category" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="img_name" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
           <Property Name="id_language" Type="Int32" />
@@ -230,11 +242,14 @@
           <Property Name="id_player_challenger" Type="Int32" />
           <Property Name="id_player_guesser" Type="Int32" />
           <Property Name="id_word" Type="Int32" />
+          <Property Name="id_playerinfo" Type="Int32" />
           <Property Name="id_gamematch_status" Type="Int32" />
-          <NavigationProperty Name="gamematch_status" Relationship="Self.FK__gamematch__id_ga__5165187F" FromRole="gamematch" ToRole="gamematch_status" />
-          <NavigationProperty Name="player" Relationship="Self.FK__gamematch__id_pl__4BAC3F29" FromRole="gamematch" ToRole="player" />
-          <NavigationProperty Name="player1" Relationship="Self.FK__gamematch__id_pl__4CA06362" FromRole="gamematch" ToRole="player" />
-          <NavigationProperty Name="word" Relationship="Self.FK__gamematch__id_wo__4D94879B" FromRole="gamematch" ToRole="word" />
+          <Property Name="date_finished" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="gamematch_status" Relationship="Self.FK__gamematch__id_ga__440B1D61" FromRole="gamematch" ToRole="gamematch_status" />
+          <NavigationProperty Name="player" Relationship="Self.FK__gamematch__id_pl__44FF419A" FromRole="gamematch" ToRole="player" />
+          <NavigationProperty Name="player1" Relationship="Self.FK__gamematch__id_pl__45F365D3" FromRole="gamematch" ToRole="player" />
+          <NavigationProperty Name="player2" Relationship="Self.FK__gamematch__id_pl__46E78A0C" FromRole="gamematch" ToRole="player" />
+          <NavigationProperty Name="word" Relationship="Self.FK__gamematch__id_wo__47DBAE45" FromRole="gamematch" ToRole="word" />
         </EntityType>
         <EntityType Name="gamematch_status">
           <Key>
@@ -242,9 +257,7 @@
           </Key>
           <Property Name="id_gamematch_status" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="id_player" Type="Int32" />
-          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_ga__5165187F" FromRole="gamematch_status" ToRole="gamematch" />
-          <NavigationProperty Name="player" Relationship="Self.FK__gamematch__id_pl__5070F446" FromRole="gamematch_status" ToRole="player" />
+          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_ga__440B1D61" FromRole="gamematch_status" ToRole="gamematch" />
         </EntityType>
         <EntityType Name="language">
           <Key>
@@ -269,9 +282,19 @@
           <Property Name="img_route" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
           <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="score" Type="Int32" />
-          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_pl__4BAC3F29" FromRole="player" ToRole="gamematch" />
-          <NavigationProperty Name="gamematch1" Relationship="Self.FK__gamematch__id_pl__4CA06362" FromRole="player" ToRole="gamematch" />
-          <NavigationProperty Name="gamematch_status" Relationship="Self.FK__gamematch__id_pl__5070F446" FromRole="player" ToRole="gamematch_status" />
+          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_pl__44FF419A" FromRole="player" ToRole="gamematch" />
+          <NavigationProperty Name="gamematch1" Relationship="Self.FK__gamematch__id_pl__45F365D3" FromRole="player" ToRole="gamematch" />
+          <NavigationProperty Name="gamematch2" Relationship="Self.FK__gamematch__id_pl__46E78A0C" FromRole="player" ToRole="gamematch" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="word">
           <Key>
@@ -285,7 +308,7 @@
           <Property Name="id_category" Type="Int32" />
           <Property Name="id_language" Type="Int32" />
           <NavigationProperty Name="category" Relationship="Self.FK__word__id_categor__3E52440B" FromRole="word" ToRole="category" />
-          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_wo__4D94879B" FromRole="word" ToRole="gamematch" />
+          <NavigationProperty Name="gamematch" Relationship="Self.FK__gamematch__id_wo__47DBAE45" FromRole="word" ToRole="gamematch" />
           <NavigationProperty Name="language" Relationship="Self.FK__word__id_languag__3F466844" FromRole="word" ToRole="language" />
         </EntityType>
         <Association Name="FK__category__id_lan__3B75D760">
@@ -312,21 +335,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_ga__5165187F">
-          <End Role="gamematch" Type="Self.gamematch" Multiplicity="1">
+        <Association Name="FK__gamematch__id_ga__440B1D61">
+          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="0..1" />
+          <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="gamematch">
-              <PropertyRef Name="id_gamematch" />
+            <Principal Role="gamematch_status">
+              <PropertyRef Name="id_gamematch_status" />
             </Principal>
-            <Dependent Role="gamematch_status">
+            <Dependent Role="gamematch">
               <PropertyRef Name="id_gamematch_status" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_pl__4BAC3F29">
+        <Association Name="FK__gamematch__id_pl__44FF419A">
+          <End Role="player" Type="Self.player" Multiplicity="0..1" />
+          <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="player">
+              <PropertyRef Name="id_player" />
+            </Principal>
+            <Dependent Role="gamematch">
+              <PropertyRef Name="id_playerinfo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__gamematch__id_pl__45F365D3">
           <End Role="player" Type="Self.player" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -338,7 +373,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_pl__4CA06362">
+        <Association Name="FK__gamematch__id_pl__46E78A0C">
           <End Role="player" Type="Self.player" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -350,7 +385,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__gamematch__id_wo__4D94879B">
+        <Association Name="FK__gamematch__id_wo__47DBAE45">
           <End Role="word" Type="Self.word" Multiplicity="0..1" />
           <End Role="gamematch" Type="Self.gamematch" Multiplicity="*" />
           <ReferentialConstraint>
@@ -359,18 +394,6 @@
             </Principal>
             <Dependent Role="gamematch">
               <PropertyRef Name="id_word" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__gamematch__id_pl__5070F446">
-          <End Role="player" Type="Self.player" Multiplicity="0..1" />
-          <End Role="gamematch_status" Type="Self.gamematch_status" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="player">
-              <PropertyRef Name="id_player" />
-            </Principal>
-            <Dependent Role="gamematch_status">
-              <PropertyRef Name="id_player" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -392,6 +415,7 @@
           <EntitySet Name="gamematch_status" EntityType="Self.gamematch_status" />
           <EntitySet Name="language" EntityType="Self.language" />
           <EntitySet Name="player" EntityType="Self.player" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="word" EntityType="Self.word" />
           <AssociationSet Name="FK__category__id_lan__3B75D760" Association="Self.FK__category__id_lan__3B75D760">
             <End Role="language" EntitySet="language" />
@@ -401,25 +425,25 @@
             <End Role="category" EntitySet="category" />
             <End Role="word" EntitySet="word" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_ga__5165187F" Association="Self.FK__gamematch__id_ga__5165187F">
-            <End Role="gamematch" EntitySet="gamematch" />
+          <AssociationSet Name="FK__gamematch__id_ga__440B1D61" Association="Self.FK__gamematch__id_ga__440B1D61">
             <End Role="gamematch_status" EntitySet="gamematch_status" />
+            <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__4BAC3F29" Association="Self.FK__gamematch__id_pl__4BAC3F29">
+          <AssociationSet Name="FK__gamematch__id_pl__44FF419A" Association="Self.FK__gamematch__id_pl__44FF419A">
             <End Role="player" EntitySet="player" />
             <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__4CA06362" Association="Self.FK__gamematch__id_pl__4CA06362">
+          <AssociationSet Name="FK__gamematch__id_pl__45F365D3" Association="Self.FK__gamematch__id_pl__45F365D3">
             <End Role="player" EntitySet="player" />
             <End Role="gamematch" EntitySet="gamematch" />
           </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_wo__4D94879B" Association="Self.FK__gamematch__id_wo__4D94879B">
+          <AssociationSet Name="FK__gamematch__id_pl__46E78A0C" Association="Self.FK__gamematch__id_pl__46E78A0C">
+            <End Role="player" EntitySet="player" />
+            <End Role="gamematch" EntitySet="gamematch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__gamematch__id_wo__47DBAE45" Association="Self.FK__gamematch__id_wo__47DBAE45">
             <End Role="word" EntitySet="word" />
             <End Role="gamematch" EntitySet="gamematch" />
-          </AssociationSet>
-          <AssociationSet Name="FK__gamematch__id_pl__5070F446" Association="Self.FK__gamematch__id_pl__5070F446">
-            <End Role="player" EntitySet="player" />
-            <End Role="gamematch_status" EntitySet="gamematch_status" />
           </AssociationSet>
           <AssociationSet Name="FK__word__id_languag__3F466844" Association="Self.FK__word__id_languag__3F466844">
             <End Role="language" EntitySet="language" />
@@ -450,7 +474,9 @@
                 <ScalarProperty Name="id_player_challenger" ColumnName="id_player_challenger" />
                 <ScalarProperty Name="id_player_guesser" ColumnName="id_player_guesser" />
                 <ScalarProperty Name="id_word" ColumnName="id_word" />
+                <ScalarProperty Name="id_playerinfo" ColumnName="id_playerinfo" />
                 <ScalarProperty Name="id_gamematch_status" ColumnName="id_gamematch_status" />
+                <ScalarProperty Name="date_finished" ColumnName="date_finished" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -459,7 +485,6 @@
               <MappingFragment StoreEntitySet="gamematch_status">
                 <ScalarProperty Name="id_gamematch_status" ColumnName="id_gamematch_status" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="id_player" ColumnName="id_player" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -484,6 +509,17 @@
                 <ScalarProperty Name="img_route" ColumnName="img_route" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="score" ColumnName="score" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="HangmanModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

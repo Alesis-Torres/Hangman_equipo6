@@ -1,4 +1,6 @@
-﻿using HangmanClient.Util;
+﻿using HangmanClient.Model.Singleton;
+using HangmanClient.Util;
+using HangmanServiceReference;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +23,23 @@ namespace HangmanClient.View.Pages
     /// </summary>
     public partial class GameStatistics : Page
     {
+        private readonly HangmanServiceClient hangmanService;
         public GameStatistics()
         {
             InitializeComponent();
+
+            hangmanService = new HangmanServiceClient();
+            SetGamesPlayed();
         }
         private void SetGamesPlayed()
         {
             var notification = new NotificationContent();
             try
             {
-                // Llamar las partidas jugadas de la base de datos
+                int playerId = SessionManager.Instance.CurrentPlayer.IdPlayer;
+                var historial = hangmanService.ObtenerHistorialPartidas(playerId, SessionManager.Instance.CurrentLanguage).Item1;
+                EstadisticasListBox.ItemsSource = historial;
+                ScoreTextBox.Text = ScoreTextBox.Text + hangmanService.ObtenerHistorialPartidas(playerId, SessionManager.Instance.CurrentLanguage).Item2;
             } catch (Exception ex)
             {
                 notification.NotificationTitle = Literals.Offline;
@@ -45,7 +54,7 @@ namespace HangmanClient.View.Pages
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            NavigationService.Navigate(new CreateMatch(false, ""));
         }
     }
 }

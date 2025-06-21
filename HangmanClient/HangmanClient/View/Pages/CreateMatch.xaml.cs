@@ -1,92 +1,66 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Sockets;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GameServiceReference;
+using System.Windows.Threading;
 using HangmanClient.Model.Singleton;
+using Microsoft.IdentityModel.Tokens.Saml2;
 using Timer = System.Timers.Timer;
 
 namespace HangmanClient.View.Pages
 {
     public partial class CreateMatch : Page
     {
-        private readonly Timer actualizacionSalasTimer;
-        private readonly GameServiceClient gameService;
-        private Socket socketCliente;
+        private readonly bool esLogin;
+        private int idioma = SessionManager.Instance.CurrentLanguage;
 
-        public CreateMatch()
-        {
-            InitializeComponent();
-
-            gameService = new GameServiceClient();
-
-            actualizacionSalasTimer = new Timer(4000);
-            actualizacionSalasTimer.Elapsed += (s, e) => Dispatcher.Invoke(ActualizarSalas);
-            actualizacionSalasTimer.Start();
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            ConectarSocket();
-            ActualizarSalas();
-        }
-
-        private void ConectarSocket()
+        public CreateMatch(bool esLogin, string mensaje)
         {
             try
             {
-                socketCliente = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socketCliente.Connect("127.0.0.1", 64520);
-
-                string mensajeLogin = $"LOGIN|{SessionManager.Instance.CurrentPlayer.Username}";
-                socketCliente.Send(Encoding.UTF8.GetBytes(mensajeLogin));
-                string mensajeNickname = $"NICKNAME|{SessionManager.Instance.CurrentPlayer.Username}|{SessionManager.Instance.CurrentPlayer.Nickname}";
-                socketCliente.Send(Encoding.UTF8.GetBytes(mensajeNickname));
-                Task.Run(() => EscucharServidor());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al conectar con el servidor de juego: {ex.Message}");
-            }
-        }
-
-        private void EscucharServidor()
-        {
-            try
-            {
-                byte[] buffer = new byte[1024];
-                while (socketCliente.Connected)
+                InitializeComponent();
+                this.esLogin = esLogin;
+                ActualizarSalas();
+                if (!mensaje.Equals(""))
                 {
-                    int bytesRecibidos = socketCliente.Receive(buffer);
-                    string mensaje = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
-
-                    if (mensaje.StartsWith("EXPULSION|"))
-                    {
-                        SessionManager.Instance.HandleExpulsion();
-                        break;
-                    }
+                    MessageBox.Show(mensaje, "Retorno a la pantalla de inicio");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Console.WriteLine($"Error en EscucharServidor: {ex.Message}");
+                Console.WriteLine(ex);
             }
+            
         }
+
 
         private void ActualizarSalas()
         {
             try
             {
-                string salasData = gameService.ObtenerSalas();
-                var salas = salasData.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string solicitud = $"OBTENER_SALAS|{idioma}";
+                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(solicitud));
+                byte[] buffer = new byte[2048];
+                int bytes = SessionManager.Instance.SocketCliente.Receive(buffer);
+                string respuesta = Encoding.UTF8.GetString(buffer, 0, bytes).Trim();
 
-                SalasListBox.Items.Clear();
-                foreach (var sala in salas)
+                if (respuesta.StartsWith("SALAS|"))
                 {
-                    SalasListBox.Items.Add(sala.Trim());
+                    string contenido = respuesta.Substring("SALAS|".Length);
+                    var salas = contenido.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        SalasListBox.ItemsSource = salas.Select(s => s.Trim()).ToList();
+                    });
+                }
+                else
+                {
+                    Console.WriteLine("Respuesta inesperada al actualizar salas: " + respuesta);
                 }
             }
             catch (Exception ex)
@@ -95,78 +69,170 @@ namespace HangmanClient.View.Pages
             }
         }
 
-        private void UnirseButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (SalasListBox.SelectedItem is string salaSeleccionada)
-            {
-                try
-                {
-                    string[] partes = salaSeleccionada.Split(':');
-                    string salaIdStr = partes[0].Replace("Sala", "").Trim();
-
-                    string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
-                    int idPlayerGuesser = SessionManager.Instance.CurrentPlayer.IdPlayer;
-                    string respuesta = gameService.UnirseSala(int.Parse(salaIdStr), nombreJugador, idPlayerGuesser);
-
-                    string rol = "guesser";
-                    if (respuesta.StartsWith("ROLE:"))
-                    {
-                        rol = respuesta.Replace("ROLE:", "").Trim().ToLower();
-                    }
-
-                    NavigationService.Navigate(new MatchScreen(salaIdStr, rol, nombreJugador));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al unirse a la sala: " + ex.Message);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Selecciona una sala para unirte.");
-            }
-        }
 
         private void CrearSalaButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+
                 string nombreJugador = SessionManager.Instance.CurrentPlayer.Nickname;
-                string respuesta = gameService.CrearSala(nombreJugador, SessionManager.Instance.CurrentPlayer.IdPlayer);
-
-                string salaId = "";
-                string rol = "challenger";
-
-                if (!string.IsNullOrEmpty(respuesta))
+                int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
+                string mensaje = $"CREAR_SALA|{idJugador}|{nombreJugador}|{idioma}";
+                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
+                if (SessionManager.Instance.SocketCliente.Poll(5_000_000, SelectMode.SelectRead))
                 {
-                    string[] partes = respuesta.Split(' ');
-                    foreach (var parte in partes)
+                    byte[] buffer = new byte[1024];
+                    int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
+                    string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
+
+                    if (respuesta.StartsWith("SALA_CREADA|"))
                     {
-                        if (parte.StartsWith("SALA:"))
-                            salaId = parte.Replace("SALA:", "").Trim();
-                        else if (parte.StartsWith("ROLE:"))
-                            rol = parte.Replace("ROLE:", "").Trim().ToLower();
+                        int salaId = int.Parse(respuesta.Split('|')[1]);
+                        NavigationService.Navigate(new MatchScreen(salaId, "challenger", nombreJugador));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al crear sala: " + respuesta);
+                        ActualizarSalas();
                     }
                 }
-
-                if (string.IsNullOrEmpty(salaId))
+                else
                 {
-                    MessageBox.Show("No se pudo obtener el ID de la sala.");
-                    return;
+                    MessageBox.Show("Timeout esperando respuesta del servidor.");
                 }
-
-                NavigationService.Navigate(new MatchScreen(salaId, rol, nombreJugador));
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al crear sala: " + ex.Message);
+                ActualizarSalas();
             }
+        }
+
+        private void UnirseDirectoButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is not Button boton) return;
+
+                ListBoxItem item = ItemsControl.ContainerFromElement(SalasListBox, boton) as ListBoxItem;
+                if (item == null)
+                {
+                    MessageBox.Show("No se pudo determinar la sala correspondiente.");
+                    ActualizarSalas();
+                    return;
+                }
+
+                int index = SalasListBox.ItemContainerGenerator.IndexFromContainer(item);
+                if (index < 0 || index >= SalasListBox.Items.Count)
+                {
+                    MessageBox.Show("Índice inválido.");
+                    ActualizarSalas();
+                    return;
+                }
+
+                string lineaSala = SalasListBox.Items[index] as string;
+                if (string.IsNullOrWhiteSpace(lineaSala))
+                {
+                    MessageBox.Show("Formato de sala inválido.");
+                    ActualizarSalas();
+                    return;
+                }
+                string codigo = "";
+                string[] partes = lineaSala.Split('-');
+                foreach (var parte in partes)
+                {
+                    if (parte.Trim().StartsWith("Código:") || parte.Trim().StartsWith("Code:"))
+                    {
+                        codigo = parte.Trim().Split(':')[1].Trim();
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(codigo) || codigo.Length != 6)
+                {
+                    MessageBox.Show("No se pudo extraer un código válido de la sala.");
+                    ActualizarSalas();
+                    return;
+                }
+
+                string nickname = SessionManager.Instance.CurrentPlayer.Nickname;
+                int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
+                string mensaje = $"UNIRSE_CODIGO|{codigo}|{nickname}|{idJugador}";
+                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
+
+                byte[] buffer = new byte[1024];
+                int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
+                string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
+
+                if (respuesta.StartsWith("UNIDO|"))
+                {
+                    int idSala = int.Parse(respuesta.Split('|')[1]);
+                    NavigationService.Navigate(new MatchScreen(idSala, "guesser", nickname));
+                }
+                else
+                {
+                    MessageBox.Show("No fue posible unirse a la sala: " + respuesta);
+                    ActualizarSalas();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al intentar unirse a la sala: " + ex.Message);
+                ActualizarSalas();
+            }
+        }
+
+        private void UnirsePorCodigoButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string input = Microsoft.VisualBasic.Interaction.InputBox("Ingresa el código de la sala (ej. 3FJ8ZQ):", "Unirse por código", "");
+
+                if (string.IsNullOrWhiteSpace(input) || input.Length != 6 || !input.All(char.IsLetterOrDigit))
+                {
+                    MessageBox.Show("Código inválido. Asegúrate de ingresar un código de 6 caracteres alfanuméricos.");
+                    return;
+                }
+
+                string codigo = input.ToUpperInvariant();
+                string nickname = SessionManager.Instance.CurrentPlayer.Nickname;
+                int idJugador = SessionManager.Instance.CurrentPlayer.IdPlayer;
+                string mensaje = $"UNIRSE_CODIGO|{codigo}|{nickname}|{idJugador}";
+
+                SessionManager.Instance.SocketCliente.Send(Encoding.UTF8.GetBytes(mensaje));
+
+                byte[] buffer = new byte[1024];
+                int bytesRecibidos = SessionManager.Instance.SocketCliente.Receive(buffer);
+                string respuesta = Encoding.UTF8.GetString(buffer, 0, bytesRecibidos).Trim();
+
+                if (respuesta.StartsWith("UNIDO|"))
+                {
+                    int idSala = int.Parse(respuesta.Split('|')[1]);
+                    NavigationService.Navigate(new MatchScreen(idSala, "guesser", nickname));
+                }
+                else
+                {
+                    MessageBox.Show("No fue posible unirse a la sala: " + respuesta);
+                    ActualizarSalas();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al intentar unirse por código: " + ex.Message);
+                ActualizarSalas();
+            }
+        }
+
+        private void VerEstadisticasButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new GameStadistics());
         }
 
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
             var isPopupOpen = PopUp.IsOpen;
-            
+
             if (!isPopupOpen)
             {
                 PopUp.IsOpen = true;
@@ -180,17 +246,53 @@ namespace HangmanClient.View.Pages
 
         private void EditProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            // Navegar a formulario de edición de perfil
+            NavigationService.Navigate(new ProfileForm(true));
         }
 
         private void ViewScoreButton_Click(object sender, RoutedEventArgs e)
         {
-            // Navegar a pagina de estadisticas
+            NavigationService.Navigate(new GameStatistics());
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            // Cerrar sesión y regresar a la página de inicio
+            try
+            {
+                var jugador = SessionManager.Instance.CurrentPlayer;
+
+                if (jugador != null && SessionManager.Instance.SocketCliente?.Connected == true)
+                {
+                    string mensajeLogout = $"LOGOUT|{jugador.IdPlayer}";
+                    byte[] buffer = Encoding.UTF8.GetBytes(mensajeLogout + "\n");
+                    SessionManager.Instance.SocketCliente.Send(buffer);
+                    if (SessionManager.Instance.SocketCliente.Poll(3_000_000, SelectMode.SelectRead))
+                    {
+                        byte[] respuestaBuffer = new byte[1024];
+                        int recibidos = SessionManager.Instance.SocketCliente.Receive(respuestaBuffer);
+                        string respuesta = Encoding.UTF8.GetString(respuestaBuffer, 0, recibidos).Trim();
+
+                        if (!respuesta.StartsWith("LOGOUT_OK"))
+                        {
+                            MessageBox.Show("El servidor no confirmó el cierre de sesión: " + respuesta);
+                        }
+                    }
+
+                    SessionManager.Instance.SocketCliente.Shutdown(SocketShutdown.Both);
+                    SessionManager.Instance.SocketCliente.Close();
+                }
+
+                SessionManager.Instance.CurrentPlayer = null;
+                NavigationService.Navigate(new Login());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cerrar sesión: " + ex.Message);
+            }
+        }
+
+        private void ActualizarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ActualizarSalas();
         }
     }
 }

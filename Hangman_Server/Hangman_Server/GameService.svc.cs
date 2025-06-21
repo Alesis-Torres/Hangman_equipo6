@@ -14,228 +14,80 @@ namespace Hangman_Server
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class GameService : IGameService
     {
-        private readonly SocketServidor _servidor = SocketServidor.ObtenerInstancia();
 
         public string ProbarConexion()
         {
             return "Conexión establecida";
         }
 
-        public string ObtenerSalas()
+        public void RegistrarPartidaFinalizada(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala)
         {
-            try
-            {
-                return _servidor.ObtenerSalas();
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-        public string CrearSala(string nombreJugador, int idPlayer)
-        {
-            int salaId = _servidor.CrearSala(nombreJugador, idPlayer);
-            return $"SALA:{salaId} ROLE:challenger";
-        }
-        public bool EsPartidaTerminada(int salaId)
-        {
-            return _servidor.EsPartidaTerminada(salaId);
-        }
+            Console.WriteLine($"[GameService] Registrando partida finalizada. salaId={salaId}, idDesconectado={idDesconectado}, idPalabra={idPalabra}");
 
-        public string UnirseSala(int salaId, string nombreJugador, int idPlayerGuesser)
-        {
-            return _servidor.UnirseSala(salaId, nombreJugador, idPlayerGuesser);
-        }
-
-        public void Salir(int salaId, string nombreJugador)
-        {
-            _servidor.EliminarJugador(salaId, nombreJugador);
-        }
-
-        public int ObtenerJugadoresEnSala(int salaId)
-        {
-            return _servidor.ObtenerJugadoresEnSala(salaId);
-        }
-        public string AgregarJugador(int salaId, string nombreJugador)
-        {
-            return _servidor.AgregarJugador(salaId, nombreJugador);
-        }
-
-        public string ObtenerEstadoPalabra(int salaId)
-        {
-            try
-            {
-                return _servidor.ObtenerEstadoPalabra(salaId);
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        public int ObtenerIntentosRestantes(int salaId)
-        {
-            try
-            {
-                return _servidor.ObtenerIntentosRestantes(salaId);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        public string ObtenerLetraPropuesta(int salaId)
-        {
-            try
-            {
-                return _servidor.ObtenerLetraPropuesta(salaId);
-            }
-            catch (Exception ex)
-            {
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        public void EnviarLetra(int salaId, string letra)
-        {
-            try
-            {
-                _servidor.EnviarLetra(salaId, letra);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en EnviarLetra: {ex.Message}");
-            }
-        }
-
-        public string ConfirmarLetra(int salaId, string letra)
-        {
-            try
-            {
-                return _servidor.ConfirmarLetra(salaId, letra);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en ConfirmarLetra: {ex.Message}");
-                return "ERROR";
-            }
-        }
-
-        public string RechazarLetra(int salaId, string letra)
-        {
-            try
-            {
-                return _servidor.RechazarLetra(salaId, letra);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en RechazarLetra: {ex.Message}");
-                return "ERROR";
-            }
-        }
-        public void RegistrarPartidaFinalizada(int salaId, bool palabraAdivinada)
-        {
-            Console.WriteLine($"[GameService] Registrando partida para salaId={salaId}, palabraAdivinada={palabraAdivinada}");
             using (var db = new HangmanEntities())
             {
-                // Obtener los ids de challenger y guesser
-                int idPlayerChallenger = _servidor.ObtenerChallengerIdPorSala(salaId);
-                int idPlayerGuesser = _servidor.ObtenerGuesserIdPorSala(salaId);
-                string palabra = _servidor.ObtenerPalabraPorSala(salaId);
-                Console.WriteLine( idPlayerChallenger + " " + idPlayerChallenger + " "+ palabra);
-                if (idPlayerChallenger == 0 || idPlayerGuesser == 0 || string.IsNullOrEmpty(palabra))
+                var palabra = db.word.FirstOrDefault(w => w.id_word == idPalabra);
+                if (palabra == null)
                 {
-                    Console.WriteLine($"❌ Error: Datos incompletos para registrar partida.");
-                    throw new FaultException("No se encontró la sala o los datos necesarios para registrar la partida. " +idPlayerChallenger + " " + idPlayerGuesser + " " + palabra);
+                    Console.WriteLine($"No se encontró la palabra con ID '{idPalabra}' en la base de datos.");
+                    return;
                 }
 
-                var gameMatch = new gamematch
+                var gamematch = new gamematch
                 {
-                    id_player_challenger = idPlayerChallenger,
-                    id_player_guesser = idPlayerGuesser,
-                    id_word = db.word.FirstOrDefault(w => w.name == palabra)?.id_word ?? 0
-                };
-
-                db.gamematch.Add(gameMatch);
-                db.SaveChanges();
-
-                var status = new gamematch_status
-                {
-                    id_gamematch_status = gameMatch.id_gamematch,
-                    name = "Finalizada",
-                    id_player = palabraAdivinada ? idPlayerGuesser : idPlayerChallenger
-                };
-
-                db.gamematch_status.Add(status);
-                db.SaveChanges();
-
-                Console.WriteLine("✅ Partida registrada correctamente.");
-
-                // Limpiar la sala
-                _servidor.LimpiarSalaDespuesDeRegistrar(salaId);
-            }
-        }
-
-        public void RegistrarPartidaInconclusa(int idPlayerChallenger, int idDisconnected)
-        {
-            using (var db = new HangmanEntities())
-            {
-                int salaId = _servidor.ObtenerSalaIdPorChallenger(idPlayerChallenger);
-                string palabra = _servidor.ObtenerPalabraPorSala(salaId);
-
-                int idGuesser = _servidor.ObtenerGuesserIdPorSala(salaId);
-                int idWord = db.word.FirstOrDefault(w => w.name == palabra)?.id_word ?? 0;
-
-                var gameMatch = new gamematch
-                {
-                    id_player_challenger = idPlayerChallenger,
+                    id_player_challenger = idChallenger,
                     id_player_guesser = idGuesser,
-                    id_word = idWord
+                    id_playerinfo = idDesconectado,
+                    id_word = idPalabra,
+                    id_gamematch_status = 1,
+                    code = codigoSala,
+                    date_finished = DateTime.Now
                 };
-                db.gamematch.Add(gameMatch);
+
+                db.gamematch.Add(gamematch);
                 db.SaveChanges();
 
-                var status = new gamematch_status
-                {
-                    id_gamematch_status = gameMatch.id_gamematch,
-                    name = "Inconclusa",
-                    id_player = idDisconnected
-                };
-                db.gamematch_status.Add(status);
-                db.SaveChanges();
-                _servidor.LimpiarSalaDespuesDeRegistrar(salaId);
-            }
-        }
 
-        public int ObtenerIdGuesser(int salaId)
-        {
-            using (var db = new HangmanEntities())
-            {
-                var sala = db.gamematch.FirstOrDefault(s => s.id_gamematch == salaId);
-                if (sala != null)
-                {
-                    return sala.id_player_guesser ?? 0;
-                }
-                return 0;
+                db.SaveChanges();
+                Console.WriteLine($"Partida Finalizada registrada correctamente. id_gamematch={gamematch.id_gamematch}");
             }
         }
-        public List<string> ObtenerJugadoresEnPartida(int salaId)
+        public void RegistrarPartidaInconclusa(int salaId, int idChallenger, int idGuesser, int idPalabra, int idDesconectado, string codigoSala)
         {
-            return _servidor.ObtenerJugadoresEnSalaConNombres(salaId);
-        }
-        public int ObtenerIdWord(int salaId)
-        {
+            Console.WriteLine($"[GameService] Registrando partida inconclusa. salaId={salaId}, idDesconectado={idDesconectado}, idPalabra={idPalabra}");
+
             using (var db = new HangmanEntities())
             {
-                var sala = db.gamematch.FirstOrDefault(s => s.id_gamematch == salaId);
-                if (sala != null)
+                var palabra = db.word.FirstOrDefault(w => w.id_word == idPalabra);
+                if (palabra == null)
                 {
-                    return sala.id_word ?? 0;
+                    Console.WriteLine($"No se encontró la palabra con ID '{idPalabra}' en la base de datos.");
+                    return;
                 }
-                return 0;
+                try { 
+                var gamematch = new gamematch
+                {
+                    id_player_challenger = idChallenger,
+                    id_player_guesser = idGuesser,
+                    id_playerinfo = idDesconectado,
+                    id_word = idPalabra,
+                    id_gamematch_status = 2, 
+                    code = codigoSala,
+                    date_finished = DateTime.Now
+                };
+
+                db.gamematch.Add(gamematch);
+                    db.SaveChanges();
+                    Console.WriteLine($"Partida inconclusa registrada correctamente. id_gamematch={gamematch.id_gamematch}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR: DATOS FALTANTES EN EL REGISTRO DE LA PARTIDA:"+ ex.ToString());
+                }
+                
             }
         }
+        
         public List<CategoryDTO> ObtenerCategorias(int idLanguage)
         {
             using (var db = new HangmanEntities())
@@ -263,12 +115,14 @@ namespace Hangman_Server
                 var palabrasBD = (from w in db.word
                                   join c in db.category on w.id_category equals c.id_category
                                   where c.name == categoria && w.id_language == idLanguage
-                                  select new { w.name, w.img_name })
+                                  select new { w.id_word, w.name, w.img_name, w.hint })
                                   .ToList();
 
                 var palabras = palabrasBD.Select(w => new WordDTO
                 {
+                    Id = w.id_word,
                     Name = w.name,
+                    Hint = w.hint,
                     ImageBytes = LeerImagenConPlaceholder("Words", w.img_name)
                 }).ToList();
 
@@ -289,19 +143,19 @@ namespace Hangman_Server
 
                 string rutaImagen = HttpContext.Current.Server.MapPath($"~/Resources/Images/{folder}/{imgName}");
 
-                System.Diagnostics.Debug.WriteLine($"📂 Intentando cargar imagen: {rutaImagen}");
+                System.Diagnostics.Debug.WriteLine($"Intentando cargar imagen: {rutaImagen}");
 
                 if (File.Exists(rutaImagen))
                 {
-                    System.Diagnostics.Debug.WriteLine($"✅ Imagen encontrada: {rutaImagen}");
+                    System.Diagnostics.Debug.WriteLine($" Imagen encontrada: {rutaImagen}");
                     return File.ReadAllBytes(rutaImagen);
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"⚠️ Imagen no encontrada: {rutaImagen}");
+                    System.Diagnostics.Debug.WriteLine($" Imagen no encontrada: {rutaImagen}");
                     if (File.Exists(rutaPlaceholder))
                     {
-                        System.Diagnostics.Debug.WriteLine($"✅ Placeholder usado: {rutaPlaceholder}");
+                        System.Diagnostics.Debug.WriteLine($" Placeholder usado: {rutaPlaceholder}");
                         return File.ReadAllBytes(rutaPlaceholder);
                     }
                     else

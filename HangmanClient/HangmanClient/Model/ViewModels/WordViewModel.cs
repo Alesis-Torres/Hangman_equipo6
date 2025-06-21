@@ -1,36 +1,51 @@
-﻿using System.IO;
+﻿using GameServiceReference;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace HangmanClient.Model.ViewModels
 {
     public class WordViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
+        public string Hint { get; set; }
         public byte[] ImageBytes { get; set; }
 
-        public BitmapImage Image
+        public WordViewModel(WordDTO dto)
+        {
+            Id = dto.Id;
+            Hint = dto.Hint;
+            Name = dto.Name;
+            ImageBytes = dto.ImageBytes;
+        }
+
+        public ImageSource Image
         {
             get
             {
                 if (ImageBytes == null || ImageBytes.Length == 0)
                     return null;
 
-                using (var ms = new MemoryStream(ImageBytes))
+                try
                 {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.StreamSource = ms;
-                    image.EndInit();
-                    return image;
+                    using (var ms = new MemoryStream(ImageBytes))
+                    {
+                        var image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.StreamSource = ms;
+                        image.EndInit();
+                        image.Freeze();
+                        return image;
+                    }
+                }
+                catch
+                {
+                    return null;
                 }
             }
-        }
-
-        public WordViewModel(GameServiceReference.WordDTO dto)
-        {
-            Name = dto.Name;
-            ImageBytes = dto.ImageBytes;
         }
     }
 }

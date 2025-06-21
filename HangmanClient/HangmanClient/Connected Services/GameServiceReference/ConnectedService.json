@@ -11,7 +11,7 @@
       "*, GameServiceReference"
     ],
     "sync": true,
-    "targetFramework": "net8.0",
+    "targetFramework": "net8.0-windows",
     "typeReuseMode": "All"
   }
 }
