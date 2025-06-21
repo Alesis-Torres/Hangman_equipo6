@@ -340,13 +340,15 @@ namespace HangmanClient.View.Pages
         private void GenerarTecladoQwerty()
         {
             QwertyKeyboardPanel.Children.Clear();
-            string letrasQwerty = "QWERTYUIOPASDFGHJKLZXCVBNM";
+            string letrasQwerty = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
             foreach (char letra in letrasQwerty)
             {
                 var boton = new Button
                 {
                     Content = letra.ToString(),
+                    FontWeight = FontWeights.Bold,
+                    FontSize = 28,
                     Width = 40,
                     Height = 40,
                     Margin = new Thickness(2),
@@ -565,7 +567,7 @@ namespace HangmanClient.View.Pages
             }
             finally
             {
-                NavigationService.Navigate(new CreateMatch(false, ""));
+                NavigationService.Navigate(new Login());
             }
         }
     }

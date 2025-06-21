@@ -9,6 +9,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace HangmanClient
@@ -16,8 +17,9 @@ namespace HangmanClient
     public partial class App : Application
     {
         private const int MaxReintentos = 3;
-        private const string GameServiceUrl = "http://localhost:64520/GameService.svc";
-        private const string HangmanServiceUrl = "http://localhost:64520/HangmanService.svc";
+        private const string GameServiceUrl = "http://172.20.10.3/Hangman_Server/GameService.svc";
+        private const string HangmanServiceUrl = "http://172.20.10.3/Hangman_Server/HangmanService.svc";
+        private MediaPlayer backgroundMusicPlayer;
 
         private TcpClient monitorClient;
         private Thread monitorThread;
@@ -26,8 +28,30 @@ namespace HangmanClient
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            InitializeBackgroundMusic();
             InicializarServicioConReintento();
-            SessionManager.Instance.CurrentLanguage = 2;
+            SessionManager.Instance.CurrentLanguage = 1;
+        }
+
+        private void InitializeBackgroundMusic()
+        {
+            try
+            {
+                backgroundMusicPlayer = new MediaPlayer();
+                // Ruta relativa al archivo de audio en la carpeta de salida
+                string musicPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Music", "musica_fondo.wav");
+                backgroundMusicPlayer.Open(new Uri(musicPath, UriKind.Absolute));
+                backgroundMusicPlayer.MediaEnded += (s, args) =>
+                {
+                    // Repetir la música cuando termine
+                    backgroundMusicPlayer.Position = TimeSpan.Zero;
+                    backgroundMusicPlayer.Play();
+                };
+                backgroundMusicPlayer.Volume = 0.5; // Ajustar volumen (0.0 a 1.0)
+                backgroundMusicPlayer.Play(); // Iniciar reproducción
+            }
+            catch (Exception ex)
+            {}
         }
 
         private async void InicializarServicioConReintento()
@@ -75,7 +99,7 @@ namespace HangmanClient
             try
             {
                 SessionManager.Instance.SocketCliente = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                SessionManager.Instance.SocketCliente.Connect("127.0.0.1", 1002);
+                SessionManager.Instance.SocketCliente.Connect("172.20.10.3", 1002);
 
                 pingTimer = new DispatcherTimer
                 {

@@ -261,19 +261,6 @@
                 <!--<Image x:Name="Hang" Source="/View/Images/GameLogic/Hang.png" Height="200" Visibility="Visible" Margin="0,0,90,0"/>-->
             </Grid>
             <WrapPanel x:Name="QwertyKeyboardPanel" Margin="0,10,0,0"/>
-
-            <TextBlock Text="{x:Static res:Literals.PlayersInMatch}"            
-                        FontSize="15" 
-                        FontFamily="{StaticResource RubikBubbles}"
-                        Foreground="#FFFBD4">
-                <TextBlock.Effect>
-                    <DropShadowEffect Color="Black"
-                           Direction="0"
-                           ShadowDepth="2"
-                           Opacity="1"
-                           BlurRadius="0"/>
-                </TextBlock.Effect>
-            </TextBlock>
         </StackPanel>
 
         <!-- Overlay de Palabras y Categorías -->

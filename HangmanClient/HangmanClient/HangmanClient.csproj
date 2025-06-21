@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Music\musica_fondo.wav" />
     <None Remove="View\Images\arrow_button.png" />
     <None Remove="View\Images\categories_background.png" />
     <None Remove="View\Images\confirmation_background.png" />
@@ -62,6 +63,9 @@
     <None Remove="View\Images\Words\yellow_img.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Music\musica_fondo.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="View\Images\arrow_button.png" />
   </ItemGroup>
   <ItemGroup>
